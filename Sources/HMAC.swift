@@ -53,15 +53,20 @@ public class HMAC : Updateable {
         /// Secure Hash Algorithm 2 512-bit
             SHA512
         
-        static let fromNative: [CCHmacAlgorithm: Algorithm] = [
-            CCHmacAlgorithm(kCCHmacAlgSHA1):.SHA1,
-            CCHmacAlgorithm(kCCHmacAlgSHA1):.MD5,
-            CCHmacAlgorithm(kCCHmacAlgSHA256):.SHA256,
-            CCHmacAlgorithm(kCCHmacAlgSHA384):.SHA384,
-            CCHmacAlgorithm(kCCHmacAlgSHA512):.SHA512,
-            CCHmacAlgorithm(kCCHmacAlgSHA224):.SHA224 ]
-		
 		#if os(OSX)
+		
+			static let fromNative: [CCHmacAlgorithm: Algorithm] = [
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.SHA1,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.MD5,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA256):.SHA256,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA384):.SHA384,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA512):.SHA512,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA224):.SHA224 ]
+		
+			static func fromNativeValue(nativeAlg: CCHmacAlgorithm) -> Algorithm? {
+			
+				return fromNative[nativeAlg]
+			}
 		
 			func nativeValue() -> CCHmacAlgorithm {
 			
@@ -104,11 +109,6 @@ public class HMAC : Updateable {
 			}
 		#endif
 		
-		static func fromNativeValue(nativeAlg : CCHmacAlgorithm) -> Algorithm? {
-			
-            return fromNative[nativeAlg]
-        }
-        
         ///
         /// Obtains the digest length produced by this algorithm (in bytes).
         ///
@@ -133,6 +133,7 @@ public class HMAC : Updateable {
 				}
 				
 			#elseif os(Linux)
+				
 				switch self {
 					
 				case .SHA1:
@@ -236,7 +237,10 @@ public class HMAC : Updateable {
 			HMAC_Init(context, key, Int32(key.lengthOfBytes(using: NSUTF8StringEncoding)), algorithm.nativeValue())
 		#endif
     }
-    
+	
+	///
+	/// Cleanup
+	///
     deinit {
         context.deallocateCapacity(1)
     }
