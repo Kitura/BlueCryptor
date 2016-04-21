@@ -1,6 +1,6 @@
 //
 //  Package.swift
-//  Signals
+//  Cryptor
 //
 //  Copyright © 2016 IBM. All rights reserved.
 //
@@ -19,8 +19,23 @@
 
 import PackageDescription
 
+#if os(OSX)
+	let url = "https://github.com/IBM-Swift/CommonCrypto.git"
+	let majorVersion = 0
+	let minorVersion = 1
+#elseif os(Linux)
+	let url = "https://github.com/IBM-Swift/CCryptoSSL.git"
+let majorVersion = 0
+	let minorVersion = 1
+#else
+	fatalError("Unsupport OS")
+#endif
+
 let package = Package(
 	name: "Cryptor",
 	targets: [Target(name: "Cryptor")],
+	dependencies: [
+		.Package(url: url, majorVersion: majorVersion, minor: minorVersion),
+	],
 	exclude: ["Cryptor.xcodeproj", "README.md", "Sources/Info.plist", "Sources/Cryptor.h", "Tests"]
 )

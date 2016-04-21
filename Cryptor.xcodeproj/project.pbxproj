@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8C9590301CC80A2300A2C2B4 /* libCryptor.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_Cryptor" /* libCryptor.dylib */; };
 		8C9590361CC80C9800A2C2B4 /* CryptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9590241CC807D400A2C2B4 /* CryptorTests.swift */; };
+		8CD16C6E1CC81DE5007296B5 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 8CD16C6D1CC81DE5007296B5 /* README.md */; };
 		__src_cc_ref_Sources/Crypto.swift /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Crypto.swift /* Crypto.swift */; };
 		__src_cc_ref_Sources/Cryptor.swift /* Cryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Cryptor.swift /* Cryptor.swift */; };
 		__src_cc_ref_Sources/Digest.swift /* Digest.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Digest.swift /* Digest.swift */; };
@@ -34,6 +35,8 @@
 /* Begin PBXFileReference section */
 		8C9590241CC807D400A2C2B4 /* CryptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CryptorTests.swift; path = Tests/CryptorTests.swift; sourceTree = "<group>"; };
 		8C95902B1CC80A2300A2C2B4 /* CryptorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CryptorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8CD16C6C1CC81DE5007296B5 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
+		8CD16C6D1CC81DE5007296B5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Crypto.swift /* Crypto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Crypto.swift; path = Sources/Crypto.swift; sourceTree = "<group>"; };
 		__PBXFileRef_Sources/Cryptor.swift /* Cryptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Cryptor.swift; path = Sources/Cryptor.swift; sourceTree = "<group>"; };
@@ -85,6 +88,8 @@
 		"___RootGroup_" = {
 			isa = PBXGroup;
 			children = (
+				8CD16C6C1CC81DE5007296B5 /* LICENSE */,
+				8CD16C6D1CC81DE5007296B5 /* README.md */,
 				__PBXFileRef_Package.swift /* Package.swift */,
 				"_____Sources_" /* Sources */,
 				8C9590261CC807EA00A2C2B4 /* Tests */,
@@ -237,6 +242,7 @@
 				__src_cc_ref_Sources/Status.swift /* Status.swift in Sources */,
 				__src_cc_ref_Sources/StreamCryptor.swift /* StreamCryptor.swift in Sources */,
 				__src_cc_ref_Sources/Updateable.swift /* Updateable.swift in Sources */,
+				8CD16C6E1CC81DE5007296B5 /* README.md in Sources */,
 				__src_cc_ref_Sources/Utilities.swift /* Utilities.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
