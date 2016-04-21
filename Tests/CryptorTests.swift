@@ -21,6 +21,8 @@ import XCTest
 import CommonCrypto
 
 class CryptorTests: XCTestCase {
+	
+	let usingOpenSSL = false
     
     override func setUp() {
         super.setUp()
@@ -278,6 +280,9 @@ class CryptorTests: XCTestCase {
 	                  "da853b0d3f88d99b30283a69e6ded6bb", "ab4f496bfb2a530b219ff33031fe06b0", "4e8ddff3650292ab5a4108c3aa47940b", "da33def2a42df13975352846c30338cd", "d5976f79d83d3a0dc9806c3c66f3efd8"]
 	
 	func testMD2() {
+		if usingOpenSSL {
+			return
+		}
 		for i in 0..<md2inputs.count {
 			let input = md2inputs[i]
 			let expectedOutput = byteArray(fromHex: md2outputs[i])
@@ -354,7 +359,11 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(theData.SHA512, data(fromHex: sha512BlockOutput))
 	}
 	
+	// Not supported by OpenSSL
 	func test_Digest_SHA1_String() {
+		if usingOpenSSL {
+			return
+		}
 		let digest = Digest(algorithm: .SHA1).update(string: shaShortBlock)?.final()
 		print(hexString(from: digest!))
 		XCTAssertEqual(hexString(from: digest!), sha1ShortBlockOutput)
@@ -545,15 +554,19 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: - Status
 	func test_Status() {
-		XCTAssertEqual(Status.Success.toRaw(), CCCryptorStatus(kCCSuccess))
-		XCTAssertEqual(Status.ParamError.toRaw(), CCCryptorStatus(kCCParamError))
-		XCTAssertEqual(Status.BufferTooSmall.toRaw(), CCCryptorStatus(kCCBufferTooSmall))
-		XCTAssertEqual(Status.MemoryFailure.toRaw(), CCCryptorStatus(kCCMemoryFailure))
-		XCTAssertEqual(Status.AlignmentError.toRaw(), CCCryptorStatus(kCCAlignmentError))
-		XCTAssertEqual(Status.DecodeError.toRaw(), CCCryptorStatus(kCCDecodeError))
-		XCTAssertEqual(Status.Unimplemented.toRaw(), CCCryptorStatus(kCCUnimplemented))
-		XCTAssertEqual(Status.Overflow.toRaw(), CCCryptorStatus(kCCOverflow))
-		XCTAssertEqual(Status.RNGFailure.toRaw(), CCCryptorStatus(kCCRNGFailure))
+		if !usingOpenSSL {
+			
+			// These are only for CommonCrypto...
+			XCTAssertEqual(Status.Success.toRaw(), CCCryptorStatus(kCCSuccess))
+			XCTAssertEqual(Status.ParamError.toRaw(), CCCryptorStatus(kCCParamError))
+			XCTAssertEqual(Status.BufferTooSmall.toRaw(), CCCryptorStatus(kCCBufferTooSmall))
+			XCTAssertEqual(Status.MemoryFailure.toRaw(), CCCryptorStatus(kCCMemoryFailure))
+			XCTAssertEqual(Status.AlignmentError.toRaw(), CCCryptorStatus(kCCAlignmentError))
+			XCTAssertEqual(Status.DecodeError.toRaw(), CCCryptorStatus(kCCDecodeError))
+			XCTAssertEqual(Status.Unimplemented.toRaw(), CCCryptorStatus(kCCUnimplemented))
+			XCTAssertEqual(Status.Overflow.toRaw(), CCCryptorStatus(kCCOverflow))
+			XCTAssertEqual(Status.RNGFailure.toRaw(), CCCryptorStatus(kCCRNGFailure))
+		}
 		
 		XCTAssertEqual(Status.Success.description, "Success")
 		XCTAssertEqual(Status.ParamError.description, "ParamError")
