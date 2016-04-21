@@ -28,8 +28,6 @@ import Foundation
 ///
 public class PBKDF {
 	
-	static let usingSSL = true
-
     /// Enumerates available pseudo random algorithms
 	public enum PseudoRandomAlgorithm {
 		
