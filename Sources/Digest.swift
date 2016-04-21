@@ -16,7 +16,13 @@
 //
 
 import Foundation
-import CommonCrypto
+
+#if os(OSX)
+	import CommonCrypto
+#elseif os(Linux)
+	import CCrypto
+	typealias CC_LONG = size_t
+#endif
 
 ///
 ///	Public API for message digests.
@@ -46,54 +52,94 @@ public class Digest : Updateable {
 		
         /// Message Digest 2 See: http://en.wikipedia.org/wiki/MD2_(cryptography)
         case MD2,
+		
         /// Message Digest 4
         MD4,
+		
         /// Message Digest 5
         MD5,
+		
         /// Secure Hash Algorithm 1
         SHA1,
+		
         /// Secure Hash Algorithm 2 224-bit
         SHA224,
+		
         /// Secure Hash Algorithm 2 256-bit
         SHA256,
+		
         /// Secure Hash Algorithm 2 384-bit
         SHA384,
+		
         /// Secure Hash Algorithm 2 512-bit
         SHA512
     }
     
-    var engine: DigestEngine
+    private var engine: DigestEngine
 	
     ///
     /// Create an algorithm-specific digest calculator
-    ///   - parameter alrgorithm: the desired message digest algorithm
+	///
+    ///   - Parameter alrgorithm: the desired message digest algorithm
 	///
     public init(algorithm: Algorithm) {
 		
         switch algorithm {
         case .MD2:
-            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
+			#if os(OSX)
+	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
+			#elseif os(Linux)
+				fatalError("MD2 not supported by OpenSSL")
+			#endif
 			
         case .MD4:
-            engine = DigestEngineCC<CC_MD4_CTX>(initializer:CC_MD4_Init, updater:CC_MD4_Update, finalizer:CC_MD4_Final, length:CC_MD4_DIGEST_LENGTH)
+			#if os(OSX)
+            	engine = DigestEngineCC<CC_MD4_CTX>(initializer:CC_MD4_Init, updater:CC_MD4_Update, finalizer:CC_MD4_Final, length:CC_MD4_DIGEST_LENGTH)
+			#elseif os(Linux)
+				engine = DigestEngineCC<MD4_CTX>(initializer:MD4_Init, updater:MD4_Update, finalizer:MD4_Final, length:MD4_DIGEST_LENGTH)
+			#endif
 			
         case .MD5:
-            engine = DigestEngineCC<CC_MD5_CTX>(initializer:CC_MD5_Init, updater:CC_MD5_Update, finalizer:CC_MD5_Final, length:CC_MD5_DIGEST_LENGTH)
+			#if os(OSX)
+				engine = DigestEngineCC<CC_MD5_CTX>(initializer:CC_MD5_Init, updater:CC_MD5_Update, finalizer:CC_MD5_Final, length:CC_MD5_DIGEST_LENGTH)
+			#elseif os(Linux)
+				engine = DigestEngineCC<MD5_CTX>(initializer:MD5_Init, updater:MD5_Update, finalizer:MD5_Final, length:MD5_DIGEST_LENGTH)
+			#endif
 			
         case .SHA1:
-            engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
+			#if os(OSX)
+	            engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
+			#elseif os(Linux)
+				fatalError("SHA1 not supported by OpenSSL")
+			#endif
 			
         case .SHA224:
-            engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA224_Init, updater:CC_SHA224_Update, finalizer:CC_SHA224_Final, length:CC_SHA224_DIGEST_LENGTH)
+			#if os(OSX)
+            	engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA224_Init, updater:CC_SHA224_Update, finalizer:CC_SHA224_Final, length:CC_SHA224_DIGEST_LENGTH)
+			#elseif os(Linux)
+				engine = DigestEngineCC<SHA256_CTX>(initializer:SHA224_Init, updater:SHA224_Update, finalizer:SHA224_Final, length:SHA224_DIGEST_LENGTH)
+			#endif
 			
         case .SHA256:
-            engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA256_Init, updater:CC_SHA256_Update, finalizer:CC_SHA256_Final, length:CC_SHA256_DIGEST_LENGTH)
+			#if os(OSX)
+	            engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA256_Init, updater:CC_SHA256_Update, finalizer:CC_SHA256_Final, length:CC_SHA256_DIGEST_LENGTH)
+			#elseif os(Linux)
+				engine = DigestEngineCC<SHA256_CTX>(initializer: SHA256_Init, updater:SHA256_Update, finalizer:SHA256_Final, length:SHA256_DIGEST_LENGTH)
+			#endif
 			
         case .SHA384:
-            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA384_Init, updater:CC_SHA384_Update, finalizer:CC_SHA384_Final, length:CC_SHA384_DIGEST_LENGTH)
+			#if os(OSX)
+	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA384_Init, updater:CC_SHA384_Update, finalizer:CC_SHA384_Final, length:CC_SHA384_DIGEST_LENGTH)
+			#elseif os(Linux)
+				engine = DigestEngineCC<SHA512_CTX>(initializer:SHA384_Init, updater:SHA384_Update, finalizer:SHA384_Final, length:SHA384_DIGEST_LENGTH)
+			#endif
 			
         case .SHA512:
-            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA512_Init, updater:CC_SHA512_Update, finalizer:CC_SHA512_Final, length:CC_SHA512_DIGEST_LENGTH)
+			#if os(OSX)
+	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA512_Init, updater:CC_SHA512_Update, finalizer:CC_SHA512_Final, length:CC_SHA512_DIGEST_LENGTH)
+			#elseif os(Linux)
+				engine = DigestEngineCC<SHA512_CTX>(initializer:SHA512_Init, updater:SHA512_Update, finalizer:SHA512_Final, length:SHA512_DIGEST_LENGTH)
+			#endif
         }
     }
 	
@@ -101,9 +147,11 @@ public class Digest : Updateable {
 	///	Low-level update routine. Updates the message digest calculation with
 	///	the contents of a byte buffer.
 	///
-	///	- parameter buffer: the buffer
-	///	- parameter the: number of bytes in buffer
-	///	- returns: this Digest object (for optional chaining)
+	///	- Parameters:
+ 	///		- buffer:		The buffer
+	///		- byteCount: 	Number of bytes in buffer
+	///
+	///	- Returns: This Digest object (for optional chaining)
     ///
     public func update(buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
 		
@@ -113,7 +161,8 @@ public class Digest : Updateable {
     
     ///
 	///	Completes the calculate of the messge digest
-	///	- returns: the message digest
+	///
+	///	- Returns: the message digest
 	///
 	public func final() -> [UInt8] {
 		
@@ -127,10 +176,22 @@ public class Digest : Updateable {
 /// Defines the interface between the Digest class and an
 /// algorithm specific DigestEngine
 ///
-protocol DigestEngine {
+private protocol DigestEngine {
 
-    func update(buffer: UnsafePointer<Void>,
-                byteCount: CC_LONG)
+	///
+	/// Update method
+	///
+	/// - Parameters:
+	///		- buffer:		The buffer to add.
+	///		- byteCount:	The length of the buffer.
+	///
+    func update(buffer: UnsafePointer<Void>, byteCount: CC_LONG)
+	
+	///
+	/// Finalizer routine
+	///
+	/// - Returns: Byte array containing the digest.
+	///
     func final() -> [UInt8]
 }
 
@@ -138,9 +199,11 @@ protocol DigestEngine {
 ///	Wraps the underlying algorithm specific structures and calls
 ///	in a generic interface.
 ///
-class DigestEngineCC<C> : DigestEngine {
+/// - Parameter CTX:	The context for the digest.
+///
+private class DigestEngineCC<CTX>: DigestEngine {
 	
-    typealias Context = UnsafeMutablePointer<C>
+    typealias Context = UnsafeMutablePointer<CTX>
     typealias Buffer = UnsafePointer<Void>
     typealias Digest = UnsafeMutablePointer<UInt8>
     typealias Initializer = (Context) -> (Int32)
@@ -156,7 +219,13 @@ class DigestEngineCC<C> : DigestEngine {
 	///
 	/// Default initializer
 	///
-	init(initializer : Initializer, updater : Updater, finalizer : Finalizer, length : Int32) {
+	/// - Parameters:
+	///		- initializer: 	The digest initializer routine.
+	/// 	- updater:		The digest updater routine.
+	/// 	- finalizer:	The digest finalizer routine.
+	/// 	- length:		The digest length.
+	///
+	init(initializer: Initializer, updater: Updater, finalizer: Finalizer, length: Int32) {
 		
         self.initializer = initializer
         self.updater = updater
@@ -164,17 +233,32 @@ class DigestEngineCC<C> : DigestEngine {
         self.length = length
         initializer(context)
     }
-    
+	
+	///
+	/// Cleanup
+	///
 	deinit {
 		
         context.deallocateCapacity(1)
     }
     
+	///
+	/// Update method
+	///
+	/// - Parameters:
+	///		- buffer:		The buffer to add.
+	///		- byteCount:	The length of the buffer.
+	///
 	func update(buffer: Buffer, byteCount: CC_LONG) {
 		
         updater(context, buffer, byteCount)
     }
     
+	///
+	/// Finalizer routine
+	///
+	/// - Returns: Byte array containing the digest.
+	///
 	func final() -> [UInt8] {
 		
         let digestLength = Int(self.length)
