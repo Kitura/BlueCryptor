@@ -18,7 +18,11 @@
 import XCTest
 @testable import Cryptor
 
-import CommonCrypto
+#if os(OSX)
+	import CommonCrypto
+#elseif os(Linux)
+	import CCrypto
+#endif
 
 class CryptorTests: XCTestCase {
 	
@@ -560,7 +564,7 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: - Status
 	func test_Status() {
-		if !usingOpenSSL {
+		#if os(OSX)
 			
 			// These are only for CommonCrypto...
 			XCTAssertEqual(Status.Success.toRaw(), CCCryptorStatus(kCCSuccess))
@@ -572,7 +576,8 @@ class CryptorTests: XCTestCase {
 			XCTAssertEqual(Status.Unimplemented.toRaw(), CCCryptorStatus(kCCUnimplemented))
 			XCTAssertEqual(Status.Overflow.toRaw(), CCCryptorStatus(kCCOverflow))
 			XCTAssertEqual(Status.RNGFailure.toRaw(), CCCryptorStatus(kCCRNGFailure))
-		}
+			
+		#endif
 		
 		XCTAssertEqual(Status.Success.description, "Success")
 		XCTAssertEqual(Status.ParamError.description, "ParamError")
