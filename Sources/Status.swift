@@ -16,31 +16,45 @@
 //
 
 import Foundation
-import CommonCrypto
 
+#if os(OSX)
+	import CommonCrypto
+#elseif os(Linux)
+	import CCrypto
+#endif
+
+#if os(OSX)
 ///
-/// Links the native CommonCryptoStatus enumeration to Swiftier versions.
+/// Links the native CommonCryptoStatus enumeration to Swift versions.
 ///
-public enum Status : CCCryptorStatus, CustomStringConvertible, ErrorProtocol {
+public enum Status: CCCryptorStatus, ErrorProtocol, CustomStringConvertible {
 
     /// Successful
-    case Success,
+    case Success
+	
     /// Parameter Error
-    ParamError,
+    case ParamError
+	
     /// Buffer too Small
-    BufferTooSmall,
+    case BufferTooSmall
+	
     /// Memory Failure
-    MemoryFailure,
+    case MemoryFailure
+	
     /// Alignment Error
-    AlignmentError,
+    case AlignmentError
+	
     /// Decode Error
-    DecodeError,
+    case DecodeError
+	
     /// Unimplemented
-    Unimplemented,
+    case Unimplemented
+	
     /// Overflow
-    Overflow,
+    case Overflow
+	
     /// Random Number Generator Err
-    RNGFailure
+    case RNGFailure
     
     ///
     /// Converts this value to a native `CCCryptorStatus` value.
@@ -86,14 +100,15 @@ public enum Status : CCCryptorStatus, CustomStringConvertible, ErrorProtocol {
     ///
     /// Obtain human-readable string from enum value.
     ///
-	public var description : String {
+	public var description: String {
 		
         return (Status.descriptions[self] != nil) ? Status.descriptions[self]! : ""
     }
-    ///
+
+	///
     /// Create enum value from raw `CCCryptorStatus` value.
     ///
-	public static func fromRaw(status : CCCryptorStatus) -> Status? {
+	public static func fromRaw(status: CCCryptorStatus) -> Status? {
 		
         var from = [ kCCSuccess: Success,
                      kCCParamError: ParamError,
@@ -108,3 +123,64 @@ public enum Status : CCCryptorStatus, CustomStringConvertible, ErrorProtocol {
     
     }
 }
+	
+#elseif os(Linux)
+	
+///
+/// Error status
+///
+public enum Status: ErrorProtocol, CustomStringConvertible {
+	
+	/// Success
+	case Success
+	
+	/// Unimplemented with reason
+	case Unimplemented(String)
+	
+	/// Not supported with reason
+	case NotSupported(String)
+	
+	/// Failure with error code
+ 	case Fail(UInt)
+	
+	/// The error code itself
+	public var code: Int {
+		
+		switch self {
+			
+		case Success:
+			return 0
+			
+		case NotSupported:
+			return -1
+			
+		case Unimplemented:
+			return -2
+			
+		case Fail(let code):
+			return Int(code)
+		}
+	}
+	
+	///
+	/// Obtain human-readable string for the error code.
+	///
+	public var description: String {
+		
+		switch self {
+			
+		case Success:
+			return "No error"
+			
+		case NotSupported(let reason):
+			return "Not supported: \(reason)"
+			
+		case Unimplemented(let reason):
+			return "Not implemented: \(reason)"
+			
+		case Fail(let errorCode):
+			return "ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
+		}
+	}
+}
+#endif
