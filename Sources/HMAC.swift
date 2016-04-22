@@ -28,30 +28,28 @@ import Foundation
 ///
 public class HMAC : Updateable {
 	
-	static let usingSSL = true
-
     ///
     /// Enumerates available algorithms.
     ///
     public enum Algorithm {
 		
         /// Message Digest 5
-        case MD5,
+        case MD5
 		
         /// Secure Hash Algorithm 1
-            SHA1,
+        case SHA1
 		
         /// Secure Hash Algorithm 2 224-bit
-            SHA224,
+		case SHA224
 		
         /// Secure Hash Algorithm 2 256-bit
-            SHA256,
+		case SHA256
 		
         /// Secure Hash Algorithm 2 384-bit
-            SHA384,
+		case SHA384
 		
         /// Secure Hash Algorithm 2 512-bit
-            SHA512
+		case SHA512
         
 		#if os(OSX)
 		
@@ -94,7 +92,7 @@ public class HMAC : Updateable {
 				switch self {
 		
 				case .SHA1:
-					fatalError("SHA1 is not supported by OpenSSL")
+					fatalError("SHA1 HMAC not supported by OpenSSL")
 				case .MD5:
 					return EVP_md5()
 				case .SHA224:
@@ -137,7 +135,7 @@ public class HMAC : Updateable {
 				switch self {
 					
 				case .SHA1:
-					fatalError("SHA1 is not supported by OpenSSL")
+					fatalError("SHA1 HMAC not supported by OpenSSL")
 				case .MD5:
 					return Int(MD5_DIGEST_LENGTH)
 				case .SHA224:

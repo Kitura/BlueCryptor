@@ -47,6 +47,7 @@ public class PBKDF {
         case SHA512
 		
 		#if os(OSX)
+			///  Return the OS native value
 			func nativeValue() -> CCPseudoRandomAlgorithm {
 			
             	switch self {
@@ -66,6 +67,7 @@ public class PBKDF {
 		
 		#elseif os(Linux)
 		
+			///  Return the OS native value
 			func nativeValue() -> UnsafePointer<EVP_MD> {
 			
 				switch self {
@@ -102,7 +104,7 @@ public class PBKDF {
 		#if os(OSX)
 	        return UInt(CCCalibratePBKDF(CCPBKDFAlgorithm(kCCPBKDF2), passwordLength, saltLength, algorithm.nativeValue(), derivedKeyLength, msec))
 		#elseif os(Linux)
-			// Value us per RFC 2898.
+			// Value as per RFC 2898.
 			return UInt(1000)
 		#endif
     }
@@ -132,7 +134,8 @@ public class PBKDF {
 		#elseif os(Linux)
 			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.lengthOfBytes(using: NSUTF8StringEncoding)), salt, Int32(salt.lengthOfBytes(using: NSUTF8StringEncoding)), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
-				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed.")
+				let error = ERR_get_error()
+				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
 			}
 		#endif
         return derivedKey
@@ -162,7 +165,8 @@ public class PBKDF {
 		#elseif os(Linux)
 			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.lengthOfBytes(using: NSUTF8StringEncoding)), salt, Int32(salt.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
-				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed.")
+				let error = ERR_get_error()
+				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
 			}
 		#endif
         return derivedKey
@@ -194,7 +198,8 @@ public class PBKDF {
 		#elseif os(Linux)
 			let status = PKCS5_PBKDF2_HMAC(password, Int32(passwordLen), salt, Int32(saltLen), Int32(rounds), prf.nativeValue(), Int32(derivedKeyLen), derivedKey)
 			if status != 1 {
-				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed.")
+				let error = ERR_get_error()
+				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
 			}
 		#endif
 	}

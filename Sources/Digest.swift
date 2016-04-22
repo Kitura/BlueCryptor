@@ -51,28 +51,28 @@ public class Digest : Updateable {
     public enum Algorithm  {
 		
         /// Message Digest 2 See: http://en.wikipedia.org/wiki/MD2_(cryptography)
-        case MD2,
+        case MD2
 		
         /// Message Digest 4
-        MD4,
+        case MD4
 		
         /// Message Digest 5
-        MD5,
+        case MD5
 		
         /// Secure Hash Algorithm 1
-        SHA1,
+        case SHA1
 		
         /// Secure Hash Algorithm 2 224-bit
-        SHA224,
+        case SHA224
 		
         /// Secure Hash Algorithm 2 256-bit
-        SHA256,
+        case SHA256
 		
         /// Secure Hash Algorithm 2 384-bit
-        SHA384,
+        case SHA384
 		
         /// Secure Hash Algorithm 2 512-bit
-        SHA512
+        case SHA512
     }
     
     private var engine: DigestEngine
@@ -85,6 +85,7 @@ public class Digest : Updateable {
     public init(algorithm: Algorithm) {
 		
         switch algorithm {
+			
         case .MD2:
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
