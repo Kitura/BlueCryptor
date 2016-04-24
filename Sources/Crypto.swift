@@ -23,37 +23,67 @@ import Foundation
 public protocol CryptoDigest {
 	
     /// Calculates a message digest
-    func digest(algorithm : Digest.Algorithm) -> Self
+    func digest(algorithm: Digest.Algorithm) -> Self
 }
 
+///
+/// Extension to the CryptoDigest to return the digest appropriate to the selected algorithm.
+///
 extension CryptoDigest {
 	
     /// An MD2 digest of this object
-    public var MD2: Self { return self.digest(algorithm: .MD2) }
+    public var MD2: Self {
+		return self.digest(algorithm: .MD2)
+	}
+	
     /// An MD4 digest of this object
-    public var MD4: Self { return self.digest(algorithm: .MD4) }
+    public var MD4: Self {
+		return self.digest(algorithm: .MD4)
+	}
+	
     /// An MD5 digest of this object
-    public var MD5: Self { return self.digest(algorithm: .MD5) }
+    public var MD5: Self {
+		return self.digest(algorithm: .MD5)
+ 	}
+	
     /// An SHA1 digest of this object
-    public var SHA1: Self { return self.digest(algorithm: .SHA1) }
+    public var SHA1: Self {
+		return self.digest(algorithm: .SHA1)
+	}
+	
     /// An SHA224 digest of this object
-    public var SHA224: Self { return self.digest(algorithm: .SHA224) }
+    public var SHA224: Self {
+		return self.digest(algorithm: .SHA224)
+	}
+	
     /// An SHA256 digest of this object
-    public var SHA256: Self { return self.digest(algorithm: .SHA256) }
+    public var SHA256: Self {
+		return self.digest(algorithm: .SHA256)
+	}
+	
     /// An SHA384 digest of this object
-    public var SHA384: Self { return self.digest(algorithm: .SHA384) }
+    public var SHA384: Self {
+		return self.digest(algorithm: .SHA384)
+	}
+	
     /// An SHA512 digest of this object
-    public var SHA512: Self { return self.digest(algorithm: .SHA512) }
+    public var SHA512: Self {
+		return self.digest(algorithm: .SHA512)
+	}
 }
 
-extension NSData : CryptoDigest {
+///
+/// Extension for NSData to return an NSData object containing the digest.
+///
+extension NSData: CryptoDigest {
     ///
     /// Calculates the Message Digest for this data.
     /// 
-    /// - parameter algorithm: the digest algorithm to use
-    /// - returns: an `NSData` object containing the message digest
+    /// - Parameter algorithm: the digest algorithm to use
+	///
+    /// - Returns: an `NSData` object containing the message digest
     ///
-    public func digest(algorithm : Digest.Algorithm) -> Self {
+    public func digest(algorithm: Digest.Algorithm) -> Self {
 		
         // This force unwrap may look scary but for CommonCrypto this cannot fail.
         // The API allows for optionals to support the OpenSSL implementation which can.
@@ -63,19 +93,23 @@ extension NSData : CryptoDigest {
     }
 }
 
+///
+/// Extension for String to return a String containing the digest.
+///
 extension String : CryptoDigest {
     ///
     /// Calculates the Message Digest for this string.
     /// The string is converted to raw data using UTF8.
     ///
-    /// - parameter algorithm: the digest algorithm to use
-    /// - returns: a hex string of the calculated digest
+    /// - Parameter algorithm: the digest algorithm to use
+	///
+    /// - Returns: a hex string of the calculated digest
     ///
-    public func digest(algorithm : Digest.Algorithm) -> String {
+    public func digest(algorithm: Digest.Algorithm) -> String {
         // This force unwrap may look scary but for CommonCrypto this cannot fail.
         // The API allows for optionals to support the OpenSSL implementation which can.
 		let result = (Digest(algorithm: algorithm).update(string: self as String)?.final())!
-		return hexString(from: result)
+		return CryptoUtils.hexString(from: result)
         
     }
 }
