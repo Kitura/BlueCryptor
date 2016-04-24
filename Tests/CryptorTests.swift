@@ -39,9 +39,9 @@ class CryptorTests: XCTestCase {
     }
     
 	// MARK: - Cryptor tests
-	var aesKey1Bytes = byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
-	var aesPlaintext1Bytes = byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
-	var aesCipherText1Bytes = byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
+	var aesKey1Bytes = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
+	var aesPlaintext1Bytes = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
+	var aesCipherText1Bytes = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
 	
 	func test_Cryptor_AES_ECB() {
 		let aesEncrypt = Cryptor(operation:.Encrypt, algorithm:.AES, options:.ECBMode,
@@ -73,8 +73,8 @@ class CryptorTests: XCTestCase {
 	of blocks long.
 	*/
 	func test_Cryptor_AES_ECB_Short() {
-		let key = byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
-		let plainText = byteArray(fromHex: "6bc1bee22e409f96e93d7e11739317")
+		let key = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
+		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e11739317")
 		let cryptor = Cryptor(operation:.Encrypt, algorithm:.AES, options:.ECBMode, key:key, iv:Array<UInt8>())
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssert(cipherText == nil, "Expected nil cipherText")
@@ -85,10 +85,10 @@ class CryptorTests: XCTestCase {
 	Single block CBC mode. Results should be identical to ECB mode.
 	*/
 	func test_Cryptor_AES_CBC_1() {
-		let key =   byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
-		let iv =    byteArray(fromHex: "00000000000000000000000000000000")
-		let plainText = byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
-		let expectedCipherText = byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
+		let key =   CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
+		let iv =    CryptoUtils.byteArray(fromHex: "00000000000000000000000000000000")
+		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
+		let expectedCipherText = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
 		
 		//var cipherText = Cryptor(operation:.Encrypt, algorithm:.AES, options:.None, key:key, iv:Array<UInt8>()).update(plainText)?.final()
 		let cipherText = Cryptor(operation:.Encrypt, algorithm:.AES, options:.None, key:key, iv:iv).update(byteArray: plainText)?.final()
@@ -96,7 +96,7 @@ class CryptorTests: XCTestCase {
 		XCTAssert(expectedCipherText.count == cipherText!.count , "Counts are as expected")
 		XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
 		
-		print(hexString(from: cipherText!))
+		print(CryptoUtils.hexString(from: cipherText!))
 		
 		let decryptedText = Cryptor(operation:.Decrypt, algorithm:.AES, options:.None, key:key, iv:iv).update(byteArray: cipherText!)?.final()
 		XCTAssertEqual(decryptedText!, plainText, "Recovered plaintext.")
@@ -248,13 +248,13 @@ class CryptorTests: XCTestCase {
 			
 		]
 		
-		let key =                 byteArray(fromHex: "0101010101010101")
+		let key = CryptoUtils.byteArray(fromHex: "0101010101010101")
 		
 		for i in 0 ..< ivs.count {
-			let iv = byteArray(fromHex: ivs[i])
-			let cipherText = Cryptor(operation:.Encrypt, algorithm:.DES, options:.ECBMode, key:key, iv:Array<UInt8>()).update(byteArray: byteArray(fromHex: ivs[i]))?.final()
-			print("\"\(hexString(from: cipherText!))\", // [\(i)]")
-			XCTAssertEqual(byteArray(fromHex: ects[i]), cipherText!, "Obtained expected cipher text")
+			let iv = CryptoUtils.byteArray(fromHex: ivs[i])
+			let cipherText = Cryptor(operation:.Encrypt, algorithm:.DES, options:.ECBMode, key:key, iv:Array<UInt8>()).update(byteArray: CryptoUtils.byteArray(fromHex: ivs[i]))?.final()
+			print("\"\(CryptoUtils.hexString(from: cipherText!))\", // [\(i)]")
+			XCTAssertEqual(CryptoUtils.byteArray(fromHex: ects[i]), cipherText!, "Obtained expected cipher text")
 			let decryptor = Cryptor(operation:.Decrypt, algorithm:.DES, options:.ECBMode, key:key, iv:iv)
 			let decryptedText = decryptor.update(byteArray: cipherText!)?.final()
 			XCTAssertEqual(decryptedText!, iv, "Recovered plaintext.")
@@ -289,7 +289,7 @@ class CryptorTests: XCTestCase {
 		}
 		for i in 0..<md2inputs.count {
 			let input = md2inputs[i]
-			let expectedOutput = byteArray(fromHex: md2outputs[i])
+			let expectedOutput = CryptoUtils.byteArray(fromHex: md2outputs[i])
 			let d : Digest = Digest(algorithm:.MD2)
 			d.update(string: input)
 			let output = d.final()
@@ -309,7 +309,7 @@ class CryptorTests: XCTestCase {
 	
 	func test_Digest_MD5_NSData()
 	{
-		let qbfData : NSData = data(from: self.qbfBytes)
+		let qbfData : NSData = CryptoUtils.data(from: self.qbfBytes)
 		let digest = Digest(algorithm: .MD5).update(data: qbfData)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
@@ -357,10 +357,10 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(shaShortBlock.SHA384, sha384BlockOutput)
 		XCTAssertEqual(shaShortBlock.SHA512, sha512BlockOutput)
 		let theData: NSData = shaShortBlock.data(using:NSUTF8StringEncoding)!
-		XCTAssertEqual(theData.SHA224, data(fromHex: sha224BlockOutput))
-		XCTAssertEqual(theData.SHA256, data(fromHex: sha256BlockOutput))
-		XCTAssertEqual(theData.SHA384, data(fromHex: sha384BlockOutput))
-		XCTAssertEqual(theData.SHA512, data(fromHex: sha512BlockOutput))
+		XCTAssertEqual(theData.SHA224, CryptoUtils.data(fromHex: sha224BlockOutput))
+		XCTAssertEqual(theData.SHA256, CryptoUtils.data(fromHex: sha256BlockOutput))
+		XCTAssertEqual(theData.SHA384, CryptoUtils.data(fromHex: sha384BlockOutput))
+		XCTAssertEqual(theData.SHA512, CryptoUtils.data(fromHex: sha512BlockOutput))
 	}
 	
 	// Not supported by OpenSSL
@@ -369,41 +369,41 @@ class CryptorTests: XCTestCase {
 			return
 		}
 		let digest = Digest(algorithm: .SHA1).update(string: shaShortBlock)?.final()
-		print(hexString(from: digest!))
-		XCTAssertEqual(hexString(from: digest!), sha1ShortBlockOutput)
+		print(CryptoUtils.hexString(from: digest!))
+		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha1ShortBlockOutput)
 		
 	}
 	
 	func test_Digest_SHA224_String() {
 		let digest = Digest(algorithm: .SHA224).update(string: shaShortBlock)?.final()
-		print(hexString(from: digest!))
-		XCTAssertEqual(hexString(from: digest!), sha224BlockOutput)
+		print(CryptoUtils.hexString(from: digest!))
+		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha224BlockOutput)
 	}
 	
 	func test_Digest_SHA256_String() {
 		let digest = Digest(algorithm: .SHA256).update(string: shaShortBlock)?.final()
-		print(hexString(from: digest!))
-		XCTAssertEqual(hexString(from: digest!), sha256BlockOutput)
+		print(CryptoUtils.hexString(from: digest!))
+		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha256BlockOutput)
 	}
 	
 	func test_Digest_SHA384_String() {
 		let digest = Digest(algorithm: .SHA384).update(string: shaShortBlock)?.final()
-		print(hexString(from: digest!))
-		//XCTAssertEqual(hexString(from: digest!), sha384BlockOutput)
+		print(CryptoUtils.hexString(from: digest!))
+		//XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha384BlockOutput)
 	}
 	
 	func test_Digest_SHA512_String() {
 		let digest = Digest(algorithm: .SHA512).update(string: shaShortBlock)?.final()
-		print(hexString(from: digest!))
-		//XCTAssertEqual(hexString(from: digest!), sha512BlockOutput)
+		print(CryptoUtils.hexString(from: digest!))
+		//XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha512BlockOutput)
 	}
 	
 	// MARK: - HMAC tests
-	let hmacDefaultKeyMD5 = byteArray(fromHex: "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b")
-	let hmacDefaultResultMD5 = byteArray(fromHex: "9294727a3638bb1c13f48ef8158bfc9d")
+	let hmacDefaultKeyMD5 = CryptoUtils.byteArray(fromHex: "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b")
+	let hmacDefaultResultMD5 = CryptoUtils.byteArray(fromHex: "9294727a3638bb1c13f48ef8158bfc9d")
 	
-	let hmacDefaultKeySHA1 = byteArray(fromHex: "0102030405060708090a0b0c0d0e0f10111213141516171819")
-	let hmacDefaultResultSHA1 = byteArray(fromHex: "4c9007f4026250c6bc8414f9bf50c86c2d7235da")
+	let hmacDefaultKeySHA1 = CryptoUtils.byteArray(fromHex: "0102030405060708090a0b0c0d0e0f10111213141516171819")
+	let hmacDefaultResultSHA1 = CryptoUtils.byteArray(fromHex: "4c9007f4026250c6bc8414f9bf50c86c2d7235da")
 	
 	// See: https://www.ietf.org/rfc/rfc2202.txt
 	func test_HMAC_MD5() {
@@ -457,9 +457,9 @@ class CryptorTests: XCTestCase {
 	
 	func test_HMAC_SHA224() {
 	
-		let key = byteArray(fromHex: self.rfc4231key1)
-		let data : [UInt8] = byteArray(fromHex: rfc4231data1)
-		let expected = byteArray(fromHex: self.rfc4231SHA224Output1)
+		let key = CryptoUtils.byteArray(fromHex: self.rfc4231key1)
+		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
+		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA224Output1)
 		
 		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA224, key:key).update(byteArray: data)?.final()
 		
@@ -468,9 +468,9 @@ class CryptorTests: XCTestCase {
 	
 	func test_HMAC_SHA256() {
 	
-		let key = byteArray(fromHex: self.rfc4231key1)
-		let data : [UInt8] = byteArray(fromHex: rfc4231data1)
-		let expected = byteArray(fromHex: self.rfc4231SHA256Output1)
+		let key = CryptoUtils.byteArray(fromHex: self.rfc4231key1)
+		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
+		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA256Output1)
 		
 		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA256, key:key).update(byteArray: data)?.final()
 		
@@ -479,9 +479,9 @@ class CryptorTests: XCTestCase {
 	
 	func test_HMAC_SHA384() {
 	
-		let key = byteArray(fromHex: self.rfc4231key1)
-		let data : [UInt8] = byteArray(fromHex: rfc4231data1)
-		let expected = byteArray(fromHex: self.rfc4231SHA384Output1)
+		let key = CryptoUtils.byteArray(fromHex: self.rfc4231key1)
+		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
+		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA384Output1)
 		
 		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA384, key:key).update(byteArray: data)?.final()
 		
@@ -490,9 +490,9 @@ class CryptorTests: XCTestCase {
 	
 	func test_HMAC_SHA512() {
 	
-		let key = byteArray(fromHex: self.rfc4231key1)
-		let data : [UInt8] = byteArray(fromHex: rfc4231data1)
-		let expected = byteArray(fromHex: self.rfc4231SHA512Output1)
+		let key = CryptoUtils.byteArray(fromHex: self.rfc4231key1)
+		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
+		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA512Output1)
 		
 		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA512, key:key).update(byteArray: data)?.final()
 		
@@ -514,25 +514,25 @@ class CryptorTests: XCTestCase {
 		for (password, salt, rounds, dkLen, expected) in tests {
 		
 			let key = PBKDF.deriveKey(password: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
-			let keyString = hexString(from: key)
+			let keyString = CryptoUtils.hexString(from: key)
 			
-			XCTAssertEqual(key, byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
+			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
 		}
 		
 		// Tests with Array salt
-		let tests2 = [ ("password", byteArray(from: "salt"), 1, 20, "0c60c80f961f0e71f3a9b524af6012062fe037a6"),
-		               ("password", byteArray(from: "salt"), 2, 20, "ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957"),
-		               ("password", byteArray(from: "salt"), 4096, 20, "4b007901b765489abead49d926f721d065a429c1"),
+		let tests2 = [ ("password", CryptoUtils.byteArray(from: "salt"), 1, 20, "0c60c80f961f0e71f3a9b524af6012062fe037a6"),
+		               ("password", CryptoUtils.byteArray(from: "salt"), 2, 20, "ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957"),
+		               ("password", CryptoUtils.byteArray(from: "salt"), 4096, 20, "4b007901b765489abead49d926f721d065a429c1"),
 		               //            ("password", "salt", 16777216, 20, "eefe3d61cd4da4e4e9945b3d6ba2158c2634e984"),
-			("passwordPASSWORDpassword", byteArray(from: "saltSALTsaltSALTsaltSALTsaltSALTsalt"), 4096, 25, "3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038"),
-			("pass\0word", byteArray(from: "sa\0lt"), 4096, 16, "56fa6aa75548099dcc37d7f03425e0c3"),
+			("passwordPASSWORDpassword", CryptoUtils.byteArray(from: "saltSALTsaltSALTsaltSALTsaltSALTsalt"), 4096, 25, "3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038"),
+			("pass\0word", CryptoUtils.byteArray(from: "sa\0lt"), 4096, 16, "56fa6aa75548099dcc37d7f03425e0c3"),
 			]
 		for (password, salt, rounds, dkLen, expected) in tests2 {
 		
 			let key = PBKDF.deriveKey(password: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
-			let keyString = hexString(from: key)
+			let keyString = CryptoUtils.hexString(from: key)
 			
-			XCTAssertEqual(key, byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
+			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
 		}
 		
 	}
@@ -597,7 +597,7 @@ class CryptorTests: XCTestCase {
 	
 		let s = "deadface"
 		let expected : [UInt8] = [ 0xde, 0xad, 0xfa, 0xce ]
-		let result = byteArray(fromHex: s)
+		let result = CryptoUtils.byteArray(fromHex: s)
 		XCTAssertEqual(result, expected, "PASS")
 	}
 	
@@ -605,28 +605,28 @@ class CryptorTests: XCTestCase {
 	
 		let s = "DEADFACE"
 		let expected : [UInt8] = [ 0xde, 0xad, 0xfa, 0xce ]
-		let result = byteArray(fromHex: s)
+		let result = CryptoUtils.byteArray(fromHex: s)
 		XCTAssertEqual(result, expected, "PASS")
 	}
 	
 	func testHexStringFromArray() {
 	
 		let v : [UInt8] = [ 0xde, 0xad, 0xfa, 0xce ]
-		XCTAssertEqual(hexString(from: v), "deadface", "PASS (lowercase)")
-		XCTAssertEqual(hexString(from: v, uppercase: true), "DEADFACE", "PASS (lowercase)")
+		XCTAssertEqual(CryptoUtils.hexString(from: v), "deadface", "PASS (lowercase)")
+		XCTAssertEqual(CryptoUtils.hexString(from: v, uppercase: true), "DEADFACE", "PASS (lowercase)")
 	}
 	
 	func testHexNSStringFromArray() {
 	
 		let v : [UInt8] = [ 0xde, 0xad, 0xfa, 0xce ]
-		XCTAssertEqual(hexNSString(from: v), "deadface", "PASS (lowercase)")
-		XCTAssertEqual(hexNSString(from: v, uppercase: true), "DEADFACE", "PASS (lowercase)")
+		XCTAssertEqual(CryptoUtils.hexNSString(from: v), "deadface", "PASS (lowercase)")
+		XCTAssertEqual(CryptoUtils.hexNSString(from: v, uppercase: true), "DEADFACE", "PASS (lowercase)")
 	}
 	
 	func testHexListFromArray()
 	{
 		let v : [UInt8] = [ 0xde, 0xad, 0xfa, 0xce ]
-		let list = hexList(from: v)
+		let list = CryptoUtils.hexList(from: v)
 		XCTAssertEqual(list, "0xde, 0xad, 0xfa, 0xce, ")
 		
 	}
@@ -634,16 +634,16 @@ class CryptorTests: XCTestCase {
 	func testZeroPadString() {
 		var key1tmp = [UInt8]("thekey".utf8)
 		key1tmp += [0,0]
-		let key1  = zeroPad(string: "thekey", blockSize: 8)
+		let key1  = CryptoUtils.zeroPad(string: "thekey", blockSize: 8)
 		XCTAssertEqual(key1tmp, key1)
 		XCTAssertEqual(key1tmp.count, 8)
 	}
 	
 	func testGitHubIssue9() {
 		let blockSize = Cryptor.Algorithm.DES.blockSize()
-		let key = zeroPad(string: "thekey", blockSize: blockSize)
-		let plainText = zeroPad(string: "username123", blockSize: blockSize)
-		let expectedCipherText = byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
+		let key = CryptoUtils.zeroPad(string: "thekey", blockSize: blockSize)
+		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: blockSize)
+		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
 		let cryptor = Cryptor(operation: .Encrypt, algorithm: .DES, options: [.ECBMode], key: key, iv: [UInt8]())
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssertEqual(expectedCipherText, cipherText!)
@@ -652,8 +652,8 @@ class CryptorTests: XCTestCase {
 	// Check robustness against issue #9 for string key
 	func testGitHubIssue9StringCanary() {
 		let key = "thekey"
-		let plainText = zeroPad(string: "username123", blockSize: 8)
-		let expectedCipherText = byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
+		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: 8)
+		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
 		let cryptor = Cryptor(operation: .Encrypt, algorithm: .DES, options: [.ECBMode], key: key, iv: "")
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssertEqual(expectedCipherText, cipherText!)
@@ -662,8 +662,8 @@ class CryptorTests: XCTestCase {
 	// Check robustness against issue #9 for array key
 	func testGitHubIssue9ArrayCanary() {
 		let key = Array<UInt8>("thekey".utf8)
-		let plainText = zeroPad(string: "username123", blockSize: 8)
-		let expectedCipherText = byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
+		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: 8)
+		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
 		let cryptor = Cryptor(operation: .Encrypt, algorithm: .DES, options: [.ECBMode], key: key, iv: [])
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssertEqual(expectedCipherText, cipherText!)
