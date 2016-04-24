@@ -16,18 +16,22 @@
 //
 
 import Foundation
-import CommonCrypto
+
+#if os(OSX)
+	import CommonCrypto
+#elseif os(Linux)
+	import CCrypto
+#endif
 
 ///
 /// Encrypts or decrypts return results as they become available.
 ///
-/// - note: The underlying cipher may be a block or a stream cipher.
+/// - Note: The underlying cipher may be a block or a stream cipher.
 ///
 ///   Use for large files or network streams.
 ///
 ///   For small, in-memory buffers Cryptor may be easier to use.
 ///
-
 public class StreamCryptor {
 	
     ///
@@ -36,10 +40,10 @@ public class StreamCryptor {
     public enum Operation {
 
 		/// Encrypting
-        case Encrypt,
+        case Encrypt
 		
 		/// Decrypting
-        Decrypt
+        case Decrypt
         
         /// Convert to native `CCOperation`
         func nativeValue() -> CCOperation {
@@ -54,16 +58,18 @@ public class StreamCryptor {
             }
         }
     }
-    
+    ///
+	/// Enumerates valid key sizes.
+	///
     public enum ValidKeySize {
 		
         case Fixed(Int)
         case Discrete([Int])
         case Range(Int,Int)
         
-        /**
-            Determines if a given `keySize` is valid for this algorithm.
-        */
+        ///
+		///	Determines if a given `keySize` is valid for this algorithm.
+		///
         func isValidKeySize(keySize: Int) -> Bool {
 			
             switch self {
@@ -74,11 +80,11 @@ public class StreamCryptor {
             }
         }
         
-        /**
-            Determines the next valid key size; that is, the first valid key size larger 
-            than the given value.
-            Will return `nil` if the passed in `keySize` is greater than the max.
-        */
+        ///
+		///	Determines the next valid key size; that is, the first valid key size larger
+		///	than the given value.
+		///	Will return `nil` if the passed in `keySize` is greater than the max.
+        ///
         func paddedKeySize(keySize: Int) -> Int? {
 			
             switch self {
@@ -105,25 +111,25 @@ public class StreamCryptor {
     public enum Algorithm {
 		
         /// Advanced Encryption Standard
-        case AES,
+        case AES
 		
         /// Data Encryption Standard
-        DES,
+        case DES
 		
         /// Triple DES
-        TripleDES,
+        case TripleDES
 		
         /// CAST
-        CAST,
+        case CAST
 		
         /// RC2
-        RC2,
+        case RC2
 		
         /// Blowfish
-        Blowfish
+        case Blowfish
         
         /// Blocksize, in bytes, of algorithm.
-        public func blockSize() -> Int {
+		public var blockSize: Int {
 			
             switch self {
 				
@@ -196,13 +202,24 @@ public class StreamCryptor {
 				return .Range(kCCKeySizeMinBlowfish, kCCKeySizeMaxBlowfish)
             }
         }
-        
+		
+		///
         /// Tests if a given keySize is valid for this algorithm
+		///
+		/// - Parameter keySize: The key size to be validated.
+		///
+		/// - Returns: True if valid, false otherwise.
         func isValidKeySize(keySize: Int) -> Bool {
             return self.validKeySize().isValidKeySize(keySize: keySize)
         }
-        
+		
+		///
         /// Calculates the next, if any, valid keySize greater or equal to a given `keySize` for this algorithm
+		///
+		/// - Parameter keySize: Key size for which the next size is requested.
+		///
+		/// - Returns: Next key size or nil
+		///
         func paddedKeySize(keySize: Int) -> Int? {
             return self.validKeySize().paddedKeySize(keySize: keySize)
         }
@@ -220,6 +237,7 @@ public class StreamCryptor {
     /// Maps CommonCryptoOptions onto a Swift struct.
     ///
     public struct Options : OptionSet {
+		
         public typealias RawValue = Int
         public let rawValue: RawValue
         
@@ -251,16 +269,20 @@ public class StreamCryptor {
 	///
     public var status : Status = .Success
 
+	/// Context
 	private var context = UnsafeMutablePointer<CCCryptorRef?>(allocatingCapacity: 1)
 	
 	// MARK: Lifecycle Methods
 	
 	///
-	/// - parameter operation: the operation to perform see Operation (Encrypt, Decrypt)
-	/// - parameter algorithm: the algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
-	/// - parameter keyBuffer: pointer to key buffer
-	/// - parameter keyByteCount: number of bytes in the key
-	/// - parameter ivBuffer: initialization vector buffer
+	///	Default Initializer
+	///
+	/// - Parameters: 
+	///		- operation: the operation to perform see Operation (Encrypt, Decrypt)
+	/// 	- algorithm: the algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
+	/// 	- keyBuffer: pointer to key buffer
+	/// 	- keyByteCount: number of bytes in the key
+	/// 	- ivBuffer: initialization vector buffer
 	///
 	public init(operation: Operation, algorithm: Algorithm, options: Options, keyBuffer: [UInt8], keyByteCount: Int, ivBuffer: UnsafePointer<Void>) {
 		
@@ -280,15 +302,16 @@ public class StreamCryptor {
 		}
 	}
 	
-    /**
-        Creates a new StreamCryptor
-	
-        - parameter operation: the operation to perform see Operation (Encrypt, Decrypt)
-        - parameter algorithm: the algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
-        - parameter key: a byte array containing key data
-        - parameter iv: a byte array containing initialization vector
-    */
-	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: [UInt8], iv : [UInt8]) {
+    ///
+	///	Creates a new StreamCryptor
+	///
+	///	- Parameters:
+ 	///		- operation: the operation to perform see Operation (Encrypt, Decrypt)
+	///		- algorithm: the algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
+	///		- key: a byte array containing key data
+	///		- iv: a byte array containing initialization vector
+    ///
+	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: [UInt8], iv: [UInt8]) {
 		
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: key.count) else {
             fatalError("FATAL_ERROR: Invalid key size")
@@ -297,20 +320,21 @@ public class StreamCryptor {
         self.init(operation:operation,
                   algorithm:algorithm,
                   options:options,
-                  keyBuffer:zeroPad(byteArray:key, blockSize: paddedKeySize),
+                  keyBuffer:CryptoUtils.zeroPad(byteArray:key, blockSize: paddedKeySize),
                   keyByteCount:paddedKeySize,
                   ivBuffer:iv)
     }
 	
-    /**
-        Creates a new StreamCryptor
-        
-        - parameter operation: the operation to perform see Operation (Encrypt, Decrypt)
-        - parameter algorithm: the algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
-        - parameter key: a string containing key data (will be interpreted as UTF8)
-        - parameter iv: a string containing initialization vector data (will be interpreted as UTF8)
-    */
-	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: String, iv : String) {
+    ///
+	/// Creates a new StreamCryptor
+	///
+	///	- Parameters:
+ 	///		- operation: the operation to perform see Operation (Encrypt, Decrypt)
+	///		- algorithm: the algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
+	///		- key: a string containing key data (will be interpreted as UTF8)
+	///		- iv: a string containing initialization vector data (will be interpreted as UTF8)
+    ///
+	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: String, iv: String) {
 		
         let keySize = key.utf8.count
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: keySize) else {
@@ -320,11 +344,14 @@ public class StreamCryptor {
         self.init(operation:operation,
                   algorithm:algorithm,
                   options:options,
-                  keyBuffer:zeroPad(string: key, blockSize: paddedKeySize),
+                  keyBuffer:CryptoUtils.zeroPad(string: key, blockSize: paddedKeySize),
                   keyByteCount:paddedKeySize,
                   ivBuffer:iv)
     }
 	
+	///
+	/// Cleanup
+	///
 	deinit {
 		
 		let rawStatus = CCCryptorRelease(context.pointee)
@@ -345,13 +372,15 @@ public class StreamCryptor {
 	
 	// MARK: Public Methods
 	
-    /**
-        Add the contents of an Objective-C NSData buffer to the current encryption/decryption operation.
-        
-        - parameter dataIn: the input data
-        - parameter byteArrayOut: output data
-        - returns: a tuple containing the number of output bytes produced and the status (see Status)
-    */
+    ///
+	///	Add the contents of an Objective-C NSData buffer to the current encryption/decryption operation.
+    ///
+	///	- Parameters:
+ 	///		-dataIn: the input data
+	///		- byteArrayOut: output data
+	///
+	///	- Returns: a tuple containing the number of output bytes produced and the status (see Status)
+    ///
 	public func update(dataIn: NSData, byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
         let dataOutAvailable = byteArrayOut.count
@@ -360,13 +389,14 @@ public class StreamCryptor {
         return (dataOutMoved, self.status)
     }
 	
-    /**
-        Add the contents of a Swift byte array to the current encryption/decryption operation.
-
-        - parameter byteArrayIn: the input data
-        - parameter byteArrayOut: output data
-        - returns: a tuple containing the number of output bytes produced and the status (see Status)
-    */
+    ///
+	///	Add the contents of a Swift byte array to the current encryption/decryption operation.
+	///
+	///	- Parameters: byteArrayIn: the input data
+	///	- byteArrayOut: output data
+	///
+	///	- Returns: a tuple containing the number of output bytes produced and the status (see Status)
+    ///
 	public func update(byteArrayIn: [UInt8], byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
         let dataOutAvailable = byteArrayOut.count
@@ -375,13 +405,15 @@ public class StreamCryptor {
         return (dataOutMoved, self.status)
     }
 	
-    /**
-        Add the contents of a string (interpreted as UTF8) to the current encryption/decryption operation.
-
-        - parameter byteArrayIn: the input data
-        - parameter byteArrayOut: output data
-        - returns: a tuple containing the number of output bytes produced and the status (see Status)
-    */
+    ///
+	///	Add the contents of a string (interpreted as UTF8) to the current encryption/decryption operation.
+	///
+    /// - Parameters:
+ 	///		- byteArrayIn: the input data
+	///		- byteArrayOut: output data
+	///
+	///	- Returns: a tuple containing the number of output bytes produced and the status (see Status)
+    ///
 	public func update(stringIn: String, byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
         let dataOutAvailable = byteArrayOut.count
@@ -390,19 +422,20 @@ public class StreamCryptor {
         return (dataOutMoved, self.status)
     }
 	
-    /**
-        Retrieves all remaining encrypted or decrypted data from this cryptor.
-
-        :note: If the underlying algorithm is an block cipher and the padding option has
-        not been specified and the cumulative input to the cryptor has not been an integral
-        multiple of the block length this will fail with an alignment error.
-
-        :note: This method updates the status property
-
-        - parameter byteArrayOut: the output bffer        
-        - returns: a tuple containing the number of output bytes produced and the status (see Status)
-    */
-	public func final( byteArrayOut: inout [UInt8]) -> (Int, Status) {
+    ///
+	///	Retrieves all remaining encrypted or decrypted data from this cryptor.
+	///
+	///	- note: If the underlying algorithm is an block cipher and the padding option has
+	/// not been specified and the cumulative input to the cryptor has not been an integral
+	///	multiple of the block length this will fail with an alignment error.
+	///
+	///	- note: This method updates the status property
+	///
+	///	- Parameter byteArrayOut: the output bffer
+	///
+	///	- Returns: a tuple containing the number of output bytes produced and the status (see Status)
+    ///
+	public func final(byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
         let dataOutAvailable = byteArrayOut.count
         var dataOutMoved = 0
@@ -412,15 +445,19 @@ public class StreamCryptor {
     
     // MARK: - Low-level interface
 	
-    /**
-        - parameter bufferIn: pointer to input buffer
-        - parameter inByteCount: number of bytes contained in input buffer 
-        - parameter bufferOut: pointer to output buffer
-        - parameter outByteCapacity: capacity of the output buffer in bytes
-        - parameter outByteCount: on successful completion, the number of bytes written to the output buffer
-        - returns: 
-    */
-	public func update(bufferIn: UnsafePointer<Void>, byteCountIn: Int, bufferOut: UnsafeMutablePointer<Void>, byteCapacityOut : Int, byteCountOut : inout Int) -> Status {
+    ///
+	///	Update the buffer
+	///
+	///	- Parameters: 
+	///		- bufferIn: pointer to input buffer
+	///		- inByteCount: number of bytes contained in input buffer
+	///		- bufferOut: pointer to output buffer
+	///		- outByteCapacity: capacity of the output buffer in bytes
+	///		- outByteCount: on successful completion, the number of bytes written to the output buffer
+	///
+	///	- Returns: status of the update
+	///
+	public func update(bufferIn: UnsafePointer<Void>, byteCountIn: Int, bufferOut: UnsafeMutablePointer<Void>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
 		
         if self.status == Status.Success {
 			
@@ -435,20 +472,23 @@ public class StreamCryptor {
         return self.status
     }
 	
-    /**
-        Retrieves all remaining encrypted or decrypted data from this cryptor.
-        
-        :note: If the underlying algorithm is an block cipher and the padding option has
-        not been specified and the cumulative input to the cryptor has not been an integral 
-        multiple of the block length this will fail with an alignment error.
-    
-        :note: This method updates the status property
-        
-        - parameter bufferOut: pointer to output buffer
-        - parameter outByteCapacity: capacity of the output buffer in bytes
-        - parameter outByteCount: on successful completion, the number of bytes written to the output buffer
-    */
-	public func final(bufferOut: UnsafeMutablePointer<Void>, byteCapacityOut : Int, byteCountOut : inout Int) -> Status {
+    ///
+	///	Retrieves all remaining encrypted or decrypted data from this cryptor.
+	///
+	///	- note: If the underlying algorithm is an block cipher and the padding option has
+	///	not been specified and the cumulative input to the cryptor has not been an integral
+	///	multiple of the block length this will fail with an alignment error.
+    ///
+	///	- note: This method updates the status property
+	///
+	///	- Parameters:
+ 	///		- bufferOut: pointer to output buffer
+	///		- outByteCapacity: capacity of the output buffer in bytes
+	///		- outByteCount: on successful completion, the number of bytes written to the output buffer
+	///
+	///	- Returns: status of the update
+	///
+	public func final(bufferOut: UnsafeMutablePointer<Void>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
 		
 		if self.status == Status.Success {
 			
@@ -463,14 +503,17 @@ public class StreamCryptor {
         return self.status
     }
 	
-    /**
-        Determines the number of bytes that wil be output by this Cryptor if inputBytes of additional
-        data is input.
-        
-        - parameter inputByteCount: number of bytes that will be input.
-        - parameter isFinal: true if buffer to be input will be the last input buffer, false otherwise.
-    */
-	public func getOutputLength(inputByteCount : Int, isFinal : Bool = false) -> Int {
+    ///
+	///	Determines the number of bytes that wil be output by this Cryptor if inputBytes of additional
+	///	data is input.
+	///
+	///	- Parameters:
+ 	///		- inputByteCount: number of bytes that will be input.
+	///		- isFinal: true if buffer to be input will be the last input buffer, false otherwise.
+	///
+	///	- Returns: The final output length
+	///
+	public func getOutputLength(inputByteCount: Int, isFinal: Bool = false) -> Int {
 		
         return CCCryptorGetOutputLength(context.pointee, inputByteCount, isFinal)
     }

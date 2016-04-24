@@ -640,7 +640,7 @@ class CryptorTests: XCTestCase {
 	}
 	
 	func testGitHubIssue9() {
-		let blockSize = Cryptor.Algorithm.DES.blockSize()
+		let blockSize = Cryptor.Algorithm.DES.blockSize
 		let key = CryptoUtils.zeroPad(string: "thekey", blockSize: blockSize)
 		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: blockSize)
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")

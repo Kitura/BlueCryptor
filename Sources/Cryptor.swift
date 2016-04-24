@@ -31,7 +31,7 @@ public class Cryptor : StreamCryptor, Updateable {
     ///
 	///	Retrieves the encrypted or decrypted data.
 	///
-	///- returns: the encrypted or decrypted data or nil if an error occured.
+	///- Returns: the encrypted or decrypted data or nil if an error occured.
 	///
 	public func final() -> [UInt8]? {
 		
@@ -52,7 +52,7 @@ public class Cryptor : StreamCryptor, Updateable {
 	///
 	///	It is not envisaged the users of the framework will need to call this directly.
 	///
-	///	- returns: this Cryptor object or nil if an error occurs (for optional chaining)
+	///	- Returns: this Cryptor object or nil if an error occurs (for optional chaining)
     ///
 	public func update(buffer: UnsafePointer<Void>, byteCount: Int) -> Self? {
     
@@ -60,7 +60,7 @@ public class Cryptor : StreamCryptor, Updateable {
 		var dataOut = Array<UInt8>(repeating: 0, count:outputLength)
         var dataOutMoved = 0
         update(bufferIn: buffer, byteCountIn: byteCount, bufferOut: &dataOut, byteCapacityOut: dataOut.count, byteCountOut: &dataOutMoved)
-        if(self.status != Status.Success) {
+        if self.status != Status.Success {
             return nil
         }
         accumulator += dataOut[0..<Int(dataOutMoved)]
