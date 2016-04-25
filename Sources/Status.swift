@@ -140,8 +140,14 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 	/// Not supported with reason
 	case NotSupported(String)
 	
+	/// Parameter Error
+	case ParamError
+	
 	/// Failure with error code
  	case Fail(UInt)
+	
+	/// Random Byte Generator Failure with error code
+	case RNGFailure(UInt)
 	
 	/// The error code itself
 	public var code: Int {
@@ -157,9 +163,23 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 		case Unimplemented:
 			return -2
 			
+		case ParamError:
+			return -3
+			
 		case Fail(let code):
 			return Int(code)
+			
+		case RNGFailure(let code):
+			return Int(code)
 		}
+	}
+	
+	///
+	/// Create enum value from raw `SSL error code` value.
+	///
+	public static func fromRaw(status: UInt) -> Status? {
+		
+		return Status.Fail(status)
 	}
 	
 	///
@@ -178,9 +198,28 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 		case Unimplemented(let reason):
 			return "Not implemented: \(reason)"
 			
+		case .ParamError:
+			return "Invalid parameters passed"
+			
 		case Fail(let errorCode):
 			return "ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
+
+		case RNGFailure(let errorCode):
+			return "Random Byte Generator ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
 		}
 	}
 }
+
+//	MARK: Operators
+
+func == (left: Status, right: Status) -> Bool {
+	
+	return left.code == right.code
+}
+
+func != (left: Status, right: Status) -> Bool {
+	
+	return left.code != right.code
+}
+
 #endif
