@@ -56,14 +56,15 @@ public class Cryptor : StreamCryptor, Updateable {
     ///
 	public func update(buffer: UnsafePointer<Void>, byteCount: Int) -> Self? {
     
-        let outputLength = self.getOutputLength(inputByteCount: byteCount, isFinal: false)
+        let outputLength = Int(self.getOutputLength(inputByteCount: byteCount, isFinal: false))
 		var dataOut = Array<UInt8>(repeating: 0, count:outputLength)
         var dataOutMoved = 0
-        update(bufferIn: buffer, byteCountIn: byteCount, bufferOut: &dataOut, byteCapacityOut: dataOut.count, byteCountOut: &dataOutMoved)
+        update(bufferIn: UnsafePointer<UInt8>(buffer), byteCountIn: byteCount, bufferOut: &dataOut, byteCapacityOut: dataOut.count, byteCountOut: &dataOutMoved)
 		if self.status != .Success {
 			return nil
 		}
         accumulator += dataOut[0..<Int(dataOutMoved)]
         return self
     }
+
 }
