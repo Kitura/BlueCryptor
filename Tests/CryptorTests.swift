@@ -64,8 +64,9 @@ class CryptorTests: XCTestCase {
 		
 		let cipherText = Cryptor(operation:.Encrypt, algorithm:.AES, options:.ECBMode, key:key, iv:Array<UInt8>()).update(byteArray: plainText)?.final()
 		
-		assert(expectedCipherText.count == cipherText!.count , "Counts are as expected")
-		assert(expectedCipherText == cipherText!, "Obtained expected cipher text")
+		XCTAssert(expectedCipherText.count == cipherText!.count , "Counts are as expected")
+		XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
+		
 	}
 	
 	/**
@@ -78,7 +79,9 @@ class CryptorTests: XCTestCase {
 		let cryptor = Cryptor(operation:.Encrypt, algorithm:.AES, options:.ECBMode, key:key, iv:Array<UInt8>())
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssert(cipherText == nil, "Expected nil cipherText")
-		XCTAssertEqual(cryptor.status, Status.AlignmentError, "Expected AlignmentError")
+		#if os(OSX)
+			XCTAssertEqual(cryptor.status, Status.AlignmentError, "Expected AlignmentError")
+		#endif
 	}
 	
 	/**
@@ -564,7 +567,7 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: - Status
 	func test_Status() {
-		#if os(OSX)
+		#if !os(OSX)
 			
 			// These are only for CommonCrypto...
 			XCTAssertEqual(Status.Success.toRaw(), CCCryptorStatus(kCCSuccess))
@@ -577,17 +580,17 @@ class CryptorTests: XCTestCase {
 			XCTAssertEqual(Status.Overflow.toRaw(), CCCryptorStatus(kCCOverflow))
 			XCTAssertEqual(Status.RNGFailure.toRaw(), CCCryptorStatus(kCCRNGFailure))
 			
+			XCTAssertEqual(Status.Success.description, "Success")
+			XCTAssertEqual(Status.ParamError.description, "ParamError")
+			XCTAssertEqual(Status.BufferTooSmall.description, "BufferTooSmall")
+			XCTAssertEqual(Status.MemoryFailure.description, "MemoryFailure")
+			XCTAssertEqual(Status.AlignmentError.description, "AlignmentError")
+			XCTAssertEqual(Status.DecodeError.description, "DecodeError")
+			XCTAssertEqual(Status.Unimplemented.description, "Unimplemented")
+			XCTAssertEqual(Status.Overflow.description, "Overflow")
+			XCTAssertEqual(Status.RNGFailure.description, "RNGFailure")
+
 		#endif
-		
-		XCTAssertEqual(Status.Success.description, "Success")
-		XCTAssertEqual(Status.ParamError.description, "ParamError")
-		XCTAssertEqual(Status.BufferTooSmall.description, "BufferTooSmall")
-		XCTAssertEqual(Status.MemoryFailure.description, "MemoryFailure")
-		XCTAssertEqual(Status.AlignmentError.description, "AlignmentError")
-		XCTAssertEqual(Status.DecodeError.description, "DecodeError")
-		XCTAssertEqual(Status.Unimplemented.description, "Unimplemented")
-		XCTAssertEqual(Status.Overflow.description, "Overflow")
-		XCTAssertEqual(Status.RNGFailure.description, "RNGFailure")
 		
 	}
 	
@@ -623,8 +626,8 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(CryptoUtils.hexNSString(from: v, uppercase: true), "DEADFACE", "PASS (lowercase)")
 	}
 	
-	func testHexListFromArray()
-	{
+	func testHexListFromArray()	{
+		
 		let v : [UInt8] = [ 0xde, 0xad, 0xfa, 0xce ]
 		let list = CryptoUtils.hexList(from: v)
 		XCTAssertEqual(list, "0xde, 0xad, 0xfa, 0xce, ")
