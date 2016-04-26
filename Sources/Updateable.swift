@@ -69,7 +69,7 @@ extension Updateable {
     ///
 	public func update(string: String) -> Self? {
 		
-        update(buffer: string, byteCount: size_t(string.lengthOfBytes(using: NSUTF8StringEncoding)))
+        update(buffer: string, byteCount: size_t(string.utf8.count))
 		return self.status == .Success ? self : nil
     }
 }

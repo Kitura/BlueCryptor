@@ -232,7 +232,7 @@ public class HMAC : Updateable {
 		#if os(OSX)
         	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: NSUTF8StringEncoding)))
 		#elseif os(Linux)
-			HMAC_Init(context, key, Int32(key.lengthOfBytes(using: NSUTF8StringEncoding)), algorithm.nativeValue())
+			HMAC_Init(context, key, Int32(key.utf8.count), algorithm.nativeValue())
 		#endif
     }
 	

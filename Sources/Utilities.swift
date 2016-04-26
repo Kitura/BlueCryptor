@@ -32,14 +32,14 @@ public struct CryptoUtils {
 		
 		switch c {
 			
-		case UnicodeScalar("0")...UnicodeScalar("9"):
-			return UInt8(c.value - UnicodeScalar("0").value)
+		case UnicodeScalar(unicodeScalarLiteral:"0")...UnicodeScalar(unicodeScalarLiteral:"9"):
+			return UInt8(c.value - UnicodeScalar(unicodeScalarLiteral:"0").value)
 			
-		case UnicodeScalar("a")...UnicodeScalar("f"):
-			return UInt8(c.value - UnicodeScalar("a").value + 0xa)
+		case UnicodeScalar(unicodeScalarLiteral:"a")...UnicodeScalar(unicodeScalarLiteral:"f"):
+			return UInt8(c.value - UnicodeScalar(unicodeScalarLiteral:"a").value + 0xa)
 			
-		case UnicodeScalar("A")...UnicodeScalar("F"):
-			return UInt8(c.value - UnicodeScalar("A").value + 0xa)
+		case UnicodeScalar(unicodeScalarLiteral:"A")...UnicodeScalar(unicodeScalarLiteral:"F"):
+			return UInt8(c.value - UnicodeScalar(unicodeScalarLiteral:"A").value + 0xa)
 			
 		default:
 			fatalError("convertHexDigit: Invalid hex digit")
@@ -114,7 +114,7 @@ public struct CryptoUtils {
 	///
 	public static func hexString(from byteArray: [UInt8], uppercase: Bool = false) -> String {
 		
-		return byteArray.map() { String(format:uppercase ? "%02X" : "%02x", $0) }.reduce("", combine: +)
+		return byteArray.map() { String(format: (uppercase) ? "%02X" : "%02x", $0) }.reduce("", combine: +)
 	}
 	
 	///
@@ -126,7 +126,12 @@ public struct CryptoUtils {
 	///
 	public static func hexNSString(from byteArray: [UInt8], uppercase: Bool = false) -> NSString {
 		
-		return byteArray.map() { String(format:uppercase ? "%02X" : "%02x", $0) }.reduce("", combine: +)
+		let formatString = (uppercase) ? "%02X" : "%02x"
+		#if os(OSX)
+			return byteArray.map() { String(format:formatString, $0) }.reduce("", combine: +)
+		#else
+			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +).bridge()
+		#endif
 	}
 	
 	///

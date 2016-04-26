@@ -692,7 +692,7 @@ public class StreamCryptor {
 		
         let dataOutAvailable = byteArrayOut.count
         var dataOutMoved = 0
-        update(bufferIn: stringIn, byteCountIn: stringIn.lengthOfBytes(using:)(using: NSUTF8StringEncoding), bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+        update(bufferIn: stringIn, byteCountIn: stringIn.utf8.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
         return (dataOutMoved, self.status)
     }
 	

@@ -75,7 +75,7 @@ extension CryptoDigest {
 ///
 /// Extension for NSData to return an NSData object containing the digest.
 ///
-extension NSData: CryptoDigest {
+extension NSData: CryptoDigest {	
     ///
     /// Calculates the Message Digest for this data.
     /// 
@@ -110,6 +110,5 @@ extension String : CryptoDigest {
         // The API allows for optionals to support the OpenSSL implementation which can.
 		let result = (Digest(algorithm: algorithm).update(string: self as String)?.final())!
 		return CryptoUtils.hexString(from: result)
-        
     }
 }

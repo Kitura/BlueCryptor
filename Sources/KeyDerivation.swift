@@ -126,13 +126,13 @@ public class PBKDF {
 		
 		var derivedKey = Array<UInt8>(repeating: 0, count:Int(derivedKeyLength))
 		#if os(OSX)
-			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.lengthOfBytes(using: NSUTF8StringEncoding), salt, salt.lengthOfBytes(using:NSUTF8StringEncoding), prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
+			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.utf8.count, salt, salt.utf8.count, prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
 			if status != Int32(kCCSuccess) {
 			
     	        fatalError("ERROR: CCKeyDerivationPBDK failed with status \(status).")
         	}
 		#elseif os(Linux)
-			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.lengthOfBytes(using: NSUTF8StringEncoding)), salt, Int32(salt.lengthOfBytes(using: NSUTF8StringEncoding)), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
+			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.utf8.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
 				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
@@ -157,13 +157,13 @@ public class PBKDF {
 		
 		var derivedKey = Array<UInt8>(repeating: 0, count:Int(derivedKeyLength))
 		#if os(OSX)
-			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.lengthOfBytes(using: NSUTF8StringEncoding), salt, salt.count, prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
+			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.utf8.count, salt, salt.count, prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
 			if status != Int32(kCCSuccess) {
 	
 	            fatalError("ERROR: CCKeyDerivationPBDK failed with status \(status).")
         	}
 		#elseif os(Linux)
-			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.lengthOfBytes(using: NSUTF8StringEncoding)), salt, Int32(salt.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
+			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
 				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
