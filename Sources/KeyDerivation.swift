@@ -92,13 +92,13 @@ public class PBKDF {
     /// to be run to achieve a particular delay (or calculation time).
     ///
     /// - Parameters:
- 	///		- passwordLength: password length in bytes
-    /// 	- saltLength: salt length in bytes
-    /// 	- algorithm: the PseudoRandomAlgorithm to use
-    /// 	- derivedKeyLength: the desired key length
-    /// 	- msec: the desired calculation time
+ 	///		- passwordLength: 	Password length in bytes
+    /// 	- saltLength: 		Salt length in bytes
+    /// 	- algorithm: 		The PseudoRandomAlgorithm to use
+    /// 	- derivedKeyLength: The desired key length
+    /// 	- msec: 			The desired calculation time
 	///
-    /// - Returns: the number of times the algorithm should be run
+    /// - Returns: The number of times the algorithm should be run
     ///
 	public class func calibrate(passwordLength: Int, saltLength: Int, algorithm: PseudoRandomAlgorithm, derivedKeyLength: Int, msec : UInt32) -> UInt {
 		#if os(OSX)
@@ -114,15 +114,15 @@ public class PBKDF {
     /// Derives key material from a password and salt.
     ///
     /// - Parameters:
- 	///		- password: the password string, will be converted using UTF8
-    /// 	- salt: the salt string will be converted using UTF8
-    /// 	- prf: the pseudo random function
-    /// 	- round: the number of rounds
-    /// 	- derivedKeyLength: the length of the desired derived key, in bytes.
+ 	///		- password: 		The password string, will be converted using UTF8
+    /// 	- salt: 			The salt string will be converted using UTF8
+    /// 	- prf: 				The pseudo random function
+    /// 	- round: 			The number of rounds
+    /// 	- derivedKeyLength: The length of the desired derived key, in bytes.
 	///
-    /// - Returns: the derived key
+    /// - Returns: The derived key
     ///
-	public class func deriveKey(password: String, salt: String, prf:PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) -> [UInt8] {
+	public class func deriveKey(fromPassword password: String, salt: String, prf:PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) -> [UInt8] {
 		
 		var derivedKey = Array<UInt8>(repeating: 0, count:Int(derivedKeyLength))
 		#if os(OSX)
@@ -145,15 +145,15 @@ public class PBKDF {
     /// Derives key material from a password and salt.
     ///
     /// - Parameters: 
-	///		- password: the password string, will be converted using UTF8
-    /// 	- salt: the salt array of bytes
-    /// 	- prf: the pseudo random function
-    /// 	- round: the number of rounds
-    /// 	- derivedKeyLength: the length of the desired derived key, in bytes.
+	///		- password: 		The password string, will be converted using UTF8
+    /// 	- salt: 			The salt array of bytes
+    /// 	- prf: 				The pseudo random function
+    /// 	- round: 			The number of rounds
+    /// 	- derivedKeyLength: The length of the desired derived key, in bytes.
 	///
     /// - Returns: the derived key
     ///
-	public class func deriveKey(password : String, salt : [UInt8], prf: PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) -> [UInt8] {
+	public class func deriveKey(fromPassword password: String, salt: [UInt8], prf: PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) -> [UInt8] {
 		
 		var derivedKey = Array<UInt8>(repeating: 0, count:Int(derivedKeyLength))
 		#if os(OSX)
@@ -176,18 +176,18 @@ public class PBKDF {
     /// Derives key material from a password buffer.
     ///
     /// - Parameters:
- 	///		- password: pointer to the password buffer
-    /// 	- passwordLength: password length in bytes
-    /// 	- salt: pointer to the salt buffer
-    /// 	- saltLength: salt length in bytes
-    /// 	- prf: the PseudoRandomAlgorithm to use
-    /// 	- rounds: the number of rounds of the algorithm to use
-    /// 	- derivedKey: pointer to the derived key buffer.
-    /// 	- derivedKeyLength: the desired key length
+ 	///		- password: 		Pointer to the password buffer
+    /// 	- passwordLength: 	Password length in bytes
+    /// 	- salt: 			Pointer to the salt buffer
+    /// 	- saltLength: 		Salt length in bytes
+    /// 	- prf: 				The PseudoRandomAlgorithm to use
+    /// 	- rounds: 			The number of rounds of the algorithm to use
+    /// 	- derivedKey: 		Pointer to the derived key buffer.
+    /// 	- derivedKeyLength:	The desired key length
 	///
     /// - Returns: the number of times the algorithm should be run
     ///
-	public class func deriveKey(password: UnsafePointer<Int8>, passwordLen: Int, salt: UnsafePointer<UInt8>, saltLen: Int, prf: PseudoRandomAlgorithm, rounds: uint, derivedKey: UnsafeMutablePointer<UInt8>, derivedKeyLen: Int) {
+	public class func deriveKey(fromPassword password: UnsafePointer<Int8>, passwordLen: Int, salt: UnsafePointer<UInt8>, saltLen: Int, prf: PseudoRandomAlgorithm, rounds: uint, derivedKey: UnsafeMutablePointer<UInt8>, derivedKeyLen: Int) {
 		
 		#if os(OSX)
         	let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, passwordLen, salt, saltLen, prf.nativeValue(), rounds, derivedKey, derivedKeyLen)

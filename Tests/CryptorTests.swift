@@ -293,7 +293,7 @@ class CryptorTests: XCTestCase {
 		for i in 0..<md2inputs.count {
 			let input = md2inputs[i]
 			let expectedOutput = CryptoUtils.byteArray(fromHex: md2outputs[i])
-			let d : Digest = Digest(algorithm:.MD2)
+			let d : Digest = Digest(using:.MD2)
 			d.update(string: input)
 			let output = d.final()
 			XCTAssertEqual(output, expectedOutput)
@@ -303,7 +303,7 @@ class CryptorTests: XCTestCase {
 	// MARK: MD5
 	func testMD5_1()
 	{
-		let md5 : Digest = Digest(algorithm:.MD5)
+		let md5 : Digest = Digest(using:.MD5)
 		md5.update(string: qbfString)
 		let digest = md5.final()
 		
@@ -313,7 +313,7 @@ class CryptorTests: XCTestCase {
 	func test_Digest_MD5_NSData()
 	{
 		let qbfData : NSData = CryptoUtils.data(from: self.qbfBytes)
-		let digest = Digest(algorithm: .MD5).update(data: qbfData)?.final()
+		let digest = Digest(using: .MD5).update(data: qbfData)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
@@ -322,7 +322,7 @@ class CryptorTests: XCTestCase {
 	*/
 	func test_Digest_MD5_Composition_String()
 	{
-		let digest = Digest(algorithm: .MD5).update(string: qbfString)?.final()
+		let digest = Digest(using: .MD5).update(string: qbfString)?.final()
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
 	/**
@@ -332,7 +332,7 @@ class CryptorTests: XCTestCase {
 	{
 		let s1 = "The quick brown fox"
 		let s2 = " jumps over the lazy dog."
-		let digest = Digest(algorithm: .MD5).update(string: s1)?.update(string: s2)?.final()
+		let digest = Digest(using: .MD5).update(string: s1)?.update(string: s2)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
@@ -341,7 +341,7 @@ class CryptorTests: XCTestCase {
 	*/
 	func test_Digest_MD5_Composition_Bytes()
 	{
-		let digest = Digest(algorithm: .MD5).update(byteArray: qbfBytes)?.final()
+		let digest = Digest(using: .MD5).update(byteArray: qbfBytes)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
@@ -371,32 +371,32 @@ class CryptorTests: XCTestCase {
 		if usingOpenSSL {
 			return
 		}
-		let digest = Digest(algorithm: .SHA1).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .SHA1).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha1ShortBlockOutput)
 		
 	}
 	
 	func test_Digest_SHA224_String() {
-		let digest = Digest(algorithm: .SHA224).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .SHA224).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha224BlockOutput)
 	}
 	
 	func test_Digest_SHA256_String() {
-		let digest = Digest(algorithm: .SHA256).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .SHA256).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha256BlockOutput)
 	}
 	
 	func test_Digest_SHA384_String() {
-		let digest = Digest(algorithm: .SHA384).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .SHA384).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		//XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha384BlockOutput)
 	}
 	
 	func test_Digest_SHA512_String() {
-		let digest = Digest(algorithm: .SHA512).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .SHA512).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		//XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha512BlockOutput)
 	}
@@ -415,7 +415,7 @@ class CryptorTests: XCTestCase {
 		let data = "Hi There"
 		let expected = self.hmacDefaultResultMD5
 		
-		let hmac = HMAC(algorithm:.MD5, key:key).update(string:data)?.final()
+		let hmac = HMAC(using:.MD5, key:key).update(string:data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -430,7 +430,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1
 		
-		let hmac = HMAC(algorithm:.SHA1, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using:.SHA1, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -444,7 +444,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1
 		
-		let hmac = HMAC(algorithm:.SHA1, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using:.SHA1, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -464,7 +464,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA224Output1)
 		
-		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA224, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.SHA224, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -475,7 +475,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA256Output1)
 		
-		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA256, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.SHA256, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -486,7 +486,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA384Output1)
 		
-		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA384, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.SHA384, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -497,7 +497,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA512Output1)
 		
-		let hmac = HMAC(algorithm: HMAC.Algorithm.SHA512, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.SHA512, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -516,7 +516,7 @@ class CryptorTests: XCTestCase {
 			]
 		for (password, salt, rounds, dkLen, expected) in tests {
 		
-			let key = PBKDF.deriveKey(password: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
+			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
 			let keyString = CryptoUtils.hexString(from: key)
 			
 			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
@@ -532,7 +532,7 @@ class CryptorTests: XCTestCase {
 			]
 		for (password, salt, rounds, dkLen, expected) in tests2 {
 		
-			let key = PBKDF.deriveKey(password: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
+			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
 			let keyString = CryptoUtils.hexString(from: key)
 			
 			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
@@ -545,7 +545,7 @@ class CryptorTests: XCTestCase {
 	
 		let count = 256*256
 		do {
-			let bytes = try Random.generateBytes(byteCount: count)
+			let bytes = try Random.generate(byteCount: count)
 			XCTAssert(bytes.count == count, "Count has expected value")
 		}
 		catch {

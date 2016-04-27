@@ -32,7 +32,7 @@ public protocol Updateable {
     /// - parameter byteCount: length of the buffer in bytes
     /// - returns: self if no error for optional chaining, null otherwise
 	///
-    func update(buffer: UnsafePointer<Void>, byteCount: size_t) -> Self?
+    func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self?
 }
 
 ///
@@ -46,7 +46,7 @@ extension Updateable {
     ///
 	public func update(data: NSData) -> Self? {
 		
-        update(buffer: data.bytes, byteCount: size_t(data.length))
+        update(from: data.bytes, byteCount: size_t(data.length))
         return self.status == .Success ? self : nil
     }
 	
@@ -57,7 +57,7 @@ extension Updateable {
     ///
 	public func update(byteArray: [UInt8]) -> Self? {
 		
-        update(buffer: byteArray, byteCount: size_t(byteArray.count))
+        update(from: byteArray, byteCount: size_t(byteArray.count))
 		return self.status == .Success ? self : nil
     }
 	
@@ -69,7 +69,7 @@ extension Updateable {
     ///
 	public func update(string: String) -> Self? {
 		
-        update(buffer: string, byteCount: size_t(string.utf8.count))
+        update(from: string, byteCount: size_t(string.utf8.count))
 		return self.status == .Success ? self : nil
     }
 }

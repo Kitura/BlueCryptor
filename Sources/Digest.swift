@@ -82,7 +82,7 @@ public class Digest : Updateable {
 	///
     ///   - Parameter alrgorithm: the desired message digest algorithm
 	///
-    public init(algorithm: Algorithm) {
+    public init(using algorithm: Algorithm) {
 		
         switch algorithm {
 			
@@ -154,7 +154,7 @@ public class Digest : Updateable {
 	///
 	///	- Returns: This Digest object (for optional chaining)
     ///
-    public func update(buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
+    public func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
 		
         engine.update(buffer: buffer, byteCount: CC_LONG(byteCount))
         return self

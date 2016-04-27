@@ -25,21 +25,22 @@ public struct CryptoUtils {
 	///
 	/// Converts a single hexadecimal digit encoded as a Unicode Scalar to it's corresponding value.
 	///
-	/// - parameter c: A Unicode scalar in the set 0..9a..fA..F
-	/// - returns: the hexadecimal value of the digit
+	/// - Parameter digit: A Unicode scalar in the set 0..9a..fA..F
 	///
-	static func convert(hexDigit c: UnicodeScalar) -> UInt8 {
+	/// - Returns: The hexadecimal value of the digit
+	///
+	static func convert(hexDigit digit: UnicodeScalar) -> UInt8 {
 		
-		switch c {
+		switch digit {
 			
 		case UnicodeScalar(unicodeScalarLiteral:"0")...UnicodeScalar(unicodeScalarLiteral:"9"):
-			return UInt8(c.value - UnicodeScalar(unicodeScalarLiteral:"0").value)
+			return UInt8(digit.value - UnicodeScalar(unicodeScalarLiteral:"0").value)
 			
 		case UnicodeScalar(unicodeScalarLiteral:"a")...UnicodeScalar(unicodeScalarLiteral:"f"):
-			return UInt8(c.value - UnicodeScalar(unicodeScalarLiteral:"a").value + 0xa)
+			return UInt8(digit.value - UnicodeScalar(unicodeScalarLiteral:"a").value + 0xa)
 			
 		case UnicodeScalar(unicodeScalarLiteral:"A")...UnicodeScalar(unicodeScalarLiteral:"F"):
-			return UInt8(c.value - UnicodeScalar(unicodeScalarLiteral:"A").value + 0xa)
+			return UInt8(digit.value - UnicodeScalar(unicodeScalarLiteral:"A").value + 0xa)
 			
 		default:
 			fatalError("convertHexDigit: Invalid hex digit")
@@ -49,32 +50,34 @@ public struct CryptoUtils {
 	///
 	/// Converts a string of hexadecimal digits to a Swift array.
 	///
-	/// - parameter s: the hex string (must contain an even number of digits)
-	/// - returns: a Swift array
+	/// - Parameter string: The hex string (must contain an even number of digits)
+	///
+	/// - Returns: A Swift array
 	///
 	public static func byteArray(fromHex string: String) -> [UInt8] {
 		
-		var g = string.unicodeScalars.makeIterator()
-		var a : [UInt8] = []
-		while let msn = g.next() {
+		var iterator = string.unicodeScalars.makeIterator()
+		var byteArray: [UInt8] = []
+		while let msn = iterator.next() {
 			
-			if let lsn = g.next() {
+			if let lsn = iterator.next() {
 				
-				a += [ (convert(hexDigit: msn) << 4 | convert(hexDigit: lsn)) ]
+				byteArray += [ (convert(hexDigit: msn) << 4 | convert(hexDigit: lsn)) ]
 				
 			} else {
 				
 				fatalError("arrayFromHexString: String must contain even number of characters")
 			}
 		}
-		return a
+		return byteArray
 	}
 	
 	///
 	/// Converts a Swift UTF-8 String to a Swift array.
 	///
-	/// - parameter s: the string
-	/// - returns: a Swift array
+	/// - Parameter string: the string
+	///
+	/// - Returns: A Swift array
 	///
 	public static func byteArray(from string: String) -> [UInt8] {
 		
@@ -85,10 +88,11 @@ public struct CryptoUtils {
 	///
 	/// Converts a string of hexadecimal digits to an `NSData` object.
 	///
-	/// - parameter s: the hex string (must contain an even number of digits)
-	/// - returns: an NSData object
+	/// - Parameter string: The hex string (must contain an even number of digits)
 	///
-	public static func data(fromHex string : String) -> NSData {
+	/// - Returns: An NSData object
+	///
+	public static func data(fromHex string: String) -> NSData {
 		
 		let a = byteArray(fromHex: string)
 		return NSData(bytes:a, length:a.count)
@@ -97,8 +101,9 @@ public struct CryptoUtils {
 	///
 	/// Converts a Swift array to an `NSData` object.
 	///
-	/// - parameter a: the Swift array
-	/// - returns: an NSData object
+	/// - Parameter byteArray: The Swift array
+	///
+	/// - Returns: An NSData object
 	///
 	public static func data(from byteArray: [UInt8]) -> NSData {
 		
@@ -108,9 +113,11 @@ public struct CryptoUtils {
 	///
 	/// Converts a Swift array to a string of hexadecimal digits.
 	///
-	/// - parameter a: the Swift array
-	/// - parameter uppercase: if true use uppercase for letter digits, lowercase otherwise
-	/// - returns: a Swift string
+	/// - Parameters:
+ 	///		- byteArray: The Swift array
+	/// 	- uppercase: True to use uppercase for letter digits, lowercase otherwise
+	///
+	/// - Returns: A Swift string
 	///
 	public static func hexString(from byteArray: [UInt8], uppercase: Bool = false) -> String {
 		
@@ -120,15 +127,17 @@ public struct CryptoUtils {
 	///
 	/// Converts a Swift array to an `NSString` object.
 	///
-	/// - parameter a: the Swift array
-	/// - parameter uppercase: if true use uppercase for letter digits, lowercase otherwise
-	/// - returns: an `NSString` object
+	/// - Parameters:
+ 	///		- byteArray: The Swift array
+	/// 	- uppercase: True to use uppercase for letter digits, lowercase otherwise
+	///
+	/// - Returns: An `NSString` object
 	///
 	public static func hexNSString(from byteArray: [UInt8], uppercase: Bool = false) -> NSString {
 		
 		let formatString = (uppercase) ? "%02X" : "%02x"
 		#if os(OSX)
-			return byteArray.map() { String(format:formatString, $0) }.reduce("", combine: +)
+			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +)
 		#else
 			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +).bridge()
 		#endif
@@ -138,8 +147,9 @@ public struct CryptoUtils {
 	/// Converts a Swift array to a Swift `String` containing a comma separated list of bytes.
 	/// This is used to generate test data programmatically.
 	///
-	/// - parameter a: the Swift array
-	/// - returns: a Swift string
+	/// - Parameter byteArray: the Swift array
+	///
+	/// - Returns: A Swift string
 	///
 	public static func hexList(from byteArray : [UInt8]) -> String {
 		
@@ -149,23 +159,29 @@ public struct CryptoUtils {
 	///
 	/// Zero pads a Swift array such that it is an integral number of `blockSizeinBytes` long.
 	///
-	/// - parameter a: the Swift array
-	/// - parameter blockSizeInBytes: the block size in bytes (cunningly enough!)
-	/// - returns: a Swift string
+	/// - Parameters:
+ 	///		- byteArray: 		The Swift array
+	/// 	- blockSizeInBytes: The block size in bytes.
+	///
+	/// - Returns: A Swift string
 	///
 	public static func zeroPad(byteArray: [UInt8], blockSize: Int) -> [UInt8] {
 		
 		let pad = blockSize - (byteArray.count % blockSize)
-		guard pad != 0 else { return byteArray }
+		guard pad != 0 else {
+			return byteArray
+		}
 		return byteArray + Array<UInt8>(repeating: 0, count: pad)
 	}
 	
 	///
 	/// Zero pads a Swift string (after UTF8 conversion)  such that it is an integral number of `blockSizeinBytes` long.
 	///
-	/// - parameter s: the Swift array
-	/// - parameter blockSizeInBytes: the block size in bytes (cunningly enough!)
-	/// - returns: a Swift string
+	/// - Parameters:
+ 	///		- string: 			The Swift String
+	/// 	- blockSizeInBytes:	The block size in bytes
+	///
+	/// - Returns: A Swift byte array
 	///
 	public static func zeroPad(string: String, blockSize: Int) -> [UInt8] {
 		

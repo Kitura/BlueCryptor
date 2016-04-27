@@ -174,7 +174,7 @@ public class HMAC : Updateable {
 	/// 	- keyBuffer: 	specifies the key
 	///		- keyByteCount: number of bytes on keyBuffer
 	///
-	init(algorithm: Algorithm, keyBuffer: UnsafePointer<Void>, keyByteCount: Int) {
+	init(using algorithm: Algorithm, keyBuffer: UnsafePointer<Void>, keyByteCount: Int) {
 		
         self.algorithm = algorithm
 		#if os(OSX)
@@ -191,7 +191,7 @@ public class HMAC : Updateable {
  	///		- algorithm: 	selects the algorithm
     /// 	- key: 			specifies the key
     ///
-	public init(algorithm: Algorithm, key: NSData) {
+	public init(using algorithm: Algorithm, key: NSData) {
 		
         self.algorithm = algorithm
 		#if os(OSX)
@@ -208,7 +208,7 @@ public class HMAC : Updateable {
  	///		- algorithm: 	selects the algorithm
     /// 	- key: 			specifies the key
     ///
-	public init(algorithm: Algorithm, key: [UInt8]) {
+	public init(using algorithm: Algorithm, key: [UInt8]) {
 		
         self.algorithm = algorithm
 		#if os(OSX)
@@ -226,7 +226,7 @@ public class HMAC : Updateable {
  	///		- algorithm: 	selects the algorithm
     /// 	- key: 			specifies the key
     ///
-	public init(algorithm: Algorithm, key: String) {
+	public init(using algorithm: Algorithm, key: String) {
 		
         self.algorithm = algorithm
 		#if os(OSX)
@@ -252,7 +252,7 @@ public class HMAC : Updateable {
     ///
     /// - Returns: the calculated HMAC
     ///
-	public func update(buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
+	public func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
 		
 		#if os(OSX)
 	        CCHmacUpdate(context, buffer, byteCount)
