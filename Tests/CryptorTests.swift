@@ -26,7 +26,11 @@ import XCTest
 
 class CryptorTests: XCTestCase {
 	
-	let usingOpenSSL = false
+	#if os(Linux)
+		let usingOpenSSL = true
+	#else
+		let usingOpenSSL = false
+	#endif
     
     override func setUp() {
         super.setUp()
@@ -301,8 +305,7 @@ class CryptorTests: XCTestCase {
 	}
 	
 	// MARK: MD5
-	func testMD5_1()
-	{
+	func testMD5_1() {
 		let md5 : Digest = Digest(using:.MD5)
 		md5.update(string: qbfString)
 		let digest = md5.final()
@@ -310,8 +313,7 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(digest, qbfMD5, "PASS")
 	}
 	
-	func test_Digest_MD5_NSData()
-	{
+	func test_Digest_MD5_NSData() {
 		let qbfData : NSData = CryptoUtils.data(from: self.qbfBytes)
 		let digest = Digest(using: .MD5).update(data: qbfData)?.final()
 		
@@ -320,16 +322,14 @@ class CryptorTests: XCTestCase {
 	/**
 	Test MD5 with string input and optional chaining.
 	*/
-	func test_Digest_MD5_Composition_String()
-	{
+	func test_Digest_MD5_Composition_String() {
 		let digest = Digest(using: .MD5).update(string: qbfString)?.final()
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
 	/**
 	Test MD5 with optional chaining, string input and 2 updates
 	*/
-	func test_Digest_MD5_Composition_String_2()
-	{
+	func test_Digest_MD5_Composition_String_2() {
 		let s1 = "The quick brown fox"
 		let s2 = " jumps over the lazy dog."
 		let digest = Digest(using: .MD5).update(string: s1)?.update(string: s2)?.final()
@@ -339,8 +339,7 @@ class CryptorTests: XCTestCase {
 	/**
 	Test MD5 with optional chaining and byte array input
 	*/
-	func test_Digest_MD5_Composition_Bytes()
-	{
+	func test_Digest_MD5_Composition_Bytes() {
 		let digest = Digest(using: .MD5).update(byteArray: qbfBytes)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
