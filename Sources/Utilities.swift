@@ -48,11 +48,11 @@ public struct CryptoUtils {
 	}
 	
 	///
-	/// Converts a string of hexadecimal digits to a Swift array.
+	/// Converts a string of hexadecimal digits to a byte array.
 	///
 	/// - Parameter string: The hex string (must contain an even number of digits)
 	///
-	/// - Returns: A Swift array
+	/// - Returns: A byte array
 	///
 	public static func byteArray(fromHex string: String) -> [UInt8] {
 		
@@ -73,11 +73,11 @@ public struct CryptoUtils {
 	}
 	
 	///
-	/// Converts a Swift UTF-8 String to a Swift array.
+	/// Converts a UTF-8 String to a byte array.
 	///
 	/// - Parameter string: the string
 	///
-	/// - Returns: A Swift array
+	/// - Returns: A byte array
 	///
 	public static func byteArray(from string: String) -> [UInt8] {
 		
@@ -90,7 +90,7 @@ public struct CryptoUtils {
 	///
 	/// - Parameter string: The hex string (must contain an even number of digits)
 	///
-	/// - Returns: An NSData object
+	/// - Returns: An `NSData` object
 	///
 	public static func data(fromHex string: String) -> NSData {
 		
@@ -99,11 +99,11 @@ public struct CryptoUtils {
 	}
 	
 	///
-	/// Converts a Swift array to an `NSData` object.
+	/// Converts a byte array to an `NSData` object.
 	///
-	/// - Parameter byteArray: The Swift array
+	/// - Parameter byteArray: The byte array
 	///
-	/// - Returns: An NSData object
+	/// - Returns: An `NSData` object
 	///
 	public static func data(from byteArray: [UInt8]) -> NSData {
 		
@@ -111,13 +111,13 @@ public struct CryptoUtils {
 	}
 	
 	///
-	/// Converts a Swift array to a string of hexadecimal digits.
+	/// Converts a byte array to a string of hexadecimal digits.
 	///
 	/// - Parameters:
  	///		- byteArray: The Swift array
 	/// 	- uppercase: True to use uppercase for letter digits, lowercase otherwise
 	///
-	/// - Returns: A Swift string
+	/// - Returns: A String
 	///
 	public static func hexString(from byteArray: [UInt8], uppercase: Bool = false) -> String {
 		
@@ -144,12 +144,12 @@ public struct CryptoUtils {
 	}
 	
 	///
-	/// Converts a Swift array to a Swift `String` containing a comma separated list of bytes.
+	/// Converts a byte array to a String containing a comma separated list of bytes.
 	/// This is used to generate test data programmatically.
 	///
-	/// - Parameter byteArray: the Swift array
+	/// - Parameter byteArray: The byte array
 	///
-	/// - Returns: A Swift string
+	/// - Returns: A String
 	///
 	public static func hexList(from byteArray : [UInt8]) -> String {
 		
@@ -157,10 +157,10 @@ public struct CryptoUtils {
 	}
 	
 	///
-	/// Zero pads a Swift array such that it is an integral number of `blockSizeinBytes` long.
+	/// Zero pads a byte array such that it is an integral number of `blockSizeinBytes` long.
 	///
 	/// - Parameters:
- 	///		- byteArray: 		The Swift array
+ 	///		- byteArray: 		The byte array
 	/// 	- blockSizeInBytes: The block size in bytes.
 	///
 	/// - Returns: A Swift string
@@ -175,13 +175,13 @@ public struct CryptoUtils {
 	}
 	
 	///
-	/// Zero pads a Swift string (after UTF8 conversion)  such that it is an integral number of `blockSizeinBytes` long.
+	/// Zero pads a String (after UTF8 conversion)  such that it is an integral number of `blockSizeinBytes` long.
 	///
 	/// - Parameters:
- 	///		- string: 			The Swift String
+ 	///		- string: 			The String
 	/// 	- blockSizeInBytes:	The block size in bytes
 	///
-	/// - Returns: A Swift byte array
+	/// - Returns: A byte array
 	///
 	public static func zeroPad(string: String, blockSize: Int) -> [UInt8] {
 		

@@ -28,9 +28,12 @@ public protocol Updateable {
 	///
     /// Low-level update routine.
     /// Updates the calculation with the contents of a data buffer.
-    /// - parameter buffer: pointer to the data buffer 
-    /// - parameter byteCount: length of the buffer in bytes
-    /// - returns: self if no error for optional chaining, null otherwise
+	///
+    /// - Parameters:
+ 	///		- buffer: 		Pointer to the data buffer
+    /// 	- byteCount: 	Length of the buffer in bytes
+	///
+    /// - Returns: `Self` if no error for optional chaining, nil otherwise
 	///
     func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self?
 }
@@ -42,8 +45,10 @@ extension Updateable {
     ///
     /// Updates the current calculation with data contained in an `NSData` object.
     ///
-    /// - parameters data: the data buffer
+    /// - Parameters data: The `NSData` object
     ///
+	/// - Returns: Optional `Self` or nil
+	///
 	public func update(data: NSData) -> Self? {
 		
         update(from: data.bytes, byteCount: size_t(data.length))
@@ -51,10 +56,12 @@ extension Updateable {
     }
 	
     ///
-    /// Updates the current calculation with data contained in a Swift array.
+    /// Updates the current calculation with data contained in a byte array.
     ///
-    /// - parameters byteArray: the Swift array
+    /// - Parameters byteArray: The byte array
     ///
+	/// - Returns: Optional `Self` or nil
+	///
 	public func update(byteArray: [UInt8]) -> Self? {
 		
         update(from: byteArray, byteCount: size_t(byteArray.count))
@@ -62,11 +69,13 @@ extension Updateable {
     }
 	
     ///
-    /// Updates the current calculation with data contained in a Swift string.
+    /// Updates the current calculation with data contained in a String.
     /// The corresponding data will be generated using UTF8 encoding.
     ///
-    /// - parameters string: the Swift string
+    /// - Parameters string: The string of data
     ///
+	/// - Returns: Optional `Self` or nil
+	///
 	public func update(string: String) -> Self? {
 		
         update(from: string, byteCount: size_t(string.utf8.count))

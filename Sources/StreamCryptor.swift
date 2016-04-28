@@ -466,23 +466,23 @@ public class StreamCryptor {
     /// The status code resulting from the last method call to this Cryptor.
     ///    Used to get additional information when optional chaining collapes.
 	///
-    public var status : Status = .Success
+    public internal(set) var status : Status = .Success
 
 	#if os(OSX)
 	
-	/// Context
+	/// CommonCrypto Context
 	private var context = UnsafeMutablePointer<CCCryptorRef?>(allocatingCapacity: 1)
 	
 	#elseif os(Linux)
 	
-	/// Cipher Context
-	let context: UnsafeMutablePointer<EVP_CIPHER_CTX> = EVP_CIPHER_CTX_new()
+	/// OpenSSL Cipher Context
+	private let context: UnsafeMutablePointer<EVP_CIPHER_CTX> = EVP_CIPHER_CTX_new()
 	
 	/// Operation
-	var operation: Operation = .Encrypt
+	private var operation: Operation = .Encrypt
 	
 	/// The algorithm
-	var algorithm: Algorithm
+	private var algorithm: Algorithm
 	
 	#endif
 	

@@ -31,7 +31,7 @@ import Foundation
 ///
 /// ```
 /// let  s = "The quick brown fox jumps over the lazy dog."
-/// var md5 : Digest = Digest(algorithm:.MD5)
+/// var md5 : Digest = Digest(using:.MD5)
 /// md5.update(s)
 /// let digest = md5.final()
 ///```
@@ -90,7 +90,7 @@ public class Digest : Updateable {
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
 			#elseif os(Linux)
-				fatalError("MD2 not supported by OpenSSL")
+				fatalError("MD2 digest not supported by OpenSSL")
 			#endif
 			
         case .MD4:
@@ -111,7 +111,7 @@ public class Digest : Updateable {
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
 			#elseif os(Linux)
-				fatalError("SHA1 not supported by OpenSSL")
+				fatalError("SHA1 digest not supported by OpenSSL")
 			#endif
 			
         case .SHA224:
@@ -163,7 +163,7 @@ public class Digest : Updateable {
     ///
 	///	Completes the calculate of the messge digest
 	///
-	///	- Returns: the message digest
+	///	- Returns: The message digest
 	///
 	public func final() -> [UInt8] {
 		

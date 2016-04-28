@@ -26,6 +26,7 @@ import Foundation
 ///
 public class Cryptor : StreamCryptor, Updateable {
 
+	/// Internal accumulator for gathering data from the update() and final() functions.
     var accumulator : [UInt8] = []
 	
     ///

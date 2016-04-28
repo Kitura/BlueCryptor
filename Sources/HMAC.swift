@@ -152,6 +152,7 @@ public class HMAC : Updateable {
         }
     }
 	
+	/// Context
 	#if os(OSX)
     	typealias Context = UnsafeMutablePointer<CCHmacContext>
 	#elseif os(Linux)
@@ -159,10 +160,11 @@ public class HMAC : Updateable {
 	#endif
     
     /// Status of the calculation
-    public var status: Status = .Success
-    
-    let context = Context(allocatingCapacity: 1)
-    var algorithm: Algorithm
+    public internal(set) var status: Status = .Success
+	
+	
+    private let context = Context(allocatingCapacity: 1)
+    private var algorithm: Algorithm
     
 	// MARK: Lifecycle Methods
 	
@@ -170,9 +172,9 @@ public class HMAC : Updateable {
 	/// Creates a new HMAC instance with the specified algorithm and key.
 	///
 	/// - Parameters:
- 	///		- algorithm: 	selects the algorithm
-	/// 	- keyBuffer: 	specifies the key
-	///		- keyByteCount: number of bytes on keyBuffer
+ 	///		- algorithm: 	Selects the algorithm
+	/// 	- keyBuffer: 	Specifies pointer to the key
+	///		- keyByteCount: Number of bytes on keyBuffer
 	///
 	init(using algorithm: Algorithm, keyBuffer: UnsafePointer<Void>, keyByteCount: Int) {
 		
@@ -188,8 +190,8 @@ public class HMAC : Updateable {
     /// Creates a new HMAC instance with the specified algorithm and key.
     ///
     /// - Parameters:
- 	///		- algorithm: 	selects the algorithm
-    /// 	- key: 			specifies the key
+ 	///		- algorithm: 	Selects the algorithm
+    /// 	- key: 			Specifies the key as NSData
     ///
 	public init(using algorithm: Algorithm, key: NSData) {
 		
@@ -205,8 +207,8 @@ public class HMAC : Updateable {
     /// Creates a new HMAC instance with the specified algorithm and key.
     ///
     /// - Parameters:
- 	///		- algorithm: 	selects the algorithm
-    /// 	- key: 			specifies the key
+ 	///		- algorithm: 	Selects the algorithm
+    /// 	- key: 			Specifies the key as byte array.
     ///
 	public init(using algorithm: Algorithm, key: [UInt8]) {
 		
@@ -223,8 +225,8 @@ public class HMAC : Updateable {
     /// The key string is converted to bytes using UTF8 encoding.
     ///
     /// - Parameters:
- 	///		- algorithm: 	selects the algorithm
-    /// 	- key: 			specifies the key
+ 	///		- algorithm: 	Selects the algorithm
+    /// 	- key: 			Specifies the key as String
     ///
 	public init(using algorithm: Algorithm, key: String) {
 		
@@ -248,9 +250,9 @@ public class HMAC : Updateable {
     ///
     /// Updates the calculation of the HMAC with the contents of a buffer.
 	///
-	/// - Parameter buffer: update buffer
+	/// - Parameter buffer: Update buffer
     ///
-    /// - Returns: the calculated HMAC
+    /// - Returns: The 'in-progress' calculated HMAC
     ///
 	public func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
 		
@@ -265,7 +267,7 @@ public class HMAC : Updateable {
     ///
     /// Finalizes the HMAC calculation
     ///
-    /// - Returns: the calculated HMAC
+    /// - Returns: The final calculated HMAC
     ///
 	public func final() -> [UInt8] {
 		

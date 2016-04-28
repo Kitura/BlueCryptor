@@ -151,7 +151,7 @@ public class PBKDF {
     /// 	- round: 			The number of rounds
     /// 	- derivedKeyLength: The length of the desired derived key, in bytes.
 	///
-    /// - Returns: the derived key
+    /// - Returns: The derived key
     ///
 	public class func deriveKey(fromPassword password: String, salt: [UInt8], prf: PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) -> [UInt8] {
 		
@@ -185,7 +185,7 @@ public class PBKDF {
     /// 	- derivedKey: 		Pointer to the derived key buffer.
     /// 	- derivedKeyLength:	The desired key length
 	///
-    /// - Returns: the number of times the algorithm should be run
+    /// - Returns: The number of times the algorithm should be run
     ///
 	public class func deriveKey(fromPassword password: UnsafePointer<Int8>, passwordLen: Int, salt: UnsafePointer<UInt8>, saltLen: Int, prf: PseudoRandomAlgorithm, rounds: uint, derivedKey: UnsafeMutablePointer<UInt8>, derivedKeyLen: Int) {
 		

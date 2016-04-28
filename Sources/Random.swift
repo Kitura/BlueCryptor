@@ -37,7 +37,7 @@ public class Random {
     ///
     ///	- Parameter bytes: A pointer to the buffer that will receive the bytes
 	///
-    ///	- Returns: .Success or .RNGFailure as appropriate.
+    ///	- Returns: `.Success` or `.RNGFailure` as appropriate.
     ///
 	public class func generate(bytes: UnsafeMutablePointer<UInt8>, byteCount: Int ) -> RNGStatus {
 		
@@ -65,7 +65,7 @@ public class Random {
 	///
     ///	- Returns: an array of random bytes
 	///
-    /// - Throws: an `RNGStatus` on failure
+    /// - Throws: `.Success` or an `.RNGFailure` on failure
 	///
 	public class func generate(byteCount: Int ) throws -> [UInt8] {
 		
@@ -90,7 +90,7 @@ public class Random {
     ///
     ///	- Parameter bytesCount: Number of random bytes to generate
 	///
-    ///	- Returns: an array of random bytes
+    ///	- Returns: An array of random bytes
 	///
 	public class func generateBytesThrow(byteCount: Int ) throws -> [UInt8] {
 		
