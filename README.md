@@ -4,7 +4,9 @@ Crypto library based on CommonCrypto and derived from [IDZSwiftCommonCrypto](htt
 ## Status
 The current version has been updated for Swift 3.0 and includes new packaging. The API presented by this framework is *NOT* the same as the one presented by the original. It has been updated to conform to the Swift 3.0 API Guidelines.
 
-This package is functionally complete and has all current tests passing on by OS X and Linux.
+This package is functionally complete and has all current tests passing on by OS X and Linux. 
+
+**Note:** On OS X, BlueCrypto uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from OpenSSL*.
 
 ## Prerequisites
 
