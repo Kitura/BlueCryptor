@@ -354,15 +354,18 @@ class CryptorTests: XCTestCase {
 	let sha512BlockOutput = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
 	
 	func test_Crypto_API() {
+		
 		XCTAssertEqual(shaShortBlock.SHA224, sha224BlockOutput)
 		XCTAssertEqual(shaShortBlock.SHA256, sha256BlockOutput)
 		XCTAssertEqual(shaShortBlock.SHA384, sha384BlockOutput)
 		XCTAssertEqual(shaShortBlock.SHA512, sha512BlockOutput)
-		let theData: NSData = shaShortBlock.data(using:NSUTF8StringEncoding)!
-		XCTAssertEqual(theData.SHA224, CryptoUtils.data(fromHex: sha224BlockOutput))
-		XCTAssertEqual(theData.SHA256, CryptoUtils.data(fromHex: sha256BlockOutput))
-		XCTAssertEqual(theData.SHA384, CryptoUtils.data(fromHex: sha384BlockOutput))
-		XCTAssertEqual(theData.SHA512, CryptoUtils.data(fromHex: sha512BlockOutput))
+		#if os(OSX)
+			let theData: NSData = shaShortBlock.data(using:NSUTF8StringEncoding)!
+			XCTAssertEqual(theData.SHA224, CryptoUtils.data(fromHex: sha224BlockOutput))
+			XCTAssertEqual(theData.SHA256, CryptoUtils.data(fromHex: sha256BlockOutput))
+			XCTAssertEqual(theData.SHA384, CryptoUtils.data(fromHex: sha384BlockOutput))
+			XCTAssertEqual(theData.SHA512, CryptoUtils.data(fromHex: sha512BlockOutput))
+		#endif
 	}
 	
 	// Not supported by OpenSSL

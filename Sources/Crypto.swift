@@ -79,31 +79,41 @@ extension NSData: CryptoDigest {
     ///
     /// Calculates the Message Digest for this data.
     /// 
-    /// - Parameter algorithm: the digest algorithm to use
+    /// - Parameter algorithm: The digest algorithm to use
 	///
-    /// - Returns: an `NSData` object containing the message digest
-    ///
+    /// - Returns: An `NSData` object containing the message digest
+	///
+	/// - Note: Not supported on Linux due to differences in the `NSData` Foundation API.
+	///
     public func digest(using algorithm: Digest.Algorithm) -> Self {
 		
-        // This force unwrap may look scary but for CommonCrypto this cannot fail.
-        // The API allows for optionals to support the OpenSSL implementation which can.
-		let result = (Digest(using: algorithm).update(data: self)?.final())!
-        let data = self.dynamicType.init(bytes: result, length: result.count)
-        return data
+		#if os(OSX)
+			
+        	// This force unwrap may look scary but for CommonCrypto this cannot fail.
+	        // The API allows for optionals to support the OpenSSL implementation which can.
+			let result = (Digest(using: algorithm).update(data: self)?.final())!
+        	let data = self.dynamicType.init(bytes: result, length: result.count)
+	        return data
+	
+		#elseif os(Linux)
+			
+			fatalError("This API not supported on Linux.")
+			
+		#endif
     }
 }
 
 ///
 /// Extension for String to return a String containing the digest.
 ///
-extension String : CryptoDigest {
+extension String: CryptoDigest {
     ///
     /// Calculates the Message Digest for this string.
     /// The string is converted to raw data using UTF8.
     ///
-    /// - Parameter algorithm: the digest algorithm to use
+    /// - Parameter algorithm: The digest algorithm to use
 	///
-    /// - Returns: a hex string of the calculated digest
+    /// - Returns: A hex string of the calculated digest
     ///
     public func digest(using algorithm: Digest.Algorithm) -> String {
         // This force unwrap may look scary but for CommonCrypto this cannot fail.
