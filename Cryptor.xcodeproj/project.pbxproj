@@ -32,8 +32,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8C9590241CC807D400A2C2B4 /* CryptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CryptorTests.swift; path = Tests/CryptorTests.swift; sourceTree = "<group>"; };
+		8C9590241CC807D400A2C2B4 /* CryptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CryptorTests.swift; path = Tests/Cryptor/CryptorTests.swift; sourceTree = "<group>"; };
 		8C95902B1CC80A2300A2C2B4 /* CryptorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CryptorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C9C42F01CD7881000045CFB /* LinuxMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LinuxMain.swift; path = Tests/LinuxMain.swift; sourceTree = "<group>"; };
 		8CD16C6C1CC81DE5007296B5 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8CD16C6D1CC81DE5007296B5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		__PBXFileRef_Package.swift /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -72,9 +73,18 @@
 		8C9590261CC807EA00A2C2B4 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				8C9590241CC807D400A2C2B4 /* CryptorTests.swift */,
+				8C9C42F11CD7904000045CFB /* Cryptor */,
+				8C9C42F01CD7881000045CFB /* LinuxMain.swift */,
 			);
 			name = Tests;
+			sourceTree = "<group>";
+		};
+		8C9C42F11CD7904000045CFB /* Cryptor */ = {
+			isa = PBXGroup;
+			children = (
+				8C9590241CC807D400A2C2B4 /* CryptorTests.swift */,
+			);
+			name = Cryptor;
 			sourceTree = "<group>";
 		};
 		Dependencies_ /* Dependencies */ = {
@@ -295,7 +305,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/local/include;
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = Tests/Cryptor/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -343,7 +353,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/local/include;
-				INFOPLIST_FILE = Tests/Info.plist;
+				INFOPLIST_FILE = Tests/Cryptor/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
