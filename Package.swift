@@ -37,5 +37,5 @@ let package = Package(
 	dependencies: [
 		.Package(url: url, majorVersion: majorVersion, minor: minorVersion),
 	],
-	exclude: ["Cryptor.xcodeproj", "README.md", "Sources/Info.plist", "Sources/Cryptor.h", "Tests"]
+	exclude: ["Cryptor.xcodeproj", "README.md", "Sources/Info.plist", "Sources/Cryptor.h"]
 )
