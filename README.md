@@ -36,7 +36,7 @@ To build **Cryptor** from the command line:
 ## Getting started
 
 ```swift
-import Crypto
+import Cryptor
 ```
 
 ## API
