@@ -16,6 +16,7 @@
 //
 
 import XCTest
+import Foundation
 @testable import Cryptor
 
 #if os(OSX)
@@ -24,57 +25,54 @@ import XCTest
 	import CCrypto
 #endif
 
-#if os(Linux)
+class CryptorTests: XCTestCase {
 	
-	extension CryptorTests: XCTestCaseProvider {
-		
-		var allTests: [(String, CryptorTests -> () throws -> Void)] {
-			
-			return [
-			       	("test_Cryptor_AES_ECB", test_Cryptor_AES_ECB),
-			       	("test_Cryptor_AES_ECB_2", test_Cryptor_AES_ECB_2),
-			       	("test_Cryptor_AES_ECB_Short", test_Cryptor_AES_ECB_Short),
-			       	("test_Cryptor_AES_CBC_1", test_Cryptor_AES_CBC_1),
-			       	("test_Cryptor_DES_EBC_1", test_Cryptor_DES_EBC_1),
-			       	("testMD2", testMD2),
-			       	("testMD5_1", testMD5_1),
-			       	("test_Digest_MD5_NSData", test_Digest_MD5_NSData),
-			       	("test_Digest_MD5_Composition_String", test_Digest_MD5_Composition_String),
-			       	("test_Digest_MD5_Composition_String_2", test_Digest_MD5_Composition_String_2),
-			       	("test_Digest_MD5_Composition_Bytes", test_Digest_MD5_Composition_Bytes),
-			       	("test_Crypto_API", test_Crypto_API),
-			       	("test_Digest_SHA1_String", test_Digest_SHA1_String),
-			       	("test_Digest_SHA224_String", test_Digest_SHA224_String),
-			       	("test_Digest_SHA256_String", test_Digest_SHA256_String),
-			       	("test_Digest_SHA384_String", test_Digest_SHA384_String),
-			       	("test_Digest_SHA512_String", test_Digest_SHA512_String),
-			       	("test_HMAC_MD5", test_HMAC_MD5),
-			       	("test_HMAC_SHA1", test_HMAC_SHA1),
-			       	("test_HMAC_SHA1_NSData", test_HMAC_SHA1_NSData),
-			       	("test_HMAC_SHA224", test_HMAC_SHA224),
-			       	("test_HMAC_SHA256", test_HMAC_SHA256),
-			       	("test_HMAC_SHA384", test_HMAC_SHA384),
-			       	("test_HMAC_SHA512", test_HMAC_SHA512),
-			       	("test_KeyDerivation_deriveKey", test_KeyDerivation_deriveKey),
-			       	("test_Random_generateBytes", test_Random_generateBytes),
-			       	("test_Random_generateBytesThrow", test_Random_generateBytesThrow),
-			       	("test_Status", test_Status),
-			       	("test_Utilities_arrayFromHexString_lowerCase", test_Utilities_arrayFromHexString_lowerCase),
-			       	("test_Utilities_arrayFromHexString_upperCase", test_Utilities_arrayFromHexString_upperCase),
-			       	("testHexStringFromArray", testHexStringFromArray),
-			       	("testHexNSStringFromArray", testHexNSStringFromArray),
-			       	("testHexListFromArray", testHexListFromArray),
-			       	("testZeroPadString", testZeroPadString),
-			       	("testGitHubIssue9", testGitHubIssue9),
-			       	("testGitHubIssue9StringCanary", testGitHubIssue9StringCanary),
-			       	("testGitHubIssue9ArrayCanary", testGitHubIssue9ArrayCanary)
-			]
-		}
+	#if os(Linux)
+	
+	static var allTests: [(String, CryptorTests -> () throws -> Void)] {
+	
+		return [
+			("test_Cryptor_AES_ECB", test_Cryptor_AES_ECB),
+			("test_Cryptor_AES_ECB_2", test_Cryptor_AES_ECB_2),
+			("test_Cryptor_AES_ECB_Short", test_Cryptor_AES_ECB_Short),
+			("test_Cryptor_AES_CBC_1", test_Cryptor_AES_CBC_1),
+			("test_Cryptor_DES_EBC_1", test_Cryptor_DES_EBC_1),
+			("testMD2", testMD2),
+			("testMD5_1", testMD5_1),
+			("test_Digest_MD5_NSData", test_Digest_MD5_NSData),
+			("test_Digest_MD5_Composition_String", test_Digest_MD5_Composition_String),
+			("test_Digest_MD5_Composition_String_2", test_Digest_MD5_Composition_String_2),
+			("test_Digest_MD5_Composition_Bytes", test_Digest_MD5_Composition_Bytes),
+			("test_Crypto_API", test_Crypto_API),
+			("test_Digest_SHA1_String", test_Digest_SHA1_String),
+			("test_Digest_SHA224_String", test_Digest_SHA224_String),
+			("test_Digest_SHA256_String", test_Digest_SHA256_String),
+			("test_Digest_SHA384_String", test_Digest_SHA384_String),
+			("test_Digest_SHA512_String", test_Digest_SHA512_String),
+			("test_HMAC_MD5", test_HMAC_MD5),
+			("test_HMAC_SHA1", test_HMAC_SHA1),
+			("test_HMAC_SHA1_NSData", test_HMAC_SHA1_NSData),
+			("test_HMAC_SHA224", test_HMAC_SHA224),
+			("test_HMAC_SHA256", test_HMAC_SHA256),
+			("test_HMAC_SHA384", test_HMAC_SHA384),
+			("test_HMAC_SHA512", test_HMAC_SHA512),
+			("test_KeyDerivation_deriveKey", test_KeyDerivation_deriveKey),
+			("test_Random_generateBytes", test_Random_generateBytes),
+			("test_Random_generateBytesThrow", test_Random_generateBytesThrow),
+			("test_Status", test_Status),
+			("test_Utilities_arrayFromHexString_lowerCase", test_Utilities_arrayFromHexString_lowerCase),
+			("test_Utilities_arrayFromHexString_upperCase", test_Utilities_arrayFromHexString_upperCase),
+			("testHexStringFromArray", testHexStringFromArray),
+			("testHexNSStringFromArray", testHexNSStringFromArray),
+			("testHexListFromArray", testHexListFromArray),
+			("testZeroPadString", testZeroPadString),
+			("testGitHubIssue9", testGitHubIssue9),
+			("testGitHubIssue9StringCanary", testGitHubIssue9StringCanary),
+			("testGitHubIssue9ArrayCanary", testGitHubIssue9ArrayCanary)
+		]
 	}
 	
-#endif
-
-class CryptorTests: XCTestCase {
+	#endif
 	
 	#if os(Linux)
 		let usingOpenSSL = true
@@ -87,7 +85,7 @@ class CryptorTests: XCTestCase {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
-    
+	
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
         super.tearDown()
@@ -620,7 +618,7 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: - Status
 	func test_Status() {
-		#if !os(OSX)
+		#if os(OSX)
 			
 			// These are only for CommonCrypto...
 			XCTAssertEqual(Status.Success.toRaw(), CCCryptorStatus(kCCSuccess))

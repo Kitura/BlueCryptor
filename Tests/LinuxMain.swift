@@ -17,8 +17,8 @@
 
 import XCTest
 
-@testable import Cryptortest
+@testable import CryptorTestSuite
 
 XCTMain([
-        	CryptorTests()
+		testCase(CryptorTests.allTests)
 ])
