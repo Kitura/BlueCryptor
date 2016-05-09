@@ -120,6 +120,24 @@ do {
 }
 ```
 
+### Utilities
+
+**Cryptor** also provides a set of data manipulation utility functions for conversion of data from various formats:
+- To byteArray (`[UInt8]`)
+	- From hex string
+	- From UTF8 string
+- To `NSData`
+	- From hex string
+	- From byte array (`[UInt8]`)
+- To `NSString`
+	- From byte array (`[UInt8]`)
+- To hexList (`String`)
+	- From byte array (`[UInt8]`)
+
+Also provided are an API to pad a byte array (`[UInt8]`) such that it is an integral number of `block size in bytes` long.
+- ```func zeroPad(byteArray: [UInt8], blockSize: Int) -> [UInt8]```
+- ```func zeroPad(string: String, blockSize: Int) -> [UInt8]```
+
 ## Restrictions
 
 Due to an issue with API differences between the `Foundation` implementation on **OS X** versus the implementation on **Linux**, the following API usuage is not available on **Linux**.  It remains available on **OS X**.  Once the issue is resolved, this API usage will be available on *both* platforms. This API is an extension to `NSData` that allows generation of a `digest` from a previously populated `NSData` instance.
