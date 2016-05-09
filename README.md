@@ -4,9 +4,9 @@ Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://
 ## Status
 The current version has been updated for Swift 3.0 and includes new packaging. The API presented by this framework is *NOT* the same as the one presented by the original. It has been updated to conform to the Swift 3.0 API Guidelines.
 
-This package is functionally complete and has all current tests passing on by OS X and Linux. 
+This package is functionally complete and has all current relevant tests passing on both OS X and Linux. 
 
-**Note:** On OS X, BlueCrypto uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from OpenSSL*.
+**Note:** On OS X, BlueCryptor uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from OpenSSL*.
 
 ## Prerequisites
 
@@ -33,6 +33,16 @@ To build **Cryptor** from the command line:
 % swift build
 ```
 
+## Testing
+
+To run the supplied unit tests for **Cryptor** from the command line:
+
+```
+% cd <path-to-clone>
+% swift build
+% swift test
+```
+
 ## Getting started
 
 ```swift
@@ -41,7 +51,74 @@ import Cryptor
 
 ## API
 
-**TBD**
+### Cryptor
+
+The following code demonstrates encryption and decryption using `AES` single block CBC mode using optional chaining.
+```swift
+let key = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
+let iv = CryptoUtils.byteArray(fromHex: "00000000000000000000000000000000")
+let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
+
+let cipherText = Cryptor(operation: .Encrypt, algorithm: .AES, options: .None, key: key, iv: iv).update(byteArray:  plainText)?.final()
+		
+print(CryptoUtils.hexString(from: cipherText!))
+		
+let decryptedText = Cryptor(operation: .Decrypt, algorithm: .AES, options: .None, key: key, iv: iv).update(byteArray:  cipherText!)?.final()
+```
+
+### Digest
+
+The following example illustrates generating an `MD5` digest from both a `String` and an instance of `NSData`.
+``` swift
+let qbfBytes : [UInt8] = [0x54,0x68,0x65,0x20,0x71,0x75,0x69,0x63,0x6b,0x20,0x62,0x72,0x6f,0x77,0x6e,0x20,0x66,0x6f,0x78,0x20,0x6a,0x75,0x6d,0x70,0x73,0x20,0x6f,0x76,0x65,0x72,0x20,0x74,0x68,0x65,0x20,0x6c,0x61,0x7a,0x79,0x20,0x64,0x6f,0x67,0x2e]
+let qbfString = "The quick brown fox jumps over the lazy dog."
+
+// String...
+let md5 = Digest(using: .MD5)
+md5.update(string: qfbString)
+let digest = md5.final()
+
+// NSData using optional chaining...
+let qbfData = CryptoUtils.data(from: qbfBytes)
+let digest = Digest(using: .MD5).update(data: qbfData)?.final()
+```
+
+### HMAC
+
+The following demonstrates generating an `SHA256` HMAC using byte arrays for keys and data.
+```swift
+let myKeyData = "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b"
+let myData = "4869205468657265"
+let key = CryptoUtils.byteArray(fromHex: myKeyData)
+let data : [UInt8] = CryptoUtils.byteArray(fromHex: myData)
+
+let hmac = HMAC(using: HMAC.Algorithm.SHA256, key: key).update(byteArray: data)?.final()
+```
+
+### Key Derivation
+
+The following illustrates generating a key using a password, salt, number of rounds and a specified derived key length using the SHA1 algorithm. Then it shows how to generate a `String` from resultant key.
+```swift
+let password = "password"
+let salt = salt
+let rounds: UInt = 2
+let derivedKeyLen = 20
+
+let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .SHA1, rounds: rounds, derivedKeyLength: derivedKeyLen)
+ley keyString = CryptoUtils.hexString(from: key)
+```
+
+### Random Byte Generation
+
+The following demonstrates generating random bytes of a given length.
+```swift
+let numberOfBytes = 256*256
+do {
+  let randomBytes = try Random.generate(byteCount: numberOfBytes)
+} catch {
+  print("Error generating random bytes")
+}
+```
 
 ## Restrictions
 
