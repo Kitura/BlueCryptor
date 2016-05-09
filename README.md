@@ -60,3 +60,9 @@ XCTAssertEqual(theData.SHA384, CryptoUtils.data(fromHex: sha384BlockOutput))
 XCTAssertEqual(theData.SHA512, CryptoUtils.data(fromHex: sha512BlockOutput))
 ```
 These tests pass on **OSX** but will fail with the following error on **Linux**: `This API not supported on Linux.`
+
+The following algorithms are not available on Linux since they are not supported by *OpenSSL*.
+- Digest: MD2, SHA1
+- HMAC: SHA1
+
+In all cases, use of unsupported APIs or algorithms will result in a Swift `fatalError()`, terminating the program and should be treated as a programming error.
