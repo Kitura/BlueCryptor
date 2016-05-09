@@ -45,7 +45,7 @@ import Cryptor
 
 ## Restrictions
 
-Due to an issue with API differences between the `Foundation` implementation on **OS X** versus the implementation on **Linux**, the following API usuage is not available on **Linux**.  It remains available on **OS X**.  Once the issue is resolved, this API usage will be available on *both* platforms.
+Due to an issue with API differences between the `Foundation` implementation on **OS X** versus the implementation on **Linux**, the following API usuage is not available on **Linux**.  It remains available on **OS X**.  Once the issue is resolved, this API usage will be available on *both* platforms. This API is an extension to `NSData` that allows generation of a `digest` from a previously populated `NSData` instance.
 
 ```swift
 let shaShortBlock = "abc"
