@@ -29,7 +29,7 @@ class CryptorTests: XCTestCase {
 	
 	#if os(Linux)
 	
-	static var allTests: [(String, CryptorTests -> () throws -> Void)] {
+	static var allTests: [(String, (CryptorTests) -> () throws -> Void)] {
 	
 		return [
 			("test_Cryptor_AES_ECB", test_Cryptor_AES_ECB),

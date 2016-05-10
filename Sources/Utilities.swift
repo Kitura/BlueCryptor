@@ -137,7 +137,7 @@ public struct CryptoUtils {
 		
 		let formatString = (uppercase) ? "%02X" : "%02x"
 		#if os(OSX)
-			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +)
+			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +) as NSString
 		#else
 			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +).bridge()
 		#endif
