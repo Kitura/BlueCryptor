@@ -154,22 +154,22 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 		
 		switch self {
 			
-		case success:
+		case .success:
 			return 0
 			
-		case notSupported:
+		case .notSupported:
 			return -1
 			
-		case unimplemented:
+		case .unimplemented:
 			return -2
 			
-		case paramError:
+		case .paramError:
 			return -3
 			
-		case fail(let code):
+		case .fail(let code):
 			return Int(code)
 			
-		case rngFailure(let code):
+		case .rngFailure(let code):
 			return Int(code)
 		}
 	}
@@ -189,22 +189,22 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 		
 		switch self {
 			
-		case success:
+		case .success:
 			return "No error"
 			
-		case notSupported(let reason):
+		case .notSupported(let reason):
 			return "Not supported: \(reason)"
 			
-		case unimplemented(let reason):
+		case .unimplemented(let reason):
 			return "Not implemented: \(reason)"
 			
-		case paramError:
+		case .paramError:
 			return "Invalid parameters passed"
 			
-		case fail(let errorCode):
+		case .fail(let errorCode):
 			return "ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
 
-		case rngFailure(let errorCode):
+		case .rngFailure(let errorCode):
 			return "Random Byte Generator ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
 		}
 	}

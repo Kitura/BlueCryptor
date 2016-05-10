@@ -52,15 +52,15 @@ public class PBKDF {
 			
             	switch self {
 		
-	            case sha1:
+	            case .sha1:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA1)
-				case sha224:
+				case .sha224:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA224)
-				case sha256:
+				case .sha256:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256)
-				case sha384:
+				case .sha384:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA384)
-				case sha512:
+				case .sha512:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA512)
         	    }
         	}
@@ -72,7 +72,7 @@ public class PBKDF {
 			
 				switch self {
 					
-				case sha1:
+				case .sha1:
 					return EVP_sha1()
 				case .sha224:
 					return EVP_sha224()
