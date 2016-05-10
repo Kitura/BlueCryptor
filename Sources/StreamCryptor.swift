@@ -81,10 +81,10 @@ public class StreamCryptor {
 			
     	        switch self {
 				
-        	    case encrypt:
+        	    case .encrypt:
 					return CCOperation(kCCEncrypt)
 				
-	            case decrypt:
+	            case .decrypt:
 					return CCOperation(kCCDecrypt)
         	    }
 	        }
@@ -96,10 +96,10 @@ public class StreamCryptor {
 			
 				switch self {
 		
-				case encrypt:
+				case .encrypt:
 					return 0
 			
-				case decrypt:
+				case .decrypt:
 					return 1
 				}
 			}
@@ -260,22 +260,22 @@ public class StreamCryptor {
 			
             switch self {
 				
-            case aes, aes128, aes192, aes256:
+            case .aes, .aes128, .aes192, .aes256:
 				return kCCBlockSizeAES128
 				
-            case des:
+            case .des:
 				return kCCBlockSizeDES
 				
-            case tripleDes:
+            case .tripleDes:
 				return kCCBlockSize3DES
 				
-            case cast:
+            case .cast:
 				return kCCBlockSizeCAST
 				
-            case rc2:
+            case .rc2:
 				return kCCBlockSizeRC2
 				
-            case blowfish:
+            case .blowfish:
 				return kCCBlockSizeBlowfish
             }
         }
@@ -287,22 +287,22 @@ public class StreamCryptor {
 			
             switch self {
 				
-			case aes, aes128, aes192, aes256:
+			case .aes, .aes128, .aes192, .aes256:
 				return CCAlgorithm(kCCAlgorithmAES)
 				
-            case des:
+            case .des:
 				return CCAlgorithm(kCCAlgorithmDES)
 				
-            case tripleDes:
+            case .tripleDes:
 				return CCAlgorithm(kCCAlgorithm3DES)
 				
-            case cast:
+            case .cast:
 				return CCAlgorithm(kCCAlgorithmCAST)
 				
-            case rc2:
+            case .rc2:
 				return CCAlgorithm(kCCAlgorithmRC2)
 				
-            case blowfish:
+            case .blowfish:
 				return CCAlgorithm(kCCAlgorithmBlowfish)
             }
         }
@@ -316,28 +316,28 @@ public class StreamCryptor {
 			
 				switch self {
 					
-				case aes, aes128:
+				case .aes, .aes128:
 					return EVP_aes_128_cbc()
 		
-				case aes256:
+				case .aes256:
 					return EVP_aes_256_cbc()
 					
-				case aes192:
+				case .aes192:
 					return EVP_aes_192_cbc()
 					
-				case des:
+				case .des:
 					return EVP_des_cbc()
 					
-				case tripleDes:
+				case .tripleDes:
 					return EVP_des_ede3_cbc()
 					
-				case cast:
+				case .cast:
 					return EVP_cast5_cbc()
 					
-				case rc2:
+				case .rc2:
 					return EVP_rc2_cbc()
 					
-				case blowfish:
+				case .blowfish:
 					return EVP_bf_cbc()
 				}
 			}
@@ -346,28 +346,28 @@ public class StreamCryptor {
 				
 				switch self {
 					
-				case aes, aes128:
+				case .aes, .aes128:
 					return EVP_aes_128_ecb()
 		
-				case aes256:
+				case .aes256:
 					return EVP_aes_256_ecb()
 					
-				case aes192:
+				case .aes192:
 					return EVP_aes_192_ecb()
 					
-				case des:
+				case .des:
 					return EVP_des_ecb()
 					
-				case tripleDes:
+				case .tripleDes:
 					return EVP_des_ede3_ecb()
 					
-				case cast:
+				case .cast:
 					return EVP_cast5_ecb()
 					
-				case rc2:
+				case .rc2:
 					return EVP_rc2_ecb()
 					
-				case blowfish:
+				case .blowfish:
 					return EVP_bf_ecb()
 				}
 			}
