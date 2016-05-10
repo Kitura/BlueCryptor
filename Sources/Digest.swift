@@ -31,7 +31,7 @@ import Foundation
 ///
 /// ```
 /// let  s = "The quick brown fox jumps over the lazy dog."
-/// var md5 : Digest = Digest(using:.MD5)
+/// var md5 : Digest = Digest(using:.md5)
 /// md5.update(s)
 /// let digest = md5.final()
 ///```
@@ -43,7 +43,7 @@ public class Digest : Updateable {
     /// For CommonCrypto this will always be `.Success`.
     /// It is here to provide for engines which can fail.
     ///
-    public var status = Status.Success
+    public var status = Status.success
     
     ///
     /// Enumerates available Digest algorithms
@@ -51,28 +51,28 @@ public class Digest : Updateable {
     public enum Algorithm  {
 		
         /// Message Digest 2 See: http://en.wikipedia.org/wiki/MD2_(cryptography)
-        case MD2
+        case md2
 		
         /// Message Digest 4
-        case MD4
+        case md4
 		
         /// Message Digest 5
-        case MD5
+        case md5
 		
         /// Secure Hash Algorithm 1
-        case SHA1
+        case sha1
 		
         /// Secure Hash Algorithm 2 224-bit
-        case SHA224
+        case sha224
 		
         /// Secure Hash Algorithm 2 256-bit
-        case SHA256
+        case sha256
 		
         /// Secure Hash Algorithm 2 384-bit
-        case SHA384
+        case sha384
 		
         /// Secure Hash Algorithm 2 512-bit
-        case SHA512
+        case sha512
     }
     
     private var engine: DigestEngine
@@ -86,56 +86,56 @@ public class Digest : Updateable {
 		
         switch algorithm {
 			
-        case .MD2:
+        case .md2:
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
 			#elseif os(Linux)
 				fatalError("MD2 digest not supported by OpenSSL")
 			#endif
 			
-        case .MD4:
+        case .md4:
 			#if os(OSX)
             	engine = DigestEngineCC<CC_MD4_CTX>(initializer:CC_MD4_Init, updater:CC_MD4_Update, finalizer:CC_MD4_Final, length:CC_MD4_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<MD4_CTX>(initializer:MD4_Init, updater:MD4_Update, finalizer:MD4_Final, length:MD4_DIGEST_LENGTH)
 			#endif
 			
-        case .MD5:
+        case .md5:
 			#if os(OSX)
 				engine = DigestEngineCC<CC_MD5_CTX>(initializer:CC_MD5_Init, updater:CC_MD5_Update, finalizer:CC_MD5_Final, length:CC_MD5_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<MD5_CTX>(initializer:MD5_Init, updater:MD5_Update, finalizer:MD5_Final, length:MD5_DIGEST_LENGTH)
 			#endif
 			
-        case .SHA1:
+        case .sha1:
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
 			#elseif os(Linux)
 				fatalError("SHA1 digest not supported by OpenSSL")
 			#endif
 			
-        case .SHA224:
+        case .sha224:
 			#if os(OSX)
             	engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA224_Init, updater:CC_SHA224_Update, finalizer:CC_SHA224_Final, length:CC_SHA224_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<SHA256_CTX>(initializer:SHA224_Init, updater:SHA224_Update, finalizer:SHA224_Final, length:SHA224_DIGEST_LENGTH)
 			#endif
 			
-        case .SHA256:
+        case .sha256:
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA256_Init, updater:CC_SHA256_Update, finalizer:CC_SHA256_Final, length:CC_SHA256_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<SHA256_CTX>(initializer: SHA256_Init, updater:SHA256_Update, finalizer:SHA256_Final, length:SHA256_DIGEST_LENGTH)
 			#endif
 			
-        case .SHA384:
+        case .sha384:
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA384_Init, updater:CC_SHA384_Update, finalizer:CC_SHA384_Final, length:CC_SHA384_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<SHA512_CTX>(initializer:SHA384_Init, updater:SHA384_Update, finalizer:SHA384_Final, length:SHA384_DIGEST_LENGTH)
 			#endif
 			
-        case .SHA512:
+        case .sha512:
 			#if os(OSX)
 	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA512_Init, updater:CC_SHA512_Update, finalizer:CC_SHA512_Final, length:CC_SHA512_DIGEST_LENGTH)
 			#elseif os(Linux)

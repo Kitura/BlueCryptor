@@ -32,43 +32,43 @@ public protocol CryptoDigest {
 extension CryptoDigest {
 	
     /// An MD2 digest of this object
-    public var MD2: Self {
-		return self.digest(using: .MD2)
+    public var md2: Self {
+		return self.digest(using: .md2)
 	}
 	
     /// An MD4 digest of this object
-    public var MD4: Self {
-		return self.digest(using: .MD4)
+    public var md4: Self {
+		return self.digest(using: .md4)
 	}
 	
     /// An MD5 digest of this object
-    public var MD5: Self {
-		return self.digest(using: .MD5)
+    public var md5: Self {
+		return self.digest(using: .md5)
  	}
 	
     /// An SHA1 digest of this object
-    public var SHA1: Self {
-		return self.digest(using: .SHA1)
+    public var sha1: Self {
+		return self.digest(using: .sha1)
 	}
 	
     /// An SHA224 digest of this object
-    public var SHA224: Self {
-		return self.digest(using: .SHA224)
+    public var sha224: Self {
+		return self.digest(using: .sha224)
 	}
 	
     /// An SHA256 digest of this object
-    public var SHA256: Self {
-		return self.digest(using: .SHA256)
+    public var sha256: Self {
+		return self.digest(using: .sha256)
 	}
 	
     /// An SHA384 digest of this object
-    public var SHA384: Self {
-		return self.digest(using: .SHA384)
+    public var sha384: Self {
+		return self.digest(using: .sha384)
 	}
 	
     /// An SHA512 digest of this object
-    public var SHA512: Self {
-		return self.digest(using: .SHA512)
+    public var sha512: Self {
+		return self.digest(using: .sha512)
 	}
 }
 
@@ -97,7 +97,7 @@ extension NSData: CryptoDigest {
 	
 		#elseif os(Linux)
 			
-			fatalError("This API not supported on Linux.")
+			fatalError("This API currently not supported on Linux.")
 			
 		#endif
     }

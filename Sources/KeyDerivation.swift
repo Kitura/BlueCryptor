@@ -32,19 +32,19 @@ public class PBKDF {
 	public enum PseudoRandomAlgorithm {
 		
         /// Secure Hash Algorithm 1
-        case SHA1
+        case sha1
 		
         /// Secure Hash Algorithm 2 224-bit
-        case SHA224
+        case sha224
 		
         /// Secure Hash Algorithm 2 256-bit
-        case SHA256
+        case sha256
 		
         /// Secure Hash Algorithm 2 384-bit
-        case SHA384
+        case sha384
 		
         /// Secure Hash Algorithm 2 512-bit
-        case SHA512
+        case sha512
 		
 		#if os(OSX)
 			///  Return the OS native value
@@ -52,15 +52,15 @@ public class PBKDF {
 			
             	switch self {
 		
-	            case SHA1:
+	            case sha1:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA1)
-				case SHA224:
+				case sha224:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA224)
-				case SHA256:
+				case sha256:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA256)
-				case SHA384:
+				case sha384:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA384)
-				case SHA512:
+				case sha512:
 					return CCPseudoRandomAlgorithm(kCCPRFHmacAlgSHA512)
         	    }
         	}
@@ -72,15 +72,15 @@ public class PBKDF {
 			
 				switch self {
 					
-				case SHA1:
+				case sha1:
 					return EVP_sha1()
-				case .SHA224:
+				case .sha224:
 					return EVP_sha224()
-				case .SHA256:
+				case .sha256:
 					return EVP_sha256()
-				case .SHA384:
+				case .sha384:
 					return EVP_sha384()
-				case .SHA512:
+				case .sha512:
 					return EVP_sha512()
 				}
 			}

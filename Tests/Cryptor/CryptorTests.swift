@@ -97,11 +97,11 @@ class CryptorTests: XCTestCase {
 	var aesCipherText1Bytes = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
 	
 	func test_Cryptor_AES_ECB() {
-		let aesEncrypt = Cryptor(operation:.Encrypt, algorithm:.AES, options:.ECBMode,
+		let aesEncrypt = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
 		                         key:aesKey1Bytes, iv:Array<UInt8>())
 		var dataOut = Array<UInt8>(repeating:UInt8(0), count:aesCipherText1Bytes.count)
 		let (c, status) = aesEncrypt.update(byteArrayIn: aesPlaintext1Bytes, byteArrayOut: &dataOut)
-		XCTAssert(status == .Success);
+		XCTAssert(status == .success);
 		XCTAssert(aesCipherText1Bytes.count == Int(c) , "Counts are as expected")
 		XCTAssertEqual(dataOut, aesCipherText1Bytes, "Obtained expected cipher text")
 	}
@@ -115,7 +115,7 @@ class CryptorTests: XCTestCase {
 		let plainText = aesPlaintext1Bytes + aesPlaintext1Bytes
 		let expectedCipherText = aesCipherText1Bytes + aesCipherText1Bytes
 		
-		let cipherText = Cryptor(operation:.Encrypt, algorithm:.AES, options:.ECBMode, key:key, iv:Array<UInt8>()).update(byteArray: plainText)?.final()
+		let cipherText = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>()).update(byteArray: plainText)?.final()
 		
 		XCTAssert(expectedCipherText.count == cipherText!.count , "Counts are as expected")
 		XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
@@ -129,11 +129,11 @@ class CryptorTests: XCTestCase {
 	func test_Cryptor_AES_ECB_Short() {
 		let key = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
 		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e11739317")
-		let cryptor = Cryptor(operation:.Encrypt, algorithm:.AES, options:.ECBMode, key:key, iv:Array<UInt8>())
+		let cryptor = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>())
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssert(cipherText == nil, "Expected nil cipherText")
 		#if os(OSX)
-			XCTAssertEqual(cryptor.status, Status.AlignmentError, "Expected AlignmentError")
+			XCTAssertEqual(cryptor.status, Status.alignmentError, "Expected AlignmentError")
 		#endif
 	}
 	
@@ -146,15 +146,15 @@ class CryptorTests: XCTestCase {
 		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
 		
-		//var cipherText = Cryptor(operation:.Encrypt, algorithm:.AES, options:.None, key:key, iv:Array<UInt8>()).update(plainText)?.final()
-		let cipherText = Cryptor(operation:.Encrypt, algorithm:.AES, options:.None, key:key, iv:iv).update(byteArray: plainText)?.final()
+		//var cipherText = Cryptor(operation:.encrypt, algorithm:.aes, options:.None, key:key, iv:Array<UInt8>()).update(plainText)?.final()
+		let cipherText = Cryptor(operation:.encrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: plainText)?.final()
 		
 		XCTAssert(expectedCipherText.count == cipherText!.count , "Counts are as expected")
 		XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
 		
 		print(CryptoUtils.hexString(from: cipherText!))
 		
-		let decryptedText = Cryptor(operation:.Decrypt, algorithm:.AES, options:.None, key:key, iv:iv).update(byteArray: cipherText!)?.final()
+		let decryptedText = Cryptor(operation:.decrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: cipherText!)?.final()
 		XCTAssertEqual(decryptedText!, plainText, "Recovered plaintext.")
 	}
 	
@@ -308,10 +308,10 @@ class CryptorTests: XCTestCase {
 		
 		for i in 0 ..< ivs.count {
 			let iv = CryptoUtils.byteArray(fromHex: ivs[i])
-			let cipherText = Cryptor(operation:.Encrypt, algorithm:.DES, options:.ECBMode, key:key, iv:Array<UInt8>()).update(byteArray: CryptoUtils.byteArray(fromHex: ivs[i]))?.final()
+			let cipherText = Cryptor(operation:.encrypt, algorithm:.des, options:.ecbMode, key:key, iv:Array<UInt8>()).update(byteArray: CryptoUtils.byteArray(fromHex: ivs[i]))?.final()
 			print("\"\(CryptoUtils.hexString(from: cipherText!))\", // [\(i)]")
 			XCTAssertEqual(CryptoUtils.byteArray(fromHex: ects[i]), cipherText!, "Obtained expected cipher text")
-			let decryptor = Cryptor(operation:.Decrypt, algorithm:.DES, options:.ECBMode, key:key, iv:iv)
+			let decryptor = Cryptor(operation:.decrypt, algorithm:.des, options:.ecbMode, key:key, iv:iv)
 			let decryptedText = decryptor.update(byteArray: cipherText!)?.final()
 			XCTAssertEqual(decryptedText!, iv, "Recovered plaintext.")
 			
@@ -346,7 +346,7 @@ class CryptorTests: XCTestCase {
 		for i in 0..<md2inputs.count {
 			let input = md2inputs[i]
 			let expectedOutput = CryptoUtils.byteArray(fromHex: md2outputs[i])
-			let d : Digest = Digest(using:.MD2)
+			let d : Digest = Digest(using:.md2)
 			d.update(string: input)
 			let output = d.final()
 			XCTAssertEqual(output, expectedOutput)
@@ -355,7 +355,7 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: MD5
 	func testMD5_1() {
-		let md5 : Digest = Digest(using:.MD5)
+		let md5 : Digest = Digest(using:.md5)
 		md5.update(string: qbfString)
 		let digest = md5.final()
 		
@@ -364,7 +364,7 @@ class CryptorTests: XCTestCase {
 	
 	func test_Digest_MD5_NSData() {
 		let qbfData : NSData = CryptoUtils.data(from: self.qbfBytes)
-		let digest = Digest(using: .MD5).update(data: qbfData)?.final()
+		let digest = Digest(using: .md5).update(data: qbfData)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
@@ -372,7 +372,7 @@ class CryptorTests: XCTestCase {
 	Test MD5 with string input and optional chaining.
 	*/
 	func test_Digest_MD5_Composition_String() {
-		let digest = Digest(using: .MD5).update(string: qbfString)?.final()
+		let digest = Digest(using: .md5).update(string: qbfString)?.final()
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
 	/**
@@ -381,7 +381,7 @@ class CryptorTests: XCTestCase {
 	func test_Digest_MD5_Composition_String_2() {
 		let s1 = "The quick brown fox"
 		let s2 = " jumps over the lazy dog."
-		let digest = Digest(using: .MD5).update(string: s1)?.update(string: s2)?.final()
+		let digest = Digest(using: .md5).update(string: s1)?.update(string: s2)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
@@ -389,7 +389,7 @@ class CryptorTests: XCTestCase {
 	Test MD5 with optional chaining and byte array input
 	*/
 	func test_Digest_MD5_Composition_Bytes() {
-		let digest = Digest(using: .MD5).update(byteArray: qbfBytes)?.final()
+		let digest = Digest(using: .md5).update(byteArray: qbfBytes)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
@@ -404,16 +404,16 @@ class CryptorTests: XCTestCase {
 	
 	func test_Crypto_API() {
 		
-		XCTAssertEqual(shaShortBlock.SHA224, sha224BlockOutput)
-		XCTAssertEqual(shaShortBlock.SHA256, sha256BlockOutput)
-		XCTAssertEqual(shaShortBlock.SHA384, sha384BlockOutput)
-		XCTAssertEqual(shaShortBlock.SHA512, sha512BlockOutput)
+		XCTAssertEqual(shaShortBlock.sha224, sha224BlockOutput)
+		XCTAssertEqual(shaShortBlock.sha256, sha256BlockOutput)
+		XCTAssertEqual(shaShortBlock.sha384, sha384BlockOutput)
+		XCTAssertEqual(shaShortBlock.sha512, sha512BlockOutput)
 		#if os(OSX)
 			let theData: NSData = shaShortBlock.data(using:NSUTF8StringEncoding)!
-			XCTAssertEqual(theData.SHA224, CryptoUtils.data(fromHex: sha224BlockOutput))
-			XCTAssertEqual(theData.SHA256, CryptoUtils.data(fromHex: sha256BlockOutput))
-			XCTAssertEqual(theData.SHA384, CryptoUtils.data(fromHex: sha384BlockOutput))
-			XCTAssertEqual(theData.SHA512, CryptoUtils.data(fromHex: sha512BlockOutput))
+			XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput))
+			XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput))
+			XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput))
+			XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput))
 		#endif
 	}
 	
@@ -422,32 +422,32 @@ class CryptorTests: XCTestCase {
 		if usingOpenSSL {
 			return
 		}
-		let digest = Digest(using: .SHA1).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .sha1).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha1ShortBlockOutput)
 		
 	}
 	
 	func test_Digest_SHA224_String() {
-		let digest = Digest(using: .SHA224).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .sha224).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha224BlockOutput)
 	}
 	
 	func test_Digest_SHA256_String() {
-		let digest = Digest(using: .SHA256).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .sha256).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha256BlockOutput)
 	}
 	
 	func test_Digest_SHA384_String() {
-		let digest = Digest(using: .SHA384).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .sha384).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		//XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha384BlockOutput)
 	}
 	
 	func test_Digest_SHA512_String() {
-		let digest = Digest(using: .SHA512).update(string: shaShortBlock)?.final()
+		let digest = Digest(using: .sha512).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		//XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha512BlockOutput)
 	}
@@ -466,7 +466,7 @@ class CryptorTests: XCTestCase {
 		let data = "Hi There"
 		let expected = self.hmacDefaultResultMD5
 		
-		let hmac = HMAC(using:.MD5, key:key).update(string:data)?.final()
+		let hmac = HMAC(using:.md5, key:key).update(string:data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -481,7 +481,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1
 		
-		let hmac = HMAC(using:.SHA1, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using:.sha1, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -495,7 +495,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1
 		
-		let hmac = HMAC(using:.SHA1, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using:.sha1, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -515,7 +515,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA224Output1)
 		
-		let hmac = HMAC(using: HMAC.Algorithm.SHA224, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.sha224, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -526,7 +526,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA256Output1)
 		
-		let hmac = HMAC(using: HMAC.Algorithm.SHA256, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.sha256, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -537,7 +537,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA384Output1)
 		
-		let hmac = HMAC(using: HMAC.Algorithm.SHA384, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.sha384, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -548,7 +548,7 @@ class CryptorTests: XCTestCase {
 		let data : [UInt8] = CryptoUtils.byteArray(fromHex: rfc4231data1)
 		let expected = CryptoUtils.byteArray(fromHex: self.rfc4231SHA512Output1)
 		
-		let hmac = HMAC(using: HMAC.Algorithm.SHA512, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using: HMAC.Algorithm.sha512, key:key).update(byteArray: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
@@ -567,7 +567,7 @@ class CryptorTests: XCTestCase {
 			]
 		for (password, salt, rounds, dkLen, expected) in tests {
 		
-			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
+			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
 			let keyString = CryptoUtils.hexString(from: key)
 			
 			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
@@ -583,7 +583,7 @@ class CryptorTests: XCTestCase {
 			]
 		for (password, salt, rounds, dkLen, expected) in tests2 {
 		
-			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .SHA1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
+			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
 			let keyString = CryptoUtils.hexString(from: key)
 			
 			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
@@ -621,25 +621,25 @@ class CryptorTests: XCTestCase {
 		#if os(OSX)
 			
 			// These are only for CommonCrypto...
-			XCTAssertEqual(Status.Success.toRaw(), CCCryptorStatus(kCCSuccess))
-			XCTAssertEqual(Status.ParamError.toRaw(), CCCryptorStatus(kCCParamError))
-			XCTAssertEqual(Status.BufferTooSmall.toRaw(), CCCryptorStatus(kCCBufferTooSmall))
-			XCTAssertEqual(Status.MemoryFailure.toRaw(), CCCryptorStatus(kCCMemoryFailure))
-			XCTAssertEqual(Status.AlignmentError.toRaw(), CCCryptorStatus(kCCAlignmentError))
-			XCTAssertEqual(Status.DecodeError.toRaw(), CCCryptorStatus(kCCDecodeError))
-			XCTAssertEqual(Status.Unimplemented.toRaw(), CCCryptorStatus(kCCUnimplemented))
-			XCTAssertEqual(Status.Overflow.toRaw(), CCCryptorStatus(kCCOverflow))
-			XCTAssertEqual(Status.RNGFailure.toRaw(), CCCryptorStatus(kCCRNGFailure))
+			XCTAssertEqual(Status.success.toRaw(), CCCryptorStatus(kCCSuccess))
+			XCTAssertEqual(Status.paramError.toRaw(), CCCryptorStatus(kCCParamError))
+			XCTAssertEqual(Status.bufferTooSmall.toRaw(), CCCryptorStatus(kCCBufferTooSmall))
+			XCTAssertEqual(Status.memoryFailure.toRaw(), CCCryptorStatus(kCCMemoryFailure))
+			XCTAssertEqual(Status.alignmentError.toRaw(), CCCryptorStatus(kCCAlignmentError))
+			XCTAssertEqual(Status.decodeError.toRaw(), CCCryptorStatus(kCCDecodeError))
+			XCTAssertEqual(Status.unimplemented.toRaw(), CCCryptorStatus(kCCUnimplemented))
+			XCTAssertEqual(Status.overflow.toRaw(), CCCryptorStatus(kCCOverflow))
+			XCTAssertEqual(Status.rngFailure.toRaw(), CCCryptorStatus(kCCRNGFailure))
 			
-			XCTAssertEqual(Status.Success.description, "Success")
-			XCTAssertEqual(Status.ParamError.description, "ParamError")
-			XCTAssertEqual(Status.BufferTooSmall.description, "BufferTooSmall")
-			XCTAssertEqual(Status.MemoryFailure.description, "MemoryFailure")
-			XCTAssertEqual(Status.AlignmentError.description, "AlignmentError")
-			XCTAssertEqual(Status.DecodeError.description, "DecodeError")
-			XCTAssertEqual(Status.Unimplemented.description, "Unimplemented")
-			XCTAssertEqual(Status.Overflow.description, "Overflow")
-			XCTAssertEqual(Status.RNGFailure.description, "RNGFailure")
+			XCTAssertEqual(Status.success.description, "Success")
+			XCTAssertEqual(Status.paramError.description, "ParamError")
+			XCTAssertEqual(Status.bufferTooSmall.description, "BufferTooSmall")
+			XCTAssertEqual(Status.memoryFailure.description, "MemoryFailure")
+			XCTAssertEqual(Status.alignmentError.description, "AlignmentError")
+			XCTAssertEqual(Status.decodeError.description, "DecodeError")
+			XCTAssertEqual(Status.unimplemented.description, "Unimplemented")
+			XCTAssertEqual(Status.overflow.description, "Overflow")
+			XCTAssertEqual(Status.rngFailure.description, "RNGFailure")
 
 		#endif
 		
@@ -694,11 +694,11 @@ class CryptorTests: XCTestCase {
 	}
 	
 	func testGitHubIssue9() {
-		let blockSize = Cryptor.Algorithm.DES.blockSize
+		let blockSize = Cryptor.Algorithm.des.blockSize
 		let key = CryptoUtils.zeroPad(string: "thekey", blockSize: blockSize)
 		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: blockSize)
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
-		let cryptor = Cryptor(operation: .Encrypt, algorithm: .DES, options: [.ECBMode], key: key, iv: [UInt8]())
+		let cryptor = Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: [UInt8]())
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssertEqual(expectedCipherText, cipherText!)
 	}
@@ -708,7 +708,7 @@ class CryptorTests: XCTestCase {
 		let key = "thekey"
 		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: 8)
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
-		let cryptor = Cryptor(operation: .Encrypt, algorithm: .DES, options: [.ECBMode], key: key, iv: "")
+		let cryptor = Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: "")
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssertEqual(expectedCipherText, cipherText!)
 	}
@@ -718,7 +718,7 @@ class CryptorTests: XCTestCase {
 		let key = Array<UInt8>("thekey".utf8)
 		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: 8)
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
-		let cryptor = Cryptor(operation: .Encrypt, algorithm: .DES, options: [.ECBMode], key: key, iv: [])
+		let cryptor = Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: [])
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssertEqual(expectedCipherText, cipherText!)
 	}

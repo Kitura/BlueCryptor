@@ -59,11 +59,13 @@ let key = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
 let iv = CryptoUtils.byteArray(fromHex: "00000000000000000000000000000000")
 let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
 
-let cipherText = Cryptor(operation: .Encrypt, algorithm: .AES, options: .None, key: key, iv: iv).update(byteArray:  plainText)?.final()
+let cipherText = Cryptor(operation: .encrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: plainText)?.final()
 		
 print(CryptoUtils.hexString(from: cipherText!))
 		
-let decryptedText = Cryptor(operation: .Decrypt, algorithm: .AES, options: .None, key: key, iv: iv).update(byteArray:  cipherText!)?.final()
+let decryptedText = Cryptor(operation: .decrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: cipherText!)?.final()
+
+print(CryptoUtils.hexString(from: decryptedText!))
 ```
 
 ### Digest
@@ -74,13 +76,13 @@ let qbfBytes : [UInt8] = [0x54,0x68,0x65,0x20,0x71,0x75,0x69,0x63,0x6b,0x20,0x62
 let qbfString = "The quick brown fox jumps over the lazy dog."
 
 // String...
-let md5 = Digest(using: .MD5)
+let md5 = Digest(using: .md5)
 md5.update(string: qfbString)
 let digest = md5.final()
 
 // NSData using optional chaining...
 let qbfData = CryptoUtils.data(from: qbfBytes)
-let digest = Digest(using: .MD5).update(data: qbfData)?.final()
+let digest = Digest(using: .md5).update(data: qbfData)?.final()
 ```
 
 ### HMAC
@@ -92,7 +94,7 @@ let myData = "4869205468657265"
 let key = CryptoUtils.byteArray(fromHex: myKeyData)
 let data : [UInt8] = CryptoUtils.byteArray(fromHex: myData)
 
-let hmac = HMAC(using: HMAC.Algorithm.SHA256, key: key).update(byteArray: data)?.final()
+let hmac = HMAC(using: HMAC.Algorithm.sha256, key: key).update(byteArray: data)?.final()
 ```
 
 ### Key Derivation
@@ -104,7 +106,7 @@ let salt = salt
 let rounds: UInt = 2
 let derivedKeyLen = 20
 
-let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .SHA1, rounds: rounds, derivedKeyLength: derivedKeyLen)
+let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: rounds, derivedKeyLength: derivedKeyLen)
 ley keyString = CryptoUtils.hexString(from: key)
 ```
 
@@ -149,10 +151,10 @@ let sha256BlockOutput = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff6
 let sha384BlockOutput = "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
 let sha512BlockOutput = "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
 let theData: NSData = shaShortBlock.data(using:NSUTF8StringEncoding)!
-XCTAssertEqual(theData.SHA224, CryptoUtils.data(fromHex: sha224BlockOutput))
-XCTAssertEqual(theData.SHA256, CryptoUtils.data(fromHex: sha256BlockOutput))
-XCTAssertEqual(theData.SHA384, CryptoUtils.data(fromHex: sha384BlockOutput))
-XCTAssertEqual(theData.SHA512, CryptoUtils.data(fromHex: sha512BlockOutput))
+XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput))
+XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput))
+XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput))
+XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput))
 ```
 These tests pass on **OSX** but will fail with the following error on **Linux**: `This API not supported on Linux.`
 

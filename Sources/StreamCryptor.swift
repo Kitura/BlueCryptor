@@ -69,10 +69,10 @@ public class StreamCryptor {
     public enum Operation {
 
 		/// Encrypting
-        case Encrypt
+        case encrypt
 		
 		/// Decrypting
-        case Decrypt
+        case decrypt
         
 		#if os(OSX)
 		
@@ -81,10 +81,10 @@ public class StreamCryptor {
 			
     	        switch self {
 				
-        	    case Encrypt:
+        	    case encrypt:
 					return CCOperation(kCCEncrypt)
 				
-	            case Decrypt:
+	            case decrypt:
 					return CCOperation(kCCDecrypt)
         	    }
 	        }
@@ -96,10 +96,10 @@ public class StreamCryptor {
 			
 				switch self {
 		
-				case Encrypt:
+				case encrypt:
 					return 0
 			
-				case Decrypt:
+				case decrypt:
 					return 1
 				}
 			}
@@ -112,9 +112,9 @@ public class StreamCryptor {
 	///
     public enum ValidKeySize {
 		
-        case Fixed(Int)
-        case Discrete([Int])
-        case Range(Int,Int)
+        case fixed(Int)
+        case discrete([Int])
+        case range(Int,Int)
         
         ///
 		///	Determines if a given `keySize` is valid for this algorithm.
@@ -127,13 +127,13 @@ public class StreamCryptor {
 			
             switch self {
 				
-            case .Fixed(let fixed):
+            case .fixed(let fixed):
 				return (fixed == keySize)
 				
-            case .Range(let min, let max):
+            case .range(let min, let max):
 				return ((keySize >= min) && (keySize <= max))
 				
-            case .Discrete(let values):
+            case .discrete(let values):
 				return values.contains(keySize)
             }
         }
@@ -150,13 +150,13 @@ public class StreamCryptor {
 			
             switch self {
 				
-            case .Fixed(let fixed):
+            case .fixed(let fixed):
                 return (keySize <= fixed) ? fixed : nil
 				
-            case .Range(let min, let max):
+            case .range(let min, let max):
                 return (keySize > max) ? nil : ((keySize < min) ? min : keySize)
 				
-			case .Discrete(let values):
+			case .discrete(let values):
                 return values.sorted().reduce(nil) { answer, current in
                     return answer ?? ((current >= keySize) ? current : nil)
                 }
@@ -174,34 +174,34 @@ public class StreamCryptor {
 		public typealias RawValue = Int
 		public let rawValue: RawValue
 		
-		/// Convert from a native value (i.e. `0`, `kCCOptionPKCS7Padding`, `kCCOptionECBMode`)
+		/// Convert from a native value (i.e. `0`, `kCCOptionpkcs7Padding`, `kCCOptionECBMode`)
 		public init(rawValue: RawValue) {
 			self.rawValue = rawValue
 		}
 		
-		/// Convert from a native value (i.e. `0`, `kCCOptionPKCS7Padding`, `kCCOptionECBMode`)
+		/// Convert from a native value (i.e. `0`, `kCCOptionpkcs7Padding`, `kCCOptionECBMode`)
 		public init(_ rawValue: RawValue) {
 			self.init(rawValue: rawValue)
 		}
 		
 		/// No options
-		public static let None = Options(rawValue: 0)
+		public static let none = Options(rawValue: 0)
 		
 		#if os(OSX)
 		
 			/// Use padding. Needed unless the input is a integral number of blocks long.
-			public static var PKCS7Padding =  Options(rawValue:kCCOptionPKCS7Padding)
+			public static var pkcs7Padding =  Options(rawValue:kCCOptionPKCS7Padding)
 		
 			/// Electronic Code Book Mode. Don't use this.
-			public static var ECBMode = Options(rawValue:kCCOptionECBMode)
+			public static var ecbMode = Options(rawValue:kCCOptionECBMode)
 		
 		#elseif os(Linux)
 		
 			/// Use padding. Needed unless the input is a integral number of blocks long.
-			public static var PKCS7Padding =  Options(rawValue:0x0001)
+			public static var pkcs7Padding =  Options(rawValue:0x0001)
 		
 			/// Electronic Code Book Mode. Don't use this.
-			public static var ECBMode = Options(rawValue:0x0002)
+			public static var ecbMode = Options(rawValue:0x0002)
 		
 		#endif
 	}
@@ -214,44 +214,44 @@ public class StreamCryptor {
 		#if os(OSX)
 		
         /// Advanced Encryption Standard
-		/// - Note: AES and AES128 are equivalent.
-        case AES, AES128, AES192, AES256
+		/// - Note: aes and aes128 are equivalent.
+        case aes, aes128, aes192, aes256
 		
         /// Data Encryption Standard
-        case DES
+        case des
 		
-        /// Triple DES
-        case TripleDES
+        /// Triple des
+        case tripleDes
 		
-        /// CAST
-        case CAST
+        /// cast
+        case cast
 		
-        /// RC2
-        case RC2
+        /// rc2
+        case rc2
 		
-        /// Blowfish
-        case Blowfish
+        /// blowfish
+        case blowfish
 
 		#elseif os(Linux)
 		
 		/// Advanced Encryption Standard
-		/// - Note: AES and AES128 are equivalent.
-		case AES, AES128, AES192, AES256
+		/// - Note: aes and aes128 are equivalent.
+		case aes, aes128, aes192, aes256
 		
 		/// Data Encryption Standard
-		case DES
+		case des
 		
-		/// Triple DES
-		case TripleDES
+		/// Triple des
+		case tripleDes
 		
-		/// CAST
-		case CAST
+		/// cast
+		case cast
 		
-		/// RC2
-		case RC2
+		/// rc2
+		case rc2
 		
-		/// Blowfish
-		case Blowfish
+		/// blowfish
+		case blowfish
 		
 		#endif
 
@@ -260,22 +260,22 @@ public class StreamCryptor {
 			
             switch self {
 				
-            case AES, AES128, AES192, AES256:
+            case aes, aes128, aes192, aes256:
 				return kCCBlockSizeAES128
 				
-            case DES:
+            case des:
 				return kCCBlockSizeDES
 				
-            case TripleDES:
+            case tripleDes:
 				return kCCBlockSize3DES
 				
-            case CAST:
+            case cast:
 				return kCCBlockSizeCAST
 				
-            case RC2:
+            case rc2:
 				return kCCBlockSizeRC2
 				
-            case Blowfish:
+            case blowfish:
 				return kCCBlockSizeBlowfish
             }
         }
@@ -287,22 +287,22 @@ public class StreamCryptor {
 			
             switch self {
 				
-			case AES, AES128, AES192, AES256:
+			case aes, aes128, aes192, aes256:
 				return CCAlgorithm(kCCAlgorithmAES)
 				
-            case DES:
+            case des:
 				return CCAlgorithm(kCCAlgorithmDES)
 				
-            case TripleDES:
+            case tripleDes:
 				return CCAlgorithm(kCCAlgorithm3DES)
 				
-            case CAST:
+            case cast:
 				return CCAlgorithm(kCCAlgorithmCAST)
 				
-            case RC2:
+            case rc2:
 				return CCAlgorithm(kCCAlgorithmRC2)
 				
-            case Blowfish:
+            case blowfish:
 				return CCAlgorithm(kCCAlgorithmBlowfish)
             }
         }
@@ -312,62 +312,62 @@ public class StreamCryptor {
 		/// Native, OpenSSL function for algorithm.
 		func nativeValue(options: Options) -> UnsafePointer<EVP_CIPHER> {
 			
-			if options == .PKCS7Padding || options == .None {
+			if options == .pkcs7Padding || options == .none {
 			
 				switch self {
 					
-				case AES, AES128:
+				case aes, aes128:
 					return EVP_aes_128_cbc()
 		
-				case AES256:
+				case aes256:
 					return EVP_aes_256_cbc()
 					
-				case AES192:
+				case aes192:
 					return EVP_aes_192_cbc()
 					
-				case DES:
+				case des:
 					return EVP_des_cbc()
 					
-				case TripleDES:
+				case tripleDes:
 					return EVP_des_ede3_cbc()
 					
-				case CAST:
+				case cast:
 					return EVP_cast5_cbc()
 					
-				case RC2:
+				case rc2:
 					return EVP_rc2_cbc()
 					
-				case Blowfish:
+				case blowfish:
 					return EVP_bf_cbc()
 				}
 			}
 			
-			if options == .ECBMode {
+			if options == .ecbMode {
 				
 				switch self {
 					
-				case AES, AES128:
+				case aes, aes128:
 					return EVP_aes_128_ecb()
 		
-				case AES256:
+				case aes256:
 					return EVP_aes_256_ecb()
 					
-				case AES192:
+				case aes192:
 					return EVP_aes_192_ecb()
 					
-				case DES:
+				case des:
 					return EVP_des_ecb()
 					
-				case TripleDES:
+				case tripleDes:
 					return EVP_des_ede3_ecb()
 					
-				case CAST:
+				case cast:
 					return EVP_cast5_ecb()
 					
-				case RC2:
+				case rc2:
 					return EVP_rc2_ecb()
 					
-				case Blowfish:
+				case blowfish:
 					return EVP_bf_ecb()
 				}
 			}
@@ -388,52 +388,52 @@ public class StreamCryptor {
 			
 				switch self {
 					
-				case AES, AES128, AES192, AES256:
-					return .Discrete([kCCKeySizeAES128, kCCKeySizeAES192, kCCKeySizeAES256])
+				case aes, aes128, aes192, aes256:
+					return .discrete([kCCKeySizeAES128, kCCKeySizeAES192, kCCKeySizeAES256])
 					
-				case DES:
-					return .Fixed(kCCKeySizeDES)
+				case des:
+					return .fixed(kCCKeySizeDES)
 					
-				case TripleDES:
-					return .Fixed(kCCKeySize3DES)
+				case tripleDes:
+					return .fixed(kCCKeySize3DES)
 					
-				case CAST:
-					return .Range(kCCKeySizeMinCAST, kCCKeySizeMaxCAST)
+				case cast:
+					return .range(kCCKeySizeMinCAST, kCCKeySizeMaxCAST)
 					
-				case RC2:
-					return .Range(kCCKeySizeMinRC2, kCCKeySizeMaxRC2)
+				case rc2:
+					return .range(kCCKeySizeMinRC2, kCCKeySizeMaxRC2)
 					
-				case Blowfish:
-					return .Range(kCCKeySizeMinBlowfish, kCCKeySizeMaxBlowfish)
+				case blowfish:
+					return .range(kCCKeySizeMinBlowfish, kCCKeySizeMaxBlowfish)
 				}
 				
 			#elseif os(Linux)
 			
 				switch self {
 					
-				case AES, AES128:
-					return .Fixed(kCCKeySizeAES128)
+				case aes, aes128:
+					return .fixed(kCCKeySizeAES128)
 					
-				case AES192:
-					return .Fixed(kCCKeySizeAES192)
+				case aes192:
+					return .fixed(kCCKeySizeAES192)
 					
-				case AES256:
-					return .Fixed(kCCKeySizeAES256)
+				case aes256:
+					return .fixed(kCCKeySizeAES256)
 					
-				case DES:
-					return .Fixed(kCCKeySizeDES)
+				case des:
+					return .fixed(kCCKeySizeDES)
 					
-				case TripleDES:
-					return .Fixed(kCCKeySize3DES)
+				case tripleDes:
+					return .fixed(kCCKeySize3DES)
 					
-				case CAST:
-					return .Range(kCCKeySizeMinCAST, kCCKeySizeMaxCAST)
+				case cast:
+					return .range(kCCKeySizeMinCAST, kCCKeySizeMaxCAST)
 					
-				case RC2:
-					return .Range(kCCKeySizeMinRC2, kCCKeySizeMaxRC2)
+				case rc2:
+					return .range(kCCKeySizeMinRC2, kCCKeySizeMaxRC2)
 					
-				case Blowfish:
-					return .Range(kCCKeySizeMinBlowfish, kCCKeySizeMaxBlowfish)
+				case blowfish:
+					return .range(kCCKeySizeMinBlowfish, kCCKeySizeMaxBlowfish)
 				}
 				
 			#endif
@@ -466,7 +466,7 @@ public class StreamCryptor {
     /// The status code resulting from the last method call to this Cryptor.
     ///    Used to get additional information when optional chaining collapes.
 	///
-    public internal(set) var status : Status = .Success
+    public internal(set) var status : Status = .success
 
 	#if os(OSX)
 	
@@ -479,7 +479,7 @@ public class StreamCryptor {
 	private let context: UnsafeMutablePointer<EVP_CIPHER_CTX> = EVP_CIPHER_CTX_new()
 	
 	/// Operation
-	private var operation: Operation = .Encrypt
+	private var operation: Operation = .encrypt
 	
 	/// The algorithm
 	private var algorithm: Algorithm
@@ -494,7 +494,7 @@ public class StreamCryptor {
 	///
 	/// - Parameters: 
 	///		- operation: 	The operation to perform see Operation (Encrypt, Decrypt)
-	/// 	- algorithm: 	The algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
+	/// 	- algorithm: 	The algorithm to use see Algorithm (AES, des, tripleDes, cast, rc2, blowfish)
 	/// 	- keyBuffer: 	Pointer to key buffer
 	/// 	- keyByteCount: Number of bytes in the key
 	/// 	- ivBuffer: 	Initialization vector buffer
@@ -531,10 +531,10 @@ public class StreamCryptor {
 		
 			switch self.operation {
 			
-			case .Encrypt:
+			case .encrypt:
 				rawStatus = EVP_EncryptInit_ex(self.context, algorithm.nativeValue(options: options), nil, keyBuffer, ivBuffer)
 		
-			case .Decrypt:
+			case .decrypt:
 				rawStatus = EVP_DecryptInit(self.context, algorithm.nativeValue(options: options), keyBuffer, ivBuffer)
 			}
 		
@@ -550,14 +550,14 @@ public class StreamCryptor {
 		
 			// Default to no padding...
 			var needPadding: Int32 = 0
-			if options == .PKCS7Padding {
+			if options == .pkcs7Padding {
 				needPadding = 1
 			}
 		
 			// Note: This call must be AFTER the init call above...
 			EVP_CIPHER_CTX_set_padding(self.context, needPadding);
 		
-			self.status = Status.Success
+			self.status = Status.success
 		
 		#endif
 		
@@ -568,7 +568,7 @@ public class StreamCryptor {
 	///
 	///	- Parameters:
  	///		- operation: 	The operation to perform see Operation (Encrypt, Decrypt)
-	///		- algorithm: 	The algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
+	///		- algorithm: 	The algorithm to use see Algorithm (AES, des, tripleDes, cast, rc2, blowfish)
 	///		- key: 			A byte array containing key data
 	///		- iv: 			A byte array containing initialization vector
     ///
@@ -593,7 +593,7 @@ public class StreamCryptor {
 	///
 	///	- Parameters:
  	///		- operation: 	The operation to perform see Operation (Encrypt, Decrypt)
-	///		- algorithm: 	The algorithm to use see Algorithm (AES, DES, TripleDES, CAST, RC2, Blowfish)
+	///		- algorithm: 	The algorithm to use see Algorithm (AES, des, tripleDes, cast, rc2, blowfish)
 	///		- key: 			A string containing key data (will be interpreted as UTF8)
 	///		- iv: 			A string containing initialization vector data (will be interpreted as UTF8)
     ///
@@ -624,7 +624,7 @@ public class StreamCryptor {
 			let rawStatus = CCCryptorRelease(context.pointee)
 			if let status = Status.fromRaw(status: rawStatus) {
 			
-				if status != .Success {
+				if status != .success {
 				
 					NSLog("WARNING: CCCryptoRelease failed with status \(rawStatus).")
 				}
@@ -733,7 +733,7 @@ public class StreamCryptor {
 	///
 	public func update(bufferIn: UnsafePointer<UInt8>, byteCountIn: Int, bufferOut: UnsafeMutablePointer<UInt8>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
 		
-        if self.status == .Success {
+        if self.status == .success {
 			
 			#if os(OSX)
 
@@ -751,10 +751,10 @@ public class StreamCryptor {
 			
 				switch self.operation {
 				
-				case .Encrypt:
+				case .encrypt:
 					rawStatus = EVP_EncryptUpdate(self.context, bufferOut, &outLength, bufferIn, Int32(byteCountIn))
 					
-				case .Decrypt:
+				case .decrypt:
 					rawStatus = EVP_DecryptUpdate(self.context, bufferOut, &outLength, bufferIn, Int32(byteCountIn))
 				}
 			
@@ -771,7 +771,7 @@ public class StreamCryptor {
 				
 				} else {
 					
-					self.status = Status.Success
+					self.status = Status.success
 				}
 			
 			#endif
@@ -799,7 +799,7 @@ public class StreamCryptor {
 	///
 	public func final(bufferOut: UnsafeMutablePointer<UInt8>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
 		
-		if self.status == Status.Success {
+		if self.status == Status.success {
 			
 			#if os(OSX)
 			
@@ -817,10 +817,10 @@ public class StreamCryptor {
 			
 				switch self.operation {
 				
-				case .Encrypt:
+				case .encrypt:
 					rawStatus = EVP_EncryptFinal(self.context, bufferOut, &outLength)
 				
-				case .Decrypt:
+				case .decrypt:
 					rawStatus = EVP_DecryptFinal(self.context, bufferOut, &outLength)
 				}
 			
@@ -837,7 +837,7 @@ public class StreamCryptor {
 				
 				} else {
 					
-					self.status = Status.Success
+					self.status = Status.success
 				}
 			
 			#endif

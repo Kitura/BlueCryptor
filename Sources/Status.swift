@@ -29,32 +29,32 @@ import Foundation
 ///
 public enum Status: CCCryptorStatus, ErrorProtocol, CustomStringConvertible {
 
-    /// Successful
-    case Success
+    /// successful
+    case success
 	
     /// Parameter Error
-    case ParamError
+    case paramError
 	
     /// Buffer too Small
-    case BufferTooSmall
+    case bufferTooSmall
 	
     /// Memory Failure
-    case MemoryFailure
+    case memoryFailure
 	
     /// Alignment Error
-    case AlignmentError
+    case alignmentError
 	
     /// Decode Error
-    case DecodeError
+    case decodeError
 	
     /// Unimplemented
-    case Unimplemented
+    case unimplemented
 	
     /// Overflow
-    case Overflow
+    case overflow
 	
     /// Random Number Generator Err
-    case RNGFailure
+    case rngFailure
     
     ///
     /// Converts this value to a native `CCCryptorStatus` value.
@@ -63,23 +63,23 @@ public enum Status: CCCryptorStatus, ErrorProtocol, CustomStringConvertible {
 		
         switch self {
 			
-        case Success:
+        case success:
 			return CCCryptorStatus(kCCSuccess)
-        case ParamError:
+        case paramError:
 			return CCCryptorStatus(kCCParamError)
-        case BufferTooSmall:
+        case bufferTooSmall:
    			return CCCryptorStatus(kCCBufferTooSmall)
-        case MemoryFailure:
+        case memoryFailure:
 			return CCCryptorStatus(kCCMemoryFailure)
-        case AlignmentError:
+        case alignmentError:
    			return CCCryptorStatus(kCCAlignmentError)
-        case DecodeError:
+        case decodeError:
 			return CCCryptorStatus(kCCDecodeError)
-        case Unimplemented:
+        case unimplemented:
 			return CCCryptorStatus(kCCUnimplemented)
-        case Overflow:
+        case overflow:
 			return CCCryptorStatus(kCCOverflow)
-        case RNGFailure:
+        case rngFailure:
 			return CCCryptorStatus(kCCRNGFailure)
         }
     }
@@ -87,15 +87,15 @@ public enum Status: CCCryptorStatus, ErrorProtocol, CustomStringConvertible {
     ///
     /// Human readable descriptions of the values. (Not needed in Swift 2.0?)
     ///
-    static let descriptions = [ Success: "Success",
-                                ParamError: "ParamError",
-                                BufferTooSmall: "BufferTooSmall",
-                                MemoryFailure: "MemoryFailure",
-                                AlignmentError: "AlignmentError",
-                                DecodeError: "DecodeError",
-                                Unimplemented: "Unimplemented",
-                                Overflow: "Overflow",
-                                RNGFailure: "RNGFailure" ]
+    static let descriptions = [ success: "Success",
+                                paramError: "ParamError",
+                                bufferTooSmall: "BufferTooSmall",
+                                memoryFailure: "MemoryFailure",
+                                alignmentError: "AlignmentError",
+                                decodeError: "DecodeError",
+                                unimplemented: "Unimplemented",
+                                overflow: "Overflow",
+                                rngFailure: "RNGFailure" ]
     
     ///
     /// Obtain human-readable string from enum value.
@@ -110,15 +110,15 @@ public enum Status: CCCryptorStatus, ErrorProtocol, CustomStringConvertible {
     ///
 	public static func fromRaw(status: CCCryptorStatus) -> Status? {
 		
-        var from = [ kCCSuccess: Success,
-                     kCCParamError: ParamError,
-                     kCCBufferTooSmall: BufferTooSmall,
-                     kCCMemoryFailure: MemoryFailure,
-                     kCCAlignmentError: AlignmentError,
-                     kCCDecodeError: DecodeError,
-                     kCCUnimplemented: Unimplemented,
-                     kCCOverflow: Overflow,
-                     kCCRNGFailure: RNGFailure ]
+        var from = [ kCCSuccess: success,
+                     kCCParamError: paramError,
+                     kCCBufferTooSmall: bufferTooSmall,
+                     kCCMemoryFailure: memoryFailure,
+                     kCCAlignmentError: alignmentError,
+                     kCCDecodeError: decodeError,
+                     kCCUnimplemented: unimplemented,
+                     kCCOverflow: overflow,
+                     kCCRNGFailure: rngFailure ]
         return from[Int(status)]
     
     }
@@ -131,45 +131,45 @@ public enum Status: CCCryptorStatus, ErrorProtocol, CustomStringConvertible {
 ///
 public enum Status: ErrorProtocol, CustomStringConvertible {
 	
-	/// Success
-	case Success
+	/// success
+	case success
 	
 	/// Unimplemented with reason
-	case Unimplemented(String)
+	case unimplemented(String)
 	
 	/// Not supported with reason
-	case NotSupported(String)
+	case notSupported(String)
 	
 	/// Parameter Error
-	case ParamError
+	case paramError
 	
 	/// Failure with error code
- 	case Fail(UInt)
+ 	case fail(UInt)
 	
 	/// Random Byte Generator Failure with error code
-	case RNGFailure(UInt)
+	case rngFailure(UInt)
 	
 	/// The error code itself
 	public var code: Int {
 		
 		switch self {
 			
-		case Success:
+		case success:
 			return 0
 			
-		case NotSupported:
+		case notSupported:
 			return -1
 			
-		case Unimplemented:
+		case unimplemented:
 			return -2
 			
-		case ParamError:
+		case paramError:
 			return -3
 			
-		case Fail(let code):
+		case fail(let code):
 			return Int(code)
 			
-		case RNGFailure(let code):
+		case rngFailure(let code):
 			return Int(code)
 		}
 	}
@@ -179,7 +179,7 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 	///
 	public static func fromRaw(status: UInt) -> Status? {
 		
-		return Status.Fail(status)
+		return Status.fail(status)
 	}
 	
 	///
@@ -189,22 +189,22 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 		
 		switch self {
 			
-		case Success:
+		case success:
 			return "No error"
 			
-		case NotSupported(let reason):
+		case notSupported(let reason):
 			return "Not supported: \(reason)"
 			
-		case Unimplemented(let reason):
+		case unimplemented(let reason):
 			return "Not implemented: \(reason)"
 			
-		case .ParamError:
+		case paramError:
 			return "Invalid parameters passed"
 			
-		case Fail(let errorCode):
+		case fail(let errorCode):
 			return "ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
 
-		case RNGFailure(let errorCode):
+		case rngFailure(let errorCode):
 			return "Random Byte Generator ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
 		}
 	}

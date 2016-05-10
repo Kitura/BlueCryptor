@@ -34,32 +34,32 @@ public class HMAC : Updateable {
     public enum Algorithm {
 		
         /// Message Digest 5
-        case MD5
+        case md5
 		
         /// Secure Hash Algorithm 1
-        case SHA1
+        case sha1
 		
         /// Secure Hash Algorithm 2 224-bit
-		case SHA224
+		case sha224
 		
         /// Secure Hash Algorithm 2 256-bit
-		case SHA256
+		case sha256
 		
         /// Secure Hash Algorithm 2 384-bit
-		case SHA384
+		case sha384
 		
         /// Secure Hash Algorithm 2 512-bit
-		case SHA512
+		case sha512
         
 		#if os(OSX)
 		
 			static let fromNative: [CCHmacAlgorithm: Algorithm] = [
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.SHA1,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.MD5,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA256):.SHA256,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA384):.SHA384,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA512):.SHA512,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA224):.SHA224 ]
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.sha1,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.md5,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA256):.sha256,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA384):.sha384,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA512):.sha512,
+		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA224):.sha224 ]
 		
 			static func fromNativeValue(nativeAlg: CCHmacAlgorithm) -> Algorithm? {
 			
@@ -70,17 +70,17 @@ public class HMAC : Updateable {
 			
 				switch self {
 				
-				case .SHA1:
+				case .sha1:
 					return CCHmacAlgorithm(kCCHmacAlgSHA1)
-				case .MD5:
+				case .md5:
 					return CCHmacAlgorithm(kCCHmacAlgMD5)
-				case .SHA224:
+				case .sha224:
 					return CCHmacAlgorithm(kCCHmacAlgSHA224)
-				case .SHA256:
+				case .sha256:
 					return CCHmacAlgorithm(kCCHmacAlgSHA256)
-				case .SHA384:
+				case .sha384:
 					return CCHmacAlgorithm(kCCHmacAlgSHA384)
-				case .SHA512:
+				case .sha512:
 					return CCHmacAlgorithm(kCCHmacAlgSHA512)
 				}
 			}
@@ -91,17 +91,17 @@ public class HMAC : Updateable {
 		
 				switch self {
 		
-				case .SHA1:
+				case .sha1:
 					fatalError("SHA1 HMAC not supported by OpenSSL")
-				case .MD5:
+				case .md5:
 					return EVP_md5()
-				case .SHA224:
+				case .sha224:
 					return EVP_sha224()
-				case .SHA256:
+				case .sha256:
 					return EVP_sha256()
-				case .SHA384:
+				case .sha384:
 					return EVP_sha384()
-				case .SHA512:
+				case .sha512:
 					return EVP_sha512()
 				}
 			}
@@ -116,17 +116,17 @@ public class HMAC : Updateable {
 				
 				switch self {
 					
-				case .SHA1:
+				case .sha1:
 					return Int(CC_SHA1_DIGEST_LENGTH)
-				case .MD5:
+				case .md5:
 					return Int(CC_MD5_DIGEST_LENGTH)
-				case .SHA224:
+				case .sha224:
 					return Int(CC_SHA224_DIGEST_LENGTH)
-				case .SHA256:
+				case .sha256:
 					return Int(CC_SHA256_DIGEST_LENGTH)
-				case .SHA384:
+				case .sha384:
 					return Int(CC_SHA384_DIGEST_LENGTH)
-				case .SHA512:
+				case .sha512:
 					return Int(CC_SHA512_DIGEST_LENGTH)
 				}
 				
@@ -134,17 +134,17 @@ public class HMAC : Updateable {
 				
 				switch self {
 					
-				case .SHA1:
+				case .sha1:
 					fatalError("SHA1 HMAC not supported by OpenSSL")
-				case .MD5:
+				case .md5:
 					return Int(MD5_DIGEST_LENGTH)
-				case .SHA224:
+				case .sha224:
 					return Int(SHA224_DIGEST_LENGTH)
-				case .SHA256:
+				case .sha256:
 					return Int(SHA256_DIGEST_LENGTH)
-				case .SHA384:
+				case .sha384:
 					return Int(SHA384_DIGEST_LENGTH)
-				case .SHA512:
+				case .sha512:
 					return Int(SHA512_DIGEST_LENGTH)
 				}
 			#endif
@@ -160,7 +160,7 @@ public class HMAC : Updateable {
 	#endif
     
     /// Status of the calculation
-    public internal(set) var status: Status = .Success
+    public internal(set) var status: Status = .success
 	
 	
     private let context = Context(allocatingCapacity: 1)

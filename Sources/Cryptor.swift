@@ -40,7 +40,7 @@ public class Cryptor : StreamCryptor, Updateable {
 		var dataOut = Array<UInt8>(repeating: 0, count:byteCount)
         var dataOutMoved = 0
         (dataOutMoved, self.status) = final(byteArrayOut: &dataOut)
-        if self.status != .Success {
+        if self.status != .success {
    	        return nil
        	}
         accumulator += dataOut[0..<Int(dataOutMoved)]
@@ -61,7 +61,7 @@ public class Cryptor : StreamCryptor, Updateable {
 		var dataOut = Array<UInt8>(repeating: 0, count:outputLength)
         var dataOutMoved = 0
         update(bufferIn: UnsafePointer<UInt8>(buffer), byteCountIn: byteCount, bufferOut: &dataOut, byteCapacityOut: dataOut.count, byteCountOut: &dataOutMoved)
-		if self.status != .Success {
+		if self.status != .success {
 			return nil
 		}
         accumulator += dataOut[0..<Int(dataOutMoved)]
