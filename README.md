@@ -12,12 +12,14 @@ This package is functionally complete and has all current relevant tests passing
 
 ### Swift
 * Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-05-03-a` toolchain (**Minimum REQUIRED for latest release**)
-* Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a` toolchain (**Recommended**)
+* Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a` toolchain (*Recommended*)
 
 ### OS X
 
 * OS X 10.11.0 (*El Capitan*) or higher
 * Xcode Version 7.3.1 (7D1012) or higher using the one of the above toolchains (*Recommended*)
+* Xcode Command Line Tools (**REQUIRED**)
+	* To install, from the command line enter: ```xcode-select --install```
 
 ### Linux
 
