@@ -18,8 +18,6 @@ This package is functionally complete and has all current relevant tests passing
 
 * OS X 10.11.0 (*El Capitan*) or higher
 * Xcode Version 7.3.1 (7D1012) or higher using the one of the above toolchains (*Recommended*)
-* Xcode Command Line Tools (**REQUIRED**)
-	* To install, from the command line enter: ```xcode-select --install```
 
 ### Linux
 
