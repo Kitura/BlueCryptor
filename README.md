@@ -62,7 +62,7 @@ let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a
 var textToCipher = plainText
 if plainText.count % Cryptor.Algorithm.aes.blockSize != 0 {
 	textToCipher = CryptoUtils.zeroPad(byteArray: plainText, blockSize: Cryptor.Algorithm.aes.blockSize)
-
+}
 let cipherText = Cryptor(operation: .encrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: textToCipher)?.final()
 		
 print(CryptoUtils.hexString(from: cipherText!))
@@ -120,9 +120,9 @@ The following demonstrates generating random bytes of a given length.
 ```swift
 let numberOfBytes = 256*256
 do {
-  let randomBytes = try Random.generate(byteCount: numberOfBytes)
+	let randomBytes = try Random.generate(byteCount: numberOfBytes)
 } catch {
-  print("Error generating random bytes")
+  	print("Error generating random bytes")
 }
 ```
 
