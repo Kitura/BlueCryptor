@@ -33,6 +33,7 @@ class CryptorTests: XCTestCase {
 	
 		return [
 			("test_Cryptor_AES_ECB", test_Cryptor_AES_ECB),
+			("test_Cryptor_AES_ECB_Padded", test_Cryptor_AES_ECB_Padded),
 			("test_Cryptor_AES_ECB_2", test_Cryptor_AES_ECB_2),
 			("test_Cryptor_AES_ECB_Short", test_Cryptor_AES_ECB_Short),
 			("test_Cryptor_AES_CBC_1", test_Cryptor_AES_CBC_1),
@@ -93,9 +94,12 @@ class CryptorTests: XCTestCase {
     
 	// MARK: - Cryptor tests
 	var aesKey1Bytes = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
-	var aesPlaintext1Bytes = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
+	var aesPlaintext1Bytes = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")		// Note: 16 bytes = 1 block AES
+	var aesPlaintext2Bytes = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a3b")	// Note: 17 bytes = 2 blocks AES when padded
 	var aesCipherText1Bytes = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
+	var aesCipherText2Bytes = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97a4b2933fde9dabeda5e862373bbccf8c")
 	
+	/// Tests AES ECB without need for padding...
 	func test_Cryptor_AES_ECB() {
 		let aesEncrypt = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
 		                         key:aesKey1Bytes, iv:Array<UInt8>())
@@ -106,10 +110,22 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(dataOut, aesCipherText1Bytes, "Obtained expected cipher text")
 	}
 	
-	/**
-	Tests two blocks of ECB mode AES. Demonstrates weakness in ECB; repeated plaintext block
-	results in repeated ciphertext block.
-	*/
+	/// Tests AES ECB requiring padding of text to encrypt...
+	func test_Cryptor_AES_ECB_Padded() {
+		let aesEncrypt = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
+		                         key:aesKey1Bytes, iv:Array<UInt8>())
+		var plainText: [UInt8] = aesPlaintext2Bytes
+		if aesPlaintext2Bytes.count % Cryptor.Algorithm.aes.blockSize != 0 {
+			plainText = CryptoUtils.zeroPad(byteArray: aesPlaintext2Bytes, blockSize: Cryptor.Algorithm.aes.blockSize)
+		}
+		var dataOut = Array<UInt8>(repeating:UInt8(0), count:plainText.count)
+		let (c, status) = aesEncrypt.update(byteArrayIn: plainText, byteArrayOut: &dataOut)
+		XCTAssert(status == .success);
+		XCTAssert(aesCipherText2Bytes.count == Int(c) , "Counts are as expected")
+		XCTAssertEqual(dataOut, aesCipherText2Bytes, "Obtained expected cipher text")
+	}
+	
+	/// Tests two blocks of ECB mode AES. Demonstrates weakness in ECB; repeated plaintext block results in repeated ciphertext block.
 	func test_Cryptor_AES_ECB_2() {
 		let key = aesKey1Bytes
 		let plainText = aesPlaintext1Bytes + aesPlaintext1Bytes
@@ -122,10 +138,7 @@ class CryptorTests: XCTestCase {
 		
 	}
 	
-	/**
-	Demonstrates alignment error when plaintext is not an integral number
-	of blocks long.
-	*/
+	/// Demonstrates alignment error when plaintext is not an integral number of blocks long.
 	func test_Cryptor_AES_ECB_Short() {
 		let key = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
 		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e11739317")
@@ -137,9 +150,7 @@ class CryptorTests: XCTestCase {
 		#endif
 	}
 	
-	/**
-	Single block CBC mode. Results should be identical to ECB mode.
-	*/
+	/// Single block CBC mode. Results should be identical to ECB mode.
 	func test_Cryptor_AES_CBC_1() {
 		let key =   CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
 		let iv =    CryptoUtils.byteArray(fromHex: "00000000000000000000000000000000")
@@ -158,9 +169,9 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(decryptedText!, plainText, "Recovered plaintext.")
 	}
 	
-	
+	/// DES EBC mode test 1
 	func test_Cryptor_DES_EBC_1() {
-		// Data from table A.1 http://csrc.nist.gov/publications/nistpubs/800-20/800-20.pdf
+		/// Data from table A.1 http://csrc.nist.gov/publications/nistpubs/800-20/800-20.pdf
 		let ivs = [
 		          	"8000000000000000",
 		          	"4000000000000000",
@@ -319,21 +330,18 @@ class CryptorTests: XCTestCase {
 	}
 	
 	
-	/**
-	This is UTF8 encoded "The quick brown fox jumps over the lazy dog."
-	*/
+	/// This is UTF8 encoded "The quick brown fox jumps over the lazy dog."
 	let qbfBytes : [UInt8] = [0x54,0x68,0x65,0x20,0x71,0x75,0x69,0x63,0x6b,0x20,0x62,0x72,0x6f,0x77,0x6e,0x20,0x66,0x6f,0x78,0x20,0x6a,0x75,0x6d,0x70,0x73,0x20,0x6f,0x76,0x65,0x72,0x20,0x74,0x68,0x65,0x20,0x6c,0x61,0x7a,0x79,0x20,0x64,0x6f,0x67,0x2e]
 	let qbfString = "The quick brown fox jumps over the lazy dog."
 	
-	/**
-	This is the MD5 for "The quick brown fox jumps over the lazy dog."
-	*/
+	/// This is the MD5 for "The quick brown fox jumps over the lazy dog."
 	let qbfMD5 : [UInt8] = [0xe4,0xd9,0x09,0xc2,
 	                        0x90,0xd0,0xfb,0x1c,
 	                        0xa0,0x68,0xff,0xad,
 	                        0xdf,0x22,0xcb,0xd0]
 	
 	// MARK: - Digest tests
+	
 	// MARK: MD2 (RFC1319)
 	let md2inputs = ["", "a", "abc", "message digest", "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "12345678901234567890123456789012345678901234567890123456789012345678901234567890"]
 	let md2outputs = ["8350e5a3e24c153df2275c9f80692773", "32ec01ec4a6dac72c0ab96fb34c0b5d1",
@@ -368,16 +376,14 @@ class CryptorTests: XCTestCase {
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
-	/**
-	Test MD5 with string input and optional chaining.
-	*/
+	
+	/// Test MD5 with string input and optional chaining.
 	func test_Digest_MD5_Composition_String() {
 		let digest = Digest(using: .md5).update(string: qbfString)?.final()
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
-	/**
-	Test MD5 with optional chaining, string input and 2 updates
-	*/
+	
+	/// Test MD5 with optional chaining, string input and 2 updates
 	func test_Digest_MD5_Composition_String_2() {
 		let s1 = "The quick brown fox"
 		let s2 = " jumps over the lazy dog."
@@ -385,16 +391,15 @@ class CryptorTests: XCTestCase {
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
-	/**
-	Test MD5 with optional chaining and byte array input
-	*/
+	
+	/// Test MD5 with optional chaining and byte array input
 	func test_Digest_MD5_Composition_Bytes() {
 		let digest = Digest(using: .md5).update(byteArray: qbfBytes)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
 	
-	// See: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA_All.pdf
+	/// See: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA_All.pdf
 	let shaShortBlock = "abc"
 	let sha1ShortBlockOutput = "a9993e364706816aba3e25717850c26c9cd0d89d"
 	let sha224BlockOutput = "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7"
@@ -417,7 +422,6 @@ class CryptorTests: XCTestCase {
 		#endif
 	}
 	
-	// Not supported by OpenSSL
 	func test_Digest_SHA1_String() {
 		if usingOpenSSL {
 			return
@@ -459,7 +463,7 @@ class CryptorTests: XCTestCase {
 	let hmacDefaultKeySHA1 = CryptoUtils.byteArray(fromHex: "0102030405060708090a0b0c0d0e0f10111213141516171819")
 	let hmacDefaultResultSHA1 = CryptoUtils.byteArray(fromHex: "4c9007f4026250c6bc8414f9bf50c86c2d7235da")
 	
-	// See: https://www.ietf.org/rfc/rfc2202.txt
+	/// See: https://www.ietf.org/rfc/rfc2202.txt
 	func test_HMAC_MD5() {
 	
 		let key = self.hmacDefaultKeyMD5
@@ -471,7 +475,7 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
 	
-	// See: https://www.ietf.org/rfc/rfc2202.txt
+	/// See: https://www.ietf.org/rfc/rfc2202.txt
 	func test_HMAC_SHA1() {
 	
 		if usingOpenSSL {
@@ -499,6 +503,7 @@ class CryptorTests: XCTestCase {
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
+	
 	// For HMAC-SHA1-{224,256,384,512}
 	// See: http://tools.ietf.org/html/rfc4231
 	let rfc4231key1 = "0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b" // should be 20 bytes
@@ -554,7 +559,8 @@ class CryptorTests: XCTestCase {
 	}
 	
 	// MARK: - KeyDerivation tests
-	// See: https://www.ietf.org/rfc/rfc6070.txt
+	
+	/// See: https://www.ietf.org/rfc/rfc6070.txt
 	func test_KeyDerivation_deriveKey() {
 	
 		// Tests with String salt

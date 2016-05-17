@@ -59,7 +59,11 @@ let key = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
 let iv = CryptoUtils.byteArray(fromHex: "00000000000000000000000000000000")
 let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
 
-let cipherText = Cryptor(operation: .encrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: plainText)?.final()
+var textToCipher = plainText
+if plainText.count % Cryptor.Algorithm.aes.blockSize != 0 {
+	textToCipher = CryptoUtils.zeroPad(byteArray: plainText, blockSize: Cryptor.Algorithm.aes.blockSize)
+
+let cipherText = Cryptor(operation: .encrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: textToCipher)?.final()
 		
 print(CryptoUtils.hexString(from: cipherText!))
 		
