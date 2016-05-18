@@ -101,11 +101,12 @@ public class PBKDF {
     /// - Returns: The number of times the algorithm should be run
     ///
 	public class func calibrate(passwordLength: Int, saltLength: Int, algorithm: PseudoRandomAlgorithm, derivedKeyLength: Int, msec : UInt32) -> UInt {
+		
 		#if os(OSX)
 	        return UInt(CCCalibratePBKDF(CCPBKDFAlgorithm(kCCPBKDF2), passwordLength, saltLength, algorithm.nativeValue(), derivedKeyLength, msec))
 		#elseif os(Linux)
 			// Value as per RFC 2898.
-			return UInt(1000)
+			return UInt(1000 * UInt(msec))
 		#endif
     }
     
@@ -122,7 +123,7 @@ public class PBKDF {
 	///
     /// - Returns: The derived key
     ///
-	public class func deriveKey(fromPassword password: String, salt: String, prf:PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) -> [UInt8] {
+	public class func deriveKey(fromPassword password: String, salt: String, prf: PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) -> [UInt8] {
 		
 		var derivedKey = Array<UInt8>(repeating: 0, count:Int(derivedKeyLength))
 		#if os(OSX)
