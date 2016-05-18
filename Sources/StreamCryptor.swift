@@ -280,6 +280,36 @@ public class StreamCryptor {
             }
         }
 		
+		public var defaultKeySize: Int {
+			
+			switch self {
+				
+			case .aes, .aes128:
+				return kCCKeySizeAES128
+				
+			case .aes192:
+				return kCCKeySizeAES192
+				
+			case .aes256:
+				return kCCKeySizeAES256
+				
+			case .des:
+				return kCCKeySizeDES
+				
+			case .tripleDes:
+				return kCCKeySize3DES
+				
+			case .cast:
+				return kCCKeySizeMinCAST
+				
+			case .rc2:
+				return kCCKeySizeMinRC2
+				
+			case .blowfish:
+				return kCCKeySizeMinBlowfish
+			}
+		}
+		
 		#if os(OSX)
 		
         /// Native, CommonCrypto constant for algorithm.
@@ -319,11 +349,11 @@ public class StreamCryptor {
 				case .aes, .aes128:
 					return EVP_aes_128_cbc()
 		
-				case .aes256:
-					return EVP_aes_256_cbc()
-					
 				case .aes192:
 					return EVP_aes_192_cbc()
+		
+				case .aes256:
+					return EVP_aes_256_cbc()
 					
 				case .des:
 					return EVP_des_cbc()
@@ -349,11 +379,11 @@ public class StreamCryptor {
 				case .aes, .aes128:
 					return EVP_aes_128_ecb()
 		
-				case .aes256:
-					return EVP_aes_256_ecb()
-					
 				case .aes192:
 					return EVP_aes_192_ecb()
+		
+				case .aes256:
+					return EVP_aes_256_ecb()
 					
 				case .des:
 					return EVP_des_ecb()
@@ -388,22 +418,22 @@ public class StreamCryptor {
 			
 				switch self {
 					
-				case aes, aes128, aes192, aes256:
+				case .aes, .aes128, .aes192, .aes256:
 					return .discrete([kCCKeySizeAES128, kCCKeySizeAES192, kCCKeySizeAES256])
 					
-				case des:
+				case .des:
 					return .fixed(kCCKeySizeDES)
 					
-				case tripleDes:
+				case .tripleDes:
 					return .fixed(kCCKeySize3DES)
 					
-				case cast:
+				case .cast:
 					return .range(kCCKeySizeMinCAST, kCCKeySizeMaxCAST)
 					
-				case rc2:
+				case .rc2:
 					return .range(kCCKeySizeMinRC2, kCCKeySizeMaxRC2)
 					
-				case blowfish:
+				case .blowfish:
 					return .range(kCCKeySizeMinBlowfish, kCCKeySizeMaxBlowfish)
 				}
 				
@@ -411,28 +441,28 @@ public class StreamCryptor {
 			
 				switch self {
 					
-				case aes, aes128:
+				case .aes, .aes128:
 					return .fixed(kCCKeySizeAES128)
 					
-				case aes192:
+				case .aes192:
 					return .fixed(kCCKeySizeAES192)
 					
-				case aes256:
+				case .aes256:
 					return .fixed(kCCKeySizeAES256)
 					
-				case des:
+				case .des:
 					return .fixed(kCCKeySizeDES)
 					
-				case tripleDes:
+				case .tripleDes:
 					return .fixed(kCCKeySize3DES)
 					
-				case cast:
+				case .cast:
 					return .range(kCCKeySizeMinCAST, kCCKeySizeMaxCAST)
 					
-				case rc2:
+				case .rc2:
 					return .range(kCCKeySizeMinRC2, kCCKeySizeMaxRC2)
 					
-				case blowfish:
+				case .blowfish:
 					return .range(kCCKeySizeMinBlowfish, kCCKeySizeMaxBlowfish)
 				}
 				
@@ -470,19 +500,19 @@ public class StreamCryptor {
 
 	#if os(OSX)
 	
-	/// CommonCrypto Context
-	private var context = UnsafeMutablePointer<CCCryptorRef?>(allocatingCapacity: 1)
+		/// CommonCrypto Context
+		private var context = UnsafeMutablePointer<CCCryptorRef?>(allocatingCapacity: 1)
 	
 	#elseif os(Linux)
 	
-	/// OpenSSL Cipher Context
-	private let context: UnsafeMutablePointer<EVP_CIPHER_CTX> = EVP_CIPHER_CTX_new()
+		/// OpenSSL Cipher Context
+		private let context: UnsafeMutablePointer<EVP_CIPHER_CTX> = EVP_CIPHER_CTX_new()
 	
-	/// Operation
-	private var operation: Operation = .encrypt
+		/// Operation
+		private var operation: Operation = .encrypt
 	
-	/// The algorithm
-	private var algorithm: Algorithm
+		/// The algorithm
+		private var algorithm: Algorithm
 	
 	#endif
 	
