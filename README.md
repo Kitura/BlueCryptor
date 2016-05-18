@@ -160,7 +160,7 @@ XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput))
 XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput))
 XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput))
 ```
-These tests pass on **OSX** but will fail with the following error on **Linux**: `This API not supported on Linux.`
+These tests pass on **OS X** but will fail with the following error on **Linux**: `This API not supported on Linux.`
 
 The following algorithms are not available on Linux since they are not supported by *OpenSSL*.
 - Digest: MD2, SHA1
