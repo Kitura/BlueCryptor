@@ -213,46 +213,46 @@ public class StreamCryptor {
 		
 		#if os(OSX)
 		
-        /// Advanced Encryption Standard
-		/// - Note: aes and aes128 are equivalent.
-        case aes, aes128, aes192, aes256
-		
-        /// Data Encryption Standard
-        case des
-		
-        /// Triple des
-        case tripleDes
-		
-        /// cast
-        case cast
-		
-        /// rc2
-        case rc2
-		
-        /// blowfish
-        case blowfish
+			/// Advanced Encryption Standard
+			/// - Note: aes and aes128 are equivalent.
+			case aes, aes128, aes192, aes256
+			
+			/// Data Encryption Standard
+			case des
+			
+			/// Triple des
+			case tripleDes
+			
+			/// cast
+			case cast
+			
+			/// rc2
+			case rc2
+			
+			/// blowfish
+			case blowfish
 
 		#elseif os(Linux)
 		
-		/// Advanced Encryption Standard
-		/// - Note: aes and aes128 are equivalent.
-		case aes, aes128, aes192, aes256
-		
-		/// Data Encryption Standard
-		case des
-		
-		/// Triple des
-		case tripleDes
-		
-		/// cast
-		case cast
-		
-		/// rc2
-		case rc2
-		
-		/// blowfish
-		case blowfish
-		
+			/// Advanced Encryption Standard
+			/// - Note: aes and aes128 are equivalent.
+			case aes, aes128, aes192, aes256
+			
+			/// Data Encryption Standard
+			case des
+			
+			/// Triple des
+			case tripleDes
+			
+			/// cast
+			case cast
+			
+			/// rc2
+			case rc2
+			
+			/// blowfish
+			case blowfish
+			
 		#endif
 
         /// Blocksize, in bytes, of algorithm.
@@ -312,99 +312,99 @@ public class StreamCryptor {
 		
 		#if os(OSX)
 		
-        /// Native, CommonCrypto constant for algorithm.
-		func nativeValue() -> CCAlgorithm {
+			/// Native, CommonCrypto constant for algorithm.
+			func nativeValue() -> CCAlgorithm {
+				
+				switch self {
+					
+				case .aes, .aes128, .aes192, .aes256:
+					return CCAlgorithm(kCCAlgorithmAES)
+					
+				case .des:
+					return CCAlgorithm(kCCAlgorithmDES)
+					
+				case .tripleDes:
+					return CCAlgorithm(kCCAlgorithm3DES)
+					
+				case .cast:
+					return CCAlgorithm(kCCAlgorithmCAST)
+					
+				case .rc2:
+					return CCAlgorithm(kCCAlgorithmRC2)
+					
+				case .blowfish:
+					return CCAlgorithm(kCCAlgorithmBlowfish)
+				}
+			}
 			
-            switch self {
-				
-			case .aes, .aes128, .aes192, .aes256:
-				return CCAlgorithm(kCCAlgorithmAES)
-				
-            case .des:
-				return CCAlgorithm(kCCAlgorithmDES)
-				
-            case .tripleDes:
-				return CCAlgorithm(kCCAlgorithm3DES)
-				
-            case .cast:
-				return CCAlgorithm(kCCAlgorithmCAST)
-				
-            case .rc2:
-				return CCAlgorithm(kCCAlgorithmRC2)
-				
-            case .blowfish:
-				return CCAlgorithm(kCCAlgorithmBlowfish)
-            }
-        }
-		
 		#elseif os(Linux)
 		
-		/// Native, OpenSSL function for algorithm.
-		func nativeValue(options: Options) -> UnsafePointer<EVP_CIPHER> {
-			
-			if options == .pkcs7Padding || options == .none {
-			
-				switch self {
-					
-				case .aes, .aes128:
-					return EVP_aes_128_cbc()
-		
-				case .aes192:
-					return EVP_aes_192_cbc()
-		
-				case .aes256:
-					return EVP_aes_256_cbc()
-					
-				case .des:
-					return EVP_des_cbc()
-					
-				case .tripleDes:
-					return EVP_des_ede3_cbc()
-					
-				case .cast:
-					return EVP_cast5_cbc()
-					
-				case .rc2:
-					return EVP_rc2_cbc()
-					
-				case .blowfish:
-					return EVP_bf_cbc()
-				}
-			}
-			
-			if options == .ecbMode {
+			/// Native, OpenSSL function for algorithm.
+			func nativeValue(options: Options) -> UnsafePointer<EVP_CIPHER> {
 				
-				switch self {
-					
-				case .aes, .aes128:
-					return EVP_aes_128_ecb()
-		
-				case .aes192:
-					return EVP_aes_192_ecb()
-		
-				case .aes256:
-					return EVP_aes_256_ecb()
-					
-				case .des:
-					return EVP_des_ecb()
-					
-				case .tripleDes:
-					return EVP_des_ede3_ecb()
-					
-				case .cast:
-					return EVP_cast5_ecb()
-					
-				case .rc2:
-					return EVP_rc2_ecb()
-					
-				case .blowfish:
-					return EVP_bf_ecb()
+				if options == .pkcs7Padding || options == .none {
+				
+					switch self {
+						
+					case .aes, .aes128:
+						return EVP_aes_128_cbc()
+			
+					case .aes192:
+						return EVP_aes_192_cbc()
+			
+					case .aes256:
+						return EVP_aes_256_cbc()
+						
+					case .des:
+						return EVP_des_cbc()
+						
+					case .tripleDes:
+						return EVP_des_ede3_cbc()
+						
+					case .cast:
+						return EVP_cast5_cbc()
+						
+					case .rc2:
+						return EVP_rc2_cbc()
+						
+					case .blowfish:
+						return EVP_bf_cbc()
+					}
 				}
+				
+				if options == .ecbMode {
+					
+					switch self {
+						
+					case .aes, .aes128:
+						return EVP_aes_128_ecb()
+			
+					case .aes192:
+						return EVP_aes_192_ecb()
+			
+					case .aes256:
+						return EVP_aes_256_ecb()
+						
+					case .des:
+						return EVP_des_ecb()
+						
+					case .tripleDes:
+						return EVP_des_ede3_ecb()
+						
+					case .cast:
+						return EVP_cast5_ecb()
+						
+					case .rc2:
+						return EVP_rc2_ecb()
+						
+					case .blowfish:
+						return EVP_bf_ecb()
+					}
+				}
+			
+				fatalError("Unsupported options and/or algorithm.")
 			}
-		
-			fatalError("Unsupported options and/or algorithm.")
-		}
-		
+			
 		#endif
 		
 		///

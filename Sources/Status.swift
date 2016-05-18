@@ -63,23 +63,23 @@ public enum Status: CCCryptorStatus, ErrorProtocol, CustomStringConvertible {
 		
         switch self {
 			
-        case success:
+        case .success:
 			return CCCryptorStatus(kCCSuccess)
-        case paramError:
+        case .paramError:
 			return CCCryptorStatus(kCCParamError)
-        case bufferTooSmall:
+        case .bufferTooSmall:
    			return CCCryptorStatus(kCCBufferTooSmall)
-        case memoryFailure:
+        case .memoryFailure:
 			return CCCryptorStatus(kCCMemoryFailure)
-        case alignmentError:
+        case .alignmentError:
    			return CCCryptorStatus(kCCAlignmentError)
-        case decodeError:
+        case .decodeError:
 			return CCCryptorStatus(kCCDecodeError)
-        case unimplemented:
+        case .unimplemented:
 			return CCCryptorStatus(kCCUnimplemented)
-        case overflow:
+        case .overflow:
 			return CCCryptorStatus(kCCOverflow)
-        case rngFailure:
+        case .rngFailure:
 			return CCCryptorStatus(kCCRNGFailure)
         }
     }
@@ -212,14 +212,14 @@ public enum Status: ErrorProtocol, CustomStringConvertible {
 
 //	MARK: Operators
 
-func == (left: Status, right: Status) -> Bool {
+func == (lhs: Status, rhs: Status) -> Bool {
 	
-	return left.code == right.code
+	return lhs.code == rhs.code
 }
 
-func != (left: Status, right: Status) -> Bool {
+func != (lhs: Status, rhs: Status) -> Bool {
 	
-	return left.code != right.code
+	return lhs.code != rhs.code
 }
 
 #endif

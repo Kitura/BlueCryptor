@@ -105,6 +105,7 @@ public class HMAC : Updateable {
 					return EVP_sha512()
 				}
 			}
+		
 		#endif
 		
         ///
@@ -147,6 +148,7 @@ public class HMAC : Updateable {
 				case .sha512:
 					return Int(SHA512_DIGEST_LENGTH)
 				}
+			
 			#endif
 			
         }
@@ -154,9 +156,13 @@ public class HMAC : Updateable {
 	
 	/// Context
 	#if os(OSX)
+	
     	typealias Context = UnsafeMutablePointer<CCHmacContext>
+	
 	#elseif os(Linux)
+	
 		typealias Context = UnsafeMutablePointer<HMAC_CTX>
+	
 	#endif
     
     /// Status of the calculation
