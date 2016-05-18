@@ -58,6 +58,7 @@ class CryptorTests: XCTestCase {
 			("test_HMAC_SHA384", test_HMAC_SHA384),
 			("test_HMAC_SHA512", test_HMAC_SHA512),
 			("test_KeyDerivation_deriveKey", test_KeyDerivation_deriveKey),
+			("test_KeyDerivation_using_defaultKeySize", test_KeyDerivation_using_defaultKeySize),
 			("test_Random_generateBytes", test_Random_generateBytes),
 			("test_Random_generateBytesThrow", test_Random_generateBytesThrow),
 			("test_Status", test_Status),
@@ -595,6 +596,18 @@ class CryptorTests: XCTestCase {
 			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
 		}
 		
+	}
+	
+	func test_KeyDerivation_using_defaultKeySize() {
+		
+		let password: String = "password"
+		let salt: String = "salt"
+		let rounds: uint = 1
+		let expectedKey: String = "120fb6cffcf8b32c43e7225256c4f837"
+		let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha256, rounds: rounds, derivedKeyLength: UInt(Cryptor.Algorithm.aes.defaultKeySize))
+		let keyString = CryptoUtils.hexString(from: key)
+		print(keyString)
+		XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expectedKey), "Obtained correct key (\(keyString) == \(expectedKey)")
 	}
 	
 	// MARK: - Random tests
