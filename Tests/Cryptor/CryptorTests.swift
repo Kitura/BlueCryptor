@@ -22,7 +22,7 @@ import Foundation
 #if os(OSX)
 	import CommonCrypto
 #elseif os(Linux)
-	import CCrypto
+	import OpenSSL
 #endif
 
 class CryptorTests: XCTestCase {

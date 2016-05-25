@@ -20,7 +20,7 @@ import Foundation
 #if os(OSX)
 	import CommonCrypto
 #elseif os(Linux)
-	import CCrypto
+	import OpenSSL
 #endif
 
 #if os(OSX)
