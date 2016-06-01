@@ -688,7 +688,7 @@ public class StreamCryptor {
 		
         let dataOutAvailable = byteArrayOut.count
         var dataOutMoved = 0
-        update(bufferIn: UnsafePointer<UInt8>(dataIn.bytes), byteCountIn: dataIn.length, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+        let _ = update(bufferIn: UnsafePointer<UInt8>(dataIn.bytes), byteCountIn: dataIn.length, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
         return (dataOutMoved, self.status)
     }
 	
@@ -705,7 +705,7 @@ public class StreamCryptor {
 		
         let dataOutAvailable = byteArrayOut.count
         var dataOutMoved = 0
-        update(bufferIn: byteArrayIn, byteCountIn: byteArrayIn.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+        let _ = update(bufferIn: byteArrayIn, byteCountIn: byteArrayIn.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
         return (dataOutMoved, self.status)
     }
 	
@@ -722,7 +722,7 @@ public class StreamCryptor {
 		
         let dataOutAvailable = byteArrayOut.count
         var dataOutMoved = 0
-        update(bufferIn: stringIn, byteCountIn: stringIn.utf8.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+        let _ = update(bufferIn: stringIn, byteCountIn: stringIn.utf8.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
         return (dataOutMoved, self.status)
     }
 	
@@ -743,7 +743,7 @@ public class StreamCryptor {
 		
         let dataOutAvailable = byteArrayOut.count
         var dataOutMoved = 0
-        final(bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+        let _ = final(bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
         return (dataOutMoved, self.status)
     }
     
