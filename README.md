@@ -11,8 +11,8 @@ This package is functionally complete and has all current relevant tests passing
 ## Prerequisites
 
 ### Swift
-* Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-05-03-a` toolchain (**Minimum REQUIRED for latest release**)
-* Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a` toolchain (*Recommended*)
+* Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a` toolchain (**Minimum REQUIRED for latest release**)
+* Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-05-31-a` toolchain (*Recommended*)
 
 ### OS X
 
