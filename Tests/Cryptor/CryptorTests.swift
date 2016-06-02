@@ -356,7 +356,7 @@ class CryptorTests: XCTestCase {
 			let input = md2inputs[i]
 			let expectedOutput = CryptoUtils.byteArray(fromHex: md2outputs[i])
 			let d : Digest = Digest(using:.md2)
-			let _ = d.update(string: input)
+			_ = d.update(string: input)
 			let output = d.final()
 			XCTAssertEqual(output, expectedOutput)
 		}
@@ -365,7 +365,7 @@ class CryptorTests: XCTestCase {
 	// MARK: MD5
 	func testMD5_1() {
 		let md5 : Digest = Digest(using:.md5)
-		let _ = md5.update(string: qbfString)
+		_ = md5.update(string: qbfString)
 		let digest = md5.final()
 		
 		XCTAssertEqual(digest, qbfMD5, "PASS")

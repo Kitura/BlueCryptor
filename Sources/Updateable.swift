@@ -51,7 +51,7 @@ extension Updateable {
 	///
 	public func update(data: NSData) -> Self? {
 		
-        let _ = update(from: data.bytes, byteCount: size_t(data.length))
+        _ = update(from: data.bytes, byteCount: size_t(data.length))
         return self.status == .success ? self : nil
     }
 	
@@ -64,7 +64,7 @@ extension Updateable {
 	///
 	public func update(byteArray: [UInt8]) -> Self? {
 		
-        let _ = update(from: byteArray, byteCount: size_t(byteArray.count))
+        _ = update(from: byteArray, byteCount: size_t(byteArray.count))
 		return self.status == .success ? self : nil
     }
 	
@@ -78,7 +78,7 @@ extension Updateable {
 	///
 	public func update(string: String) -> Self? {
 		
-        let _ = update(from: string, byteCount: size_t(string.utf8.count))
+        _ = update(from: string, byteCount: size_t(string.utf8.count))
 		return self.status == .success ? self : nil
     }
 }

@@ -232,7 +232,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
         self.updater = updater
         self.finalizer = finalizer
         self.length = length
-        let _ = initializer(context)
+        _ = initializer(context)
     }
 	
 	///
@@ -252,7 +252,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
 	///
 	func update(buffer: Buffer, byteCount: CC_LONG) {
 		
-        let _ = updater(context, buffer, byteCount)
+        _ = updater(context, buffer, byteCount)
     }
     
 	///
@@ -264,7 +264,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
 		
         let digestLength = Int(self.length)
 		var digest = Array<UInt8>(repeating: 0, count:digestLength)
-        let _ = finalizer(&digest, context)
+        _ = finalizer(&digest, context)
         return digest
     }
 }
