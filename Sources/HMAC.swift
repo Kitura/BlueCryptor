@@ -243,9 +243,9 @@ public class HMAC : Updateable {
             #else
                 CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: NSUTF8StringEncoding)))
             #endif
-		#elseif os(Linux)
-			HMAC_Init(context, key, Int32(key.utf8.count), algorithm.nativeValue())
-		#endif
+	#elseif os(Linux)
+		HMAC_Init(context, key, Int32(key.utf8.count), algorithm.nativeValue())
+	#endif
     }
 	
 	///
