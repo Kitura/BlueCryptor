@@ -237,8 +237,12 @@ public class HMAC : Updateable {
 	public init(using algorithm: Algorithm, key: String) {
 		
         self.algorithm = algorithm
-		#if os(OSX)
-        	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: NSUTF8StringEncoding)))
+        #if os(OSX)
+            #if swift(>=3.0)
+                CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: String.Encoding.utf8)))
+            #else
+                CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: NSUTF8StringEncoding)))
+            #endif
 		#elseif os(Linux)
 			HMAC_Init(context, key, Int32(key.utf8.count), algorithm.nativeValue())
 		#endif
