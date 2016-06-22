@@ -415,7 +415,7 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(shaShortBlock.sha384, sha384BlockOutput)
 		XCTAssertEqual(shaShortBlock.sha512, sha512BlockOutput)
 		#if os(OSX)
-			let theData: NSData = shaShortBlock.data(using:NSUTF8StringEncoding)!
+			let theData: Data = shaShortBlock.data(using:String.Encoding.utf8)!
 			XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput))
 			XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput))
 			XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput))

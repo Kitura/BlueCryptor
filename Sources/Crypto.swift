@@ -73,9 +73,11 @@ extension CryptoDigest {
 }
 
 ///
-/// Extension for NSData to return an NSData object containing the digest.
+/// Extension for Data to return an Data object containing the digest.
 ///
-extension NSData: CryptoDigest {	
+#if os(OSX)
+	
+extension Data: CryptoDigest {
     ///
     /// Calculates the Message Digest for this data.
     /// 
@@ -85,23 +87,17 @@ extension NSData: CryptoDigest {
 	///
 	/// - Note: Not supported on Linux due to differences in the `NSData` Foundation API.
 	///
-    public func digest(using algorithm: Digest.Algorithm) -> Self {
+    public func digest(using algorithm: Digest.Algorithm) -> Data {
 		
-		#if os(OSX)
-			
-        	// This force unwrap may look scary but for CommonCrypto this cannot fail.
-	        // The API allows for optionals to support the OpenSSL implementation which can.
-			let result = (Digest(using: algorithm).update(data: self)?.final())!
-        	let data = self.dynamicType.init(bytes: result, length: result.count)
-	        return data
-	
-		#elseif os(Linux)
-			
-			fatalError("This API currently not supported on Linux.")
-			
-		#endif
+		// This force unwrap may look scary but for CommonCrypto this cannot fail.
+	    // The API allows for optionals to support the OpenSSL implementation which can.
+		let result = (Digest(using: algorithm).update(data: self)?.final())!
+        let data = self.dynamicType.init(bytes: result, count: result.count)
+		return data
     }
 }
+	
+#endif
 
 ///
 /// Extension for String to return a String containing the digest.
