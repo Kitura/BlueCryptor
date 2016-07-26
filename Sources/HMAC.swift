@@ -17,7 +17,7 @@
 
 import Foundation
 
-#if os(OSX)
+#if os(macOS)
 	import CommonCrypto
 #elseif os(Linux)
 	import OpenSSL
@@ -51,7 +51,7 @@ public class HMAC : Updateable {
         /// Secure Hash Algorithm 2 512-bit
 		case sha512
         
-		#if os(OSX)
+		#if os(macOS)
 		
 			static let fromNative: [CCHmacAlgorithm: Algorithm] = [
 		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.sha1,
@@ -113,7 +113,7 @@ public class HMAC : Updateable {
         ///
         public func digestLength() -> Int {
 			
-			#if os(OSX)
+			#if os(macOS)
 				
 				switch self {
 					
@@ -155,7 +155,7 @@ public class HMAC : Updateable {
     }
 	
 	/// Context
-	#if os(OSX)
+	#if os(macOS)
 	
     	typealias Context = UnsafeMutablePointer<CCHmacContext>
 	
@@ -169,7 +169,7 @@ public class HMAC : Updateable {
     public internal(set) var status: Status = .success
 	
 	
-    private let context = Context(allocatingCapacity: 1)
+    private let context = Context.allocate(capacity: 1)
     private var algorithm: Algorithm
     
 	// MARK: Lifecycle Methods
@@ -185,7 +185,7 @@ public class HMAC : Updateable {
 	init(using algorithm: Algorithm, keyBuffer: UnsafePointer<Void>, keyByteCount: Int) {
 		
         self.algorithm = algorithm
-		#if os(OSX)
+		#if os(macOS)
 	        CCHmacInit(context, algorithm.nativeValue(), keyBuffer, size_t(keyByteCount))
 		#elseif os(Linux)
 			HMAC_Init(context, keyBuffer, Int32(keyByteCount), algorithm.nativeValue())
@@ -202,7 +202,7 @@ public class HMAC : Updateable {
 	public init(using algorithm: Algorithm, key: NSData) {
 		
         self.algorithm = algorithm
-		#if os(OSX)
+		#if os(macOS)
         	CCHmacInit(context, algorithm.nativeValue(), key.bytes, size_t(key.length))
 		#elseif os(Linux)
 			HMAC_Init(context, key.bytes, Int32(key.length), algorithm.nativeValue())
@@ -219,7 +219,7 @@ public class HMAC : Updateable {
 	public init(using algorithm: Algorithm, key: [UInt8]) {
 		
         self.algorithm = algorithm
-		#if os(OSX)
+		#if os(macOS)
         	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.count))
 		#elseif os(Linux)
 			HMAC_Init(context, key, Int32(key.count), algorithm.nativeValue())
@@ -237,7 +237,7 @@ public class HMAC : Updateable {
 	public init(using algorithm: Algorithm, key: String) {
 		
         self.algorithm = algorithm
-		#if os(OSX)
+		#if os(macOS)
         	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: String.Encoding.utf8)))
 		#elseif os(Linux)
 			HMAC_Init(context, key, Int32(key.utf8.count), algorithm.nativeValue())
@@ -248,7 +248,7 @@ public class HMAC : Updateable {
 	/// Cleanup
 	///
     deinit {
-        context.deallocateCapacity(1)
+        context.deallocate(capacity: 1)
     }
  
 	// MARK: Public Methods
@@ -262,7 +262,7 @@ public class HMAC : Updateable {
     ///
 	public func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
 		
-		#if os(OSX)
+		#if os(macOS)
 	        CCHmacUpdate(context, buffer, byteCount)
 		#elseif os(Linux)
 			HMAC_Update(context, UnsafePointer<UInt8>(buffer), byteCount)
@@ -278,7 +278,7 @@ public class HMAC : Updateable {
 	public func final() -> [UInt8] {
 		
 		var hmac = Array<UInt8>(repeating: 0, count:algorithm.digestLength())
-		#if os(OSX)
+		#if os(macOS)
         	CCHmacFinal(context, &hmac)
 		#elseif os(Linux)
 			var length: UInt32 = 0

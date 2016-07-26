@@ -17,7 +17,7 @@
 
 import Foundation
 
-#if os(OSX)
+#if os(macOS)
 	import CommonCrypto
 #elseif os(Linux)
 	import OpenSSL
@@ -74,7 +74,7 @@ public class StreamCryptor {
 		/// Decrypting
         case decrypt
         
-		#if os(OSX)
+		#if os(macOS)
 		
         	/// Convert to native `CCOperation`
 	        func nativeValue() -> CCOperation {
@@ -187,7 +187,7 @@ public class StreamCryptor {
 		/// No options
 		public static let none = Options(rawValue: 0)
 		
-		#if os(OSX)
+		#if os(macOS)
 		
 			/// Use padding. Needed unless the input is a integral number of blocks long.
 			public static var pkcs7Padding =  Options(rawValue:kCCOptionPKCS7Padding)
@@ -211,7 +211,7 @@ public class StreamCryptor {
     ///
     public enum Algorithm {
 		
-		#if os(OSX)
+		#if os(macOS)
 		
 			/// Advanced Encryption Standard
 			/// - Note: aes and aes128 are equivalent.
@@ -310,7 +310,7 @@ public class StreamCryptor {
 			}
 		}
 		
-		#if os(OSX)
+		#if os(macOS)
 		
 			/// Native, CommonCrypto constant for algorithm.
 			func nativeValue() -> CCAlgorithm {
@@ -414,7 +414,7 @@ public class StreamCryptor {
 		///
         func validKeySize() -> ValidKeySize {
 			
-			#if os(OSX)
+			#if os(macOS)
 			
 				switch self {
 					
@@ -498,10 +498,10 @@ public class StreamCryptor {
 	///
     public internal(set) var status : Status = .success
 
-	#if os(OSX)
+	#if os(macOS)
 	
 		/// CommonCrypto Context
-		private var context = UnsafeMutablePointer<CCCryptorRef?>(allocatingCapacity: 1)
+		private var context = UnsafeMutablePointer<CCCryptorRef?>.allocate(capacity: 1)
 	
 	#elseif os(Linux)
 	
@@ -537,7 +537,7 @@ public class StreamCryptor {
 			fatalError("FATAL_ERROR: Invalid key size.")
 		}
 		
-		#if os(OSX)
+		#if os(macOS)
 		
 			let rawStatus = CCCryptorCreate(operation.nativeValue(), algorithm.nativeValue(), CCOptions(options.rawValue), keyBuffer, keyByteCount, ivBuffer, context)
 		
@@ -649,7 +649,7 @@ public class StreamCryptor {
 	///
 	deinit {
 		
-		#if os(OSX)
+		#if os(macOS)
 		
 			let rawStatus = CCCryptorRelease(context.pointee)
 			if let status = Status.fromRaw(status: rawStatus) {
@@ -663,7 +663,7 @@ public class StreamCryptor {
 			
 				fatalError("CCCryptorUpdate returned unexpected status.")
 			}
-			context.deallocateCapacity(1)
+			context.deallocate(capacity: 1)
 		
 		#elseif os(Linux)
 
@@ -765,7 +765,7 @@ public class StreamCryptor {
 		
         if self.status == .success {
 			
-			#if os(OSX)
+			#if os(macOS)
 
 	            let rawStatus = CCCryptorUpdate(context.pointee, bufferIn, byteCountIn, bufferOut, byteCapacityOut, &byteCountOut)
 				if let status = Status.fromRaw(status: rawStatus) {
@@ -831,7 +831,7 @@ public class StreamCryptor {
 		
 		if self.status == Status.success {
 			
-			#if os(OSX)
+			#if os(macOS)
 			
 	            let rawStatus = CCCryptorFinal(context.pointee, bufferOut, byteCapacityOut, &byteCountOut)
 				if let status = Status.fromRaw(status: rawStatus) {
@@ -888,7 +888,7 @@ public class StreamCryptor {
 	///
 	public func getOutputLength(inputByteCount: Int, isFinal: Bool = false) -> Int {
 		
-		#if os(OSX)
+		#if os(macOS)
 
 	        return CCCryptorGetOutputLength(context.pointee, inputByteCount, isFinal)
 

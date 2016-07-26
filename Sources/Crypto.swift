@@ -75,7 +75,7 @@ extension CryptoDigest {
 ///
 /// Extension for Data to return an Data object containing the digest.
 ///
-#if os(OSX)
+#if os(macOS)
 	
 extension Data: CryptoDigest {
     ///

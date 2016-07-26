@@ -17,7 +17,7 @@
 
 import Foundation
 
-#if os(OSX)
+#if os(macOS)
 	import CommonCrypto
 #elseif os(Linux)
 	import OpenSSL
@@ -87,56 +87,56 @@ public class Digest : Updateable {
         switch algorithm {
 			
         case .md2:
-			#if os(OSX)
+			#if os(macOS)
 	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
 			#elseif os(Linux)
 				fatalError("MD2 digest not supported by OpenSSL")
 			#endif
 			
         case .md4:
-			#if os(OSX)
+			#if os(macOS)
             	engine = DigestEngineCC<CC_MD4_CTX>(initializer:CC_MD4_Init, updater:CC_MD4_Update, finalizer:CC_MD4_Final, length:CC_MD4_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<MD4_CTX>(initializer:MD4_Init, updater:MD4_Update, finalizer:MD4_Final, length:MD4_DIGEST_LENGTH)
 			#endif
 			
         case .md5:
-			#if os(OSX)
+			#if os(macOS)
 				engine = DigestEngineCC<CC_MD5_CTX>(initializer:CC_MD5_Init, updater:CC_MD5_Update, finalizer:CC_MD5_Final, length:CC_MD5_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<MD5_CTX>(initializer:MD5_Init, updater:MD5_Update, finalizer:MD5_Final, length:MD5_DIGEST_LENGTH)
 			#endif
 			
         case .sha1:
-			#if os(OSX)
+			#if os(macOS)
 	            engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
 			#elseif os(Linux)
 				fatalError("SHA1 digest not supported by OpenSSL")
 			#endif
 			
         case .sha224:
-			#if os(OSX)
+			#if os(macOS)
             	engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA224_Init, updater:CC_SHA224_Update, finalizer:CC_SHA224_Final, length:CC_SHA224_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<SHA256_CTX>(initializer:SHA224_Init, updater:SHA224_Update, finalizer:SHA224_Final, length:SHA224_DIGEST_LENGTH)
 			#endif
 			
         case .sha256:
-			#if os(OSX)
+			#if os(macOS)
 	            engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA256_Init, updater:CC_SHA256_Update, finalizer:CC_SHA256_Final, length:CC_SHA256_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<SHA256_CTX>(initializer: SHA256_Init, updater:SHA256_Update, finalizer:SHA256_Final, length:SHA256_DIGEST_LENGTH)
 			#endif
 			
         case .sha384:
-			#if os(OSX)
+			#if os(macOS)
 	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA384_Init, updater:CC_SHA384_Update, finalizer:CC_SHA384_Final, length:CC_SHA384_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<SHA512_CTX>(initializer:SHA384_Init, updater:SHA384_Update, finalizer:SHA384_Final, length:SHA384_DIGEST_LENGTH)
 			#endif
 			
         case .sha512:
-			#if os(OSX)
+			#if os(macOS)
 	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA512_Init, updater:CC_SHA512_Update, finalizer:CC_SHA512_Final, length:CC_SHA512_DIGEST_LENGTH)
 			#elseif os(Linux)
 				engine = DigestEngineCC<SHA512_CTX>(initializer:SHA512_Init, updater:SHA512_Update, finalizer:SHA512_Final, length:SHA512_DIGEST_LENGTH)
@@ -211,7 +211,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
     typealias Updater = (Context, Buffer, CC_LONG) -> (Int32)
     typealias Finalizer = (Digest, Context) -> (Int32)
     
-    let context = Context(allocatingCapacity: 1)
+    let context = Context.allocate(capacity: 1)
     var initializer : Initializer
     var updater : Updater
     var finalizer : Finalizer
@@ -240,7 +240,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
 	///
 	deinit {
 		
-        context.deallocateCapacity(1)
+        context.deallocate(capacity: 1)
     }
     
 	///

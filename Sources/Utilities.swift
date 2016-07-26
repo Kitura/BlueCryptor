@@ -121,7 +121,7 @@ public struct CryptoUtils {
 	///
 	public static func hexString(from byteArray: [UInt8], uppercase: Bool = false) -> String {
 		
-		return byteArray.map() { String(format: (uppercase) ? "%02X" : "%02x", $0) }.reduce("", combine: +)
+		return byteArray.map() { String(format: (uppercase) ? "%02X" : "%02x", $0) }.reduce("", +)
 	}
 	
 	///
@@ -136,10 +136,10 @@ public struct CryptoUtils {
 	public static func hexNSString(from byteArray: [UInt8], uppercase: Bool = false) -> NSString {
 		
 		let formatString = (uppercase) ? "%02X" : "%02x"
-		#if os(OSX)
-			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +) as NSString
+		#if os(macOS)
+			return byteArray.map() { String(format: formatString, $0) }.reduce("", +) as NSString
 		#else
-			return byteArray.map() { String(format: formatString, $0) }.reduce("", combine: +).bridge()
+			return byteArray.map() { String(format: formatString, $0) }.reduce("", +).bridge()
 		#endif
 	}
 	
@@ -153,7 +153,7 @@ public struct CryptoUtils {
 	///
 	public static func hexList(from byteArray : [UInt8]) -> String {
 		
-		return byteArray.map() { String(format:"0x%02x, ", $0) }.reduce("", combine: +)
+		return byteArray.map() { String(format:"0x%02x, ", $0) }.reduce("", +)
 	}
 	
 	///
