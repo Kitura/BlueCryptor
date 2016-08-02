@@ -35,7 +35,7 @@ public protocol Updateable {
 	///
     /// - Returns: `Self` if no error for optional chaining, nil otherwise
 	///
-    func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self?
+    func update(from buffer: UnsafeRawPointer, byteCount: size_t) -> Self?
 }
 
 ///

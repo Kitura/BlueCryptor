@@ -688,7 +688,8 @@ public class StreamCryptor {
 		
         let dataOutAvailable = byteArrayOut.count
         var dataOutMoved = 0
-        _ = update(bufferIn: UnsafePointer<UInt8>(dataIn.bytes), byteCountIn: dataIn.length, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+		var ptr = dataIn.bytes.assumingMemoryBound(to: UInt8.self).pointee
+        _ = update(bufferIn: &ptr, byteCountIn: dataIn.length, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
         return (dataOutMoved, self.status)
     }
 	
@@ -761,7 +762,7 @@ public class StreamCryptor {
 	///
 	///	- Returns: Status of the update
 	///
-	public func update(bufferIn: UnsafePointer<UInt8>, byteCountIn: Int, bufferOut: UnsafeMutablePointer<UInt8>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
+	public func update(bufferIn: UnsafeRawPointer, byteCountIn: Int, bufferOut: UnsafeMutablePointer<UInt8>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
 		
         if self.status == .success {
 			
@@ -782,10 +783,10 @@ public class StreamCryptor {
 				switch self.operation {
 				
 				case .encrypt:
-					rawStatus = EVP_EncryptUpdate(self.context, bufferOut, &outLength, bufferIn, Int32(byteCountIn))
+					rawStatus = EVP_EncryptUpdate(self.context, bufferOut, &outLength, bufferIn.assumingMemoryBound(to: UInt8.self), Int32(byteCountIn))
 					
 				case .decrypt:
-					rawStatus = EVP_DecryptUpdate(self.context, bufferOut, &outLength, bufferIn, Int32(byteCountIn))
+					rawStatus = EVP_DecryptUpdate(self.context, bufferOut, &outLength, bufferIn.assumingMemoryBound(to: UInt8.self), Int32(byteCountIn))
 				}
 			
 				byteCountOut = Int(outLength)

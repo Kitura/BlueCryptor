@@ -55,12 +55,12 @@ public class Cryptor : StreamCryptor, Updateable {
 	///
 	///	- Returns: this Cryptor object or nil if an error occurs (for optional chaining)
     ///
-	public func update(from buffer: UnsafePointer<Void>, byteCount: Int) -> Self? {
+	public func update(from buffer: UnsafeRawPointer, byteCount: Int) -> Self? {
     
         let outputLength = Int(self.getOutputLength(inputByteCount: byteCount, isFinal: false))
 		var dataOut = Array<UInt8>(repeating: 0, count:outputLength)
         var dataOutMoved = 0
-        _ = update(bufferIn: UnsafePointer<UInt8>(buffer), byteCountIn: byteCount, bufferOut: &dataOut, byteCapacityOut: dataOut.count, byteCountOut: &dataOutMoved)
+        _ = update(bufferIn: buffer, byteCountIn: byteCount, bufferOut: &dataOut, byteCapacityOut: dataOut.count, byteCountOut: &dataOutMoved)
 		if self.status != .success {
 			return nil
 		}

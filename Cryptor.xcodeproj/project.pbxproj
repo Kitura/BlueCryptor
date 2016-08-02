@@ -7,8 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C0039F01D4FE0A30064B65F /* XCTestManifests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C0039EE1D4FE0990064B65F /* XCTestManifests.swift */; };
 		8C9590301CC80A2300A2C2B4 /* libCryptor.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_Cryptor" /* libCryptor.dylib */; };
-		8C9590361CC80C9800A2C2B4 /* CryptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9590241CC807D400A2C2B4 /* CryptorTests.swift */; };
+		8CF04E2A1D4FCECC00C27814 /* CryptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C9590241CC807D400A2C2B4 /* CryptorTests.swift */; };
 		__src_cc_ref_Sources/Crypto.swift /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Crypto.swift /* Crypto.swift */; };
 		__src_cc_ref_Sources/Cryptor.swift /* Cryptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Cryptor.swift /* Cryptor.swift */; };
 		__src_cc_ref_Sources/Digest.swift /* Digest.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Digest.swift /* Digest.swift */; };
@@ -32,7 +33,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		8C9590241CC807D400A2C2B4 /* CryptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CryptorTests.swift; path = Tests/Cryptor/CryptorTests.swift; sourceTree = "<group>"; };
+		8C0039EE1D4FE0990064B65F /* XCTestManifests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = XCTestManifests.swift; path = Tests/CryptorTests/XCTestManifests.swift; sourceTree = "<group>"; };
+		8C9590241CC807D400A2C2B4 /* CryptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CryptorTests.swift; path = Tests/CryptorTests/CryptorTests.swift; sourceTree = "<group>"; };
 		8C95902B1CC80A2300A2C2B4 /* CryptorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CryptorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C9C42F01CD7881000045CFB /* LinuxMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LinuxMain.swift; path = Tests/LinuxMain.swift; sourceTree = "<group>"; };
 		8CD16C6C1CC81DE5007296B5 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -73,18 +75,19 @@
 		8C9590261CC807EA00A2C2B4 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				8C9C42F11CD7904000045CFB /* Cryptor */,
+				8C9C42F11CD7904000045CFB /* CryptorTests */,
 				8C9C42F01CD7881000045CFB /* LinuxMain.swift */,
 			);
 			name = Tests;
 			sourceTree = "<group>";
 		};
-		8C9C42F11CD7904000045CFB /* Cryptor */ = {
+		8C9C42F11CD7904000045CFB /* CryptorTests */ = {
 			isa = PBXGroup;
 			children = (
+				8C0039EE1D4FE0990064B65F /* XCTestManifests.swift */,
 				8C9590241CC807D400A2C2B4 /* CryptorTests.swift */,
 			);
-			name = Cryptor;
+			name = CryptorTests;
 			sourceTree = "<group>";
 		};
 		Dependencies_ /* Dependencies */ = {
@@ -234,7 +237,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8C9590361CC80C9800A2C2B4 /* CryptorTests.swift in Sources */,
+				8CF04E2A1D4FCECC00C27814 /* CryptorTests.swift in Sources */,
+				8C0039F01D4FE0A30064B65F /* XCTestManifests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,7 +309,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/local/opt/openssl/include;
-				INFOPLIST_FILE = Tests/Cryptor/Info.plist;
+				INFOPLIST_FILE = Tests/CryptorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/opt/openssl/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
@@ -353,7 +357,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = /usr/local/opt/openssl/include;
-				INFOPLIST_FILE = Tests/Cryptor/Info.plist;
+				INFOPLIST_FILE = Tests/CryptorTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = /usr/local/opt/openssl/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;

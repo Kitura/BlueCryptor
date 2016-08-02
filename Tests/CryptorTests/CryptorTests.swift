@@ -372,7 +372,7 @@ class CryptorTests: XCTestCase {
 	}
 	
 	func test_Digest_MD5_NSData() {
-		let qbfData : NSData = CryptoUtils.data(from: self.qbfBytes)
+		let qbfData: NSData = CryptoUtils.data(from: self.qbfBytes)
 		let digest = Digest(using: .md5).update(data: qbfData)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
@@ -416,10 +416,10 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(shaShortBlock.sha512, sha512BlockOutput)
 		#if os(macOS)
 			let theData: Data = shaShortBlock.data(using:String.Encoding.utf8)!
-			XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput))
-			XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput))
-			XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput))
-			XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput))
+			XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput) as Data)
+			XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput) as Data)
+			XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput) as Data)
+			XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput) as Data)
 		#endif
 	}
 	

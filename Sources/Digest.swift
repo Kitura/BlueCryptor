@@ -154,7 +154,7 @@ public class Digest : Updateable {
 	///
 	///	- Returns: This Digest object (for optional chaining)
     ///
-    public func update(from buffer: UnsafePointer<Void>, byteCount: size_t) -> Self? {
+    public func update(from buffer: UnsafeRawPointer, byteCount: size_t) -> Self? {
 		
         engine.update(buffer: buffer, byteCount: CC_LONG(byteCount))
         return self
@@ -186,7 +186,7 @@ private protocol DigestEngine {
 	///		- buffer:		The buffer to add.
 	///		- byteCount:	The length of the buffer.
 	///
-    func update(buffer: UnsafePointer<Void>, byteCount: CC_LONG)
+    func update(buffer: UnsafeRawPointer, byteCount: CC_LONG)
 	
 	///
 	/// Finalizer routine
@@ -205,7 +205,7 @@ private protocol DigestEngine {
 private class DigestEngineCC<CTX>: DigestEngine {
 	
     typealias Context = UnsafeMutablePointer<CTX>
-    typealias Buffer = UnsafePointer<Void>
+    typealias Buffer = UnsafeRawPointer
     typealias Digest = UnsafeMutablePointer<UInt8>
     typealias Initializer = (Context) -> (Int32)
     typealias Updater = (Context, Buffer, CC_LONG) -> (Int32)
