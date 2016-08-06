@@ -19,7 +19,7 @@ This package is functionally complete and has all current relevant tests passing
 ### macOS
 
 * macOS 10.11.6 (*El Capitan*) or higher
-* Xcode Version 8.0 beta 3 (8S174q) or higher using the above toolchain (*Recommended*)
+* Xcode Version 8.0 beta 4 (8S188o) or higher using the above toolchain (*Recommended*)
 
 ### Linux
 
