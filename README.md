@@ -1,5 +1,6 @@
 ![](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)
 ![](https://img.shields.io/badge/Snapshot-8/4-blue.svg?style=flat)
+![](https://img.shields.io/badge/Snapshot-8/7-blue.svg?style=flat)
 
 # BlueCryptor
 Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://github.com/iosdevzone/IDZSwiftCommonCrypto).
@@ -15,6 +16,7 @@ This package is functionally complete and has all current relevant tests passing
 
 ### Swift
 * Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-08-04-a` toolchain (**Minimum REQUIRED for latest release**)
+* Swift Open Source `swift-DEVELOPMENT-SNAPSHOT-2016-08-07-a` toolchain (**Recommended**)
 
 ### macOS
 
