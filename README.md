@@ -1,4 +1,4 @@
-![Mac OS X](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
+![macOS](https://img.shields.io/badge/os-Mac%20OS%20X-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 ![](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)
@@ -24,7 +24,7 @@ This package is functionally complete and has all current relevant tests passing
 ### macOS
 
 * macOS 10.11.6 (*El Capitan*) or higher
-* Xcode Version 8.0 beta 4 (8S188o) or higher using the above toolchain (*Recommended*)
+* Xcode Version 8.0 beta 5 (8S193k) or higher using the above toolchain (*Recommended*)
 
 ### Linux
 
