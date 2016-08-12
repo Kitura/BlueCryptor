@@ -75,30 +75,27 @@ extension CryptoDigest {
 ///
 /// Extension for Data to return an Data object containing the digest.
 ///
-#if os(macOS)
-	
 extension Data: CryptoDigest {
     ///
     /// Calculates the Message Digest for this data.
     /// 
     /// - Parameter algorithm: The digest algorithm to use
 	///
-    /// - Returns: An `NSData` object containing the message digest
-	///
-	/// - Note: Not supported on Linux due to differences in the `NSData` Foundation API.
+    /// - Returns: An `Data` object containing the message digest
 	///
     public func digest(using algorithm: Digest.Algorithm) -> Data {
 		
 		// This force unwrap may look scary but for CommonCrypto this cannot fail.
 	    // The API allows for optionals to support the OpenSSL implementation which can.
-		let result = (Digest(using: algorithm).update(data: self as NSData)?.final())!
-        let data = type(of: self).init(bytes: result, count: result.count)
-		return data
+		return self.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) -> Data in
+			
+			let result = (Digest(using: algorithm).update(from: buffer, byteCount: self.count)?.final())!
+    	    let data = type(of: self).init(bytes: result, count: result.count)
+			return data
+		}
     }
 }
 	
-#endif
-
 ///
 /// Extension for String to return a String containing the digest.
 ///

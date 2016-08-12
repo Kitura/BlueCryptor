@@ -55,6 +55,22 @@ extension Updateable {
         return self.status == .success ? self : nil
     }
 	
+	///
+	/// Updates the current calculation with data contained in an `Data` object.
+	///
+	/// - Parameters data: The `Data` object
+	///
+	/// - Returns: Optional `Self` or nil
+	///
+	public func update(data: inout Data) -> Self? {
+		
+		_ = data.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
+
+			_ = update(from: buffer, byteCount: size_t(data.count))
+		}
+		return self.status == .success ? self : nil
+	}
+	
     ///
     /// Updates the current calculation with data contained in a byte array.
     ///
