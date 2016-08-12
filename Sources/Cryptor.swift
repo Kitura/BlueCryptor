@@ -24,7 +24,7 @@ import Foundation
 ///
 /// For large files or network streams use StreamCryptor.
 ///
-public class Cryptor : StreamCryptor, Updateable {
+public class Cryptor : StreamCryptor, Updatable {
 
 	/// Internal accumulator for gathering data from the update() and final() functions.
     var accumulator : [UInt8] = []

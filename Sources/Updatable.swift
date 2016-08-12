@@ -20,7 +20,7 @@ import Foundation
 ///
 /// A protocol for calculations that can be updated with incremental data buffers.
 ///
-public protocol Updateable {
+public protocol Updatable {
 	
     /// Status of the calculation.
     var status : Status { get }
@@ -41,7 +41,7 @@ public protocol Updateable {
 ///
 /// Factors out common update code from Digest, HMAC and Cryptor.
 ///
-extension Updateable {
+extension Updatable {
     ///
     /// Updates the current calculation with data contained in an `NSData` object.
     ///

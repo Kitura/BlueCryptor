@@ -26,7 +26,7 @@ import Foundation
 ///
 /// Calculates a cryptographic Hash-Based Message Authentication Code (HMAC).
 ///
-public class HMAC : Updateable {
+public class HMAC : Updatable {
 	
     ///
     /// Enumerates available algorithms.

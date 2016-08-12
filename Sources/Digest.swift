@@ -36,7 +36,7 @@ import Foundation
 /// let digest = md5.final()
 ///```
 ///
-public class Digest : Updateable {
+public class Digest : Updatable {
 	
     ///
     /// The status of the Digest.
