@@ -424,9 +424,6 @@ class CryptorTests: XCTestCase {
 	}
 	
 	func test_Digest_SHA1_String() {
-		if usingOpenSSL {
-			return
-		}
 		let digest = Digest(using: .sha1).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
 		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha1ShortBlockOutput)
@@ -479,9 +476,6 @@ class CryptorTests: XCTestCase {
 	/// See: https://www.ietf.org/rfc/rfc2202.txt
 	func test_HMAC_SHA1() {
 	
-		/*if usingOpenSSL {
-			return
-		}*/
 		let key = self.hmacDefaultKeySHA1
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1
@@ -493,9 +487,6 @@ class CryptorTests: XCTestCase {
 	
 	func test_HMAC_SHA1_NSData() {
 	
-		/*if usingOpenSSL {
-			return
-		}*/
 		let key = self.hmacDefaultKeySHA1
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1
