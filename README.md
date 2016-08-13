@@ -153,8 +153,7 @@ Also provided are an API to pad a byte array (`[UInt8]`) such that it is an inte
 
 ## Restrictions
 
-The following algorithms are not available on Linux since they are not supported by *OpenSSL*.
-- Digest: MD2, SHA1
-- HMAC: SHA1
+The following algorithm is not available on Linux since it is not supported by *OpenSSL*.
+- Digest: MD2
 
 In all cases, use of unsupported APIs or algorithms will result in a Swift `fatalError()`, terminating the program and should be treated as a programming error.

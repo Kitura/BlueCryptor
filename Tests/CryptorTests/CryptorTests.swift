@@ -479,9 +479,9 @@ class CryptorTests: XCTestCase {
 	/// See: https://www.ietf.org/rfc/rfc2202.txt
 	func test_HMAC_SHA1() {
 	
-		if usingOpenSSL {
+		/*if usingOpenSSL {
 			return
-		}
+		}*/
 		let key = self.hmacDefaultKeySHA1
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1
@@ -493,9 +493,9 @@ class CryptorTests: XCTestCase {
 	
 	func test_HMAC_SHA1_NSData() {
 	
-		if usingOpenSSL {
+		/*if usingOpenSSL {
 			return
-		}
+		}*/
 		let key = self.hmacDefaultKeySHA1
 		let data : [UInt8] = Array(repeating: 0xcd, count:50)
 		let expected = self.hmacDefaultResultSHA1

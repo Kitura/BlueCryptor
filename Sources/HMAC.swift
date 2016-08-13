@@ -92,7 +92,7 @@ public class HMAC : Updatable {
 				switch self {
 		
 				case .sha1:
-					fatalError("SHA1 HMAC not supported by OpenSSL")
+					return EVP_sha1()
 				case .md5:
 					return EVP_md5()
 				case .sha224:
@@ -136,7 +136,7 @@ public class HMAC : Updatable {
 				switch self {
 					
 				case .sha1:
-					fatalError("SHA1 HMAC not supported by OpenSSL")
+					return Int(SHA_DIGEST_LENGTH)
 				case .md5:
 					return Int(MD5_DIGEST_LENGTH)
 				case .sha224:

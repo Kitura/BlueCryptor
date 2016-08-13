@@ -111,7 +111,7 @@ public class Digest : Updatable {
 			#if os(macOS)
 	            engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
 			#elseif os(Linux)
-				fatalError("SHA1 digest not supported by OpenSSL")
+				engine = DigestEngineCC<SHA_CTX>(initializer:SHA1_Init, updater:SHA1_Update, finalizer:SHA1_Final, length:SHA_DIGEST_LENGTH)
 			#endif
 			
         case .sha224:
