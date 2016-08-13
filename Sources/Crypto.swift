@@ -29,7 +29,7 @@ public protocol CryptoDigest {
 ///
 /// Extension to the CryptoDigest to return the digest appropriate to the selected algorithm.
 ///
-extension CryptoDigest {
+public extension CryptoDigest {
 	
     /// An MD2 digest of this object
     public var md2: Self {
