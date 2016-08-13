@@ -38,6 +38,7 @@ class CryptorTests: XCTestCase {
 			("test_Cryptor_DES_EBC_1", test_Cryptor_DES_EBC_1),
 			("testMD2", testMD2),
 			("testMD5_1", testMD5_1),
+			("test_Digest_MD5_NSData", test_Digest_MD5_Data),
 			("test_Digest_MD5_NSData", test_Digest_MD5_NSData),
 			("test_Digest_MD5_Composition_String", test_Digest_MD5_Composition_String),
 			("test_Digest_MD5_Composition_String_2", test_Digest_MD5_Composition_String_2),
@@ -374,6 +375,13 @@ class CryptorTests: XCTestCase {
 	func test_Digest_MD5_NSData() {
 		let qbfData: NSData = CryptoUtils.data(from: self.qbfBytes)
 		let digest = Digest(using: .md5).update(data: qbfData)?.final()
+		
+		XCTAssertEqual(digest!, qbfMD5, "PASS")
+	}
+	
+	func test_Digest_MD5_Data() {
+		var qbfData: Data = CryptoUtils.data(from: self.qbfBytes)
+		let digest = Digest(using: .md5).update(data: &qbfData)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
