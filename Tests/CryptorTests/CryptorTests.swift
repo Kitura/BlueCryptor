@@ -414,13 +414,11 @@ class CryptorTests: XCTestCase {
 		XCTAssertEqual(shaShortBlock.sha256, sha256BlockOutput)
 		XCTAssertEqual(shaShortBlock.sha384, sha384BlockOutput)
 		XCTAssertEqual(shaShortBlock.sha512, sha512BlockOutput)
-		#if os(macOS)
-			let theData: Data = shaShortBlock.data(using:String.Encoding.utf8)!
-			XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput) as Data)
-			XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput) as Data)
-			XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput) as Data)
-			XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput) as Data)
-		#endif
+		let theData: Data = shaShortBlock.data(using:String.Encoding.utf8)!
+		XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput))
+		XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput))
+		XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput))
+		XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput))
 	}
 	
 	func test_Digest_SHA1_String() {

@@ -99,6 +99,19 @@ public struct CryptoUtils {
 	}
 	
 	///
+	/// Converts a string of hexadecimal digits to an `Data` object.
+	///
+	/// - Parameter string: The hex string (must contain an even number of digits)
+	///
+	/// - Returns: An `Data` object
+	///
+	public static func data(fromHex string: String) -> Data {
+		
+		let a = byteArray(fromHex: string)
+		return Data(bytes: a, count: a.count)
+	}
+	
+	///
 	/// Converts a byte array to an `NSData` object.
 	///
 	/// - Parameter byteArray: The byte array
@@ -108,6 +121,18 @@ public struct CryptoUtils {
 	public static func data(from byteArray: [UInt8]) -> NSData {
 		
 		return NSData(bytes:byteArray, length:byteArray.count)
+	}
+	
+	///
+	/// Converts a byte array to an `Data` object.
+	///
+	/// - Parameter byteArray: The byte array
+	///
+	/// - Returns: An `Data` object
+	///
+	public static func data(from byteArray: [UInt8]) -> Data {
+		
+		return Data(bytes: byteArray, count: byteArray.count)
 	}
 	
 	///

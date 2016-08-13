@@ -192,6 +192,27 @@ public class HMAC : Updatable {
 		#endif
     }
     
+	///
+	/// Creates a new HMAC instance with the specified algorithm and key.
+	///
+	/// - Parameters:
+	///		- algorithm: 	Selects the algorithm
+	/// 	- key: 			Specifies the key as Data
+	///
+	public init(using algorithm: Algorithm, key: Data) {
+		
+		self.algorithm = algorithm
+		#if os(macOS)
+			key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
+				CCHmacInit(context, algorithm.nativeValue(), buffer, size_t(key.count))
+			}
+		#elseif os(Linux)
+			_ = key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
+				HMAC_Init(context, buffer, Int32(key.count), algorithm.nativeValue())
+			}
+		#endif
+	}
+	
     ///
     /// Creates a new HMAC instance with the specified algorithm and key.
     ///

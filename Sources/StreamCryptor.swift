@@ -675,6 +675,25 @@ public class StreamCryptor {
 	
 	// MARK: Public Methods
 	
+	///
+	///	Add the contents of an Data buffer to the current encryption/decryption operation.
+	///
+	///	- Parameters:
+	///		- dataIn: 		The input data
+	///		- byteArrayOut: Output data
+	///
+	///	- Returns: A tuple containing the number of output bytes produced and the status (see Status)
+	///
+	public func update(dataIn: Data, byteArrayOut: inout [UInt8]) -> (Int, Status) {
+		
+		let dataOutAvailable = byteArrayOut.count
+		var dataOutMoved = 0
+		dataIn.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
+			_ = update(bufferIn: buffer, byteCountIn: dataIn.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+		}
+		return (dataOutMoved, self.status)
+	}
+	
     ///
 	///	Add the contents of an NSData buffer to the current encryption/decryption operation.
     ///

@@ -139,6 +139,9 @@ do {
 - To byteArray (`[UInt8]`)
 	- From hex string
 	- From UTF8 string
+- To `Data`
+	- From hex string
+	- From byte array (`[UInt8]`)
 - To `NSData`
 	- From hex string
 	- From byte array (`[UInt8]`)
