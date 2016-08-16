@@ -52,6 +52,7 @@ class CryptorTests: XCTestCase {
 			("test_HMAC_MD5", test_HMAC_MD5),
 			("test_HMAC_SHA1", test_HMAC_SHA1),
 			("test_HMAC_SHA1_NSData", test_HMAC_SHA1_NSData),
+			("test_HMAC_SHA1_Data", test_HMAC_SHA1_Data),
 			("test_HMAC_SHA224", test_HMAC_SHA224),
 			("test_HMAC_SHA256", test_HMAC_SHA256),
 			("test_HMAC_SHA384", test_HMAC_SHA384),
@@ -494,10 +495,21 @@ class CryptorTests: XCTestCase {
 	func test_HMAC_SHA1_NSData() {
 	
 		let key = self.hmacDefaultKeySHA1
-		let data : [UInt8] = Array(repeating: 0xcd, count:50)
+		let data: NSData = CryptoUtils.data(from: Array(repeating: 0xcd, count: 50))
 		let expected = self.hmacDefaultResultSHA1
 		
-		let hmac = HMAC(using:.sha1, key:key).update(byteArray: data)?.final()
+		let hmac = HMAC(using:.sha1, key:key).update(data: data)?.final()
+		
+		XCTAssertEqual(hmac!, expected, "PASS")
+	}
+	
+	func test_HMAC_SHA1_Data() {
+		
+		let key = self.hmacDefaultKeySHA1
+		var data: Data = CryptoUtils.data(from: Array(repeating: 0xcd, count: 50))
+		let expected = self.hmacDefaultResultSHA1
+		
+		let hmac = HMAC(using:.sha1, key:key).update(data: &data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}
