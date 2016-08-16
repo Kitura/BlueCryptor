@@ -182,7 +182,7 @@ public class HMAC : Updatable {
 	/// 	- keyBuffer: 	Specifies pointer to the key
 	///		- keyByteCount: Number of bytes on keyBuffer
 	///
-	init(using algorithm: Algorithm, keyBuffer: UnsafePointer<Void>, keyByteCount: Int) {
+	init(using algorithm: Algorithm, keyBuffer: UnsafeRawPointer, keyByteCount: Int) {
 		
         self.algorithm = algorithm
 		#if os(macOS)
