@@ -226,7 +226,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
 	/// 	- finalizer:	The digest finalizer routine.
 	/// 	- length:		The digest length.
 	///
-	init(initializer: Initializer, updater: Updater, finalizer: Finalizer, length: Int32) {
+	init(initializer: @escaping Initializer, updater: @escaping Updater, finalizer: @escaping Finalizer, length: Int32) {
 		
         self.initializer = initializer
         self.updater = updater

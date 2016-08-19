@@ -164,7 +164,8 @@ public struct CryptoUtils {
 		#if os(macOS)
 			return byteArray.map() { String(format: formatString, $0) }.reduce("", +) as NSString
 		#else
-			return byteArray.map() { String(format: formatString, $0) }.reduce("", +).bridge()
+			let aString = byteArray.map() { String(format: formatString, $0) }.reduce("", +)
+			return NSString(string: aString)
 		#endif
 	}
 	
