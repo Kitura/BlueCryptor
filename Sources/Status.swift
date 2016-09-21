@@ -17,13 +17,13 @@
 
 import Foundation
 
-#if os(macOS)
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	import CommonCrypto
 #elseif os(Linux)
 	import OpenSSL
 #endif
 
-#if os(macOS)
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 ///
 /// Links the native CommonCryptoStatus enumeration to Swift versions.
 ///

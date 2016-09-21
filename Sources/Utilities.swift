@@ -161,7 +161,7 @@ public struct CryptoUtils {
 	public static func hexNSString(from byteArray: [UInt8], uppercase: Bool = false) -> NSString {
 		
 		let formatString = (uppercase) ? "%02X" : "%02x"
-		#if os(macOS)
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 			return byteArray.map() { String(format: formatString, $0) }.reduce("", +) as NSString
 		#else
 			let aString = byteArray.map() { String(format: formatString, $0) }.reduce("", +)
