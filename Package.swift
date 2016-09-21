@@ -19,7 +19,7 @@
 
 import PackageDescription
 
-#if os(OSX)
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	let url = "https://github.com/IBM-Swift/CommonCrypto.git"
 	let majorVersion = 0
 	let minorVersion = 1
