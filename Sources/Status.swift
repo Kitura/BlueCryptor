@@ -27,9 +27,9 @@ import Foundation
 ///
 /// Links the native CommonCryptoStatus enumeration to Swift versions.
 ///
-public enum Status: CCCryptorStatus, Error, CustomStringConvertible {
+public enum Status: CCCryptorStatus, Swift.Error, CustomStringConvertible {
 
-    /// successful
+    /// Successful
     case success
 	
     /// Parameter Error
@@ -129,9 +129,9 @@ public enum Status: CCCryptorStatus, Error, CustomStringConvertible {
 ///
 /// Error status
 ///
-public enum Status: Error, CustomStringConvertible {
+public enum Status: Swift.Error, CustomStringConvertible {
 	
-	/// success
+	/// Success
 	case success
 	
 	/// Unimplemented with reason
