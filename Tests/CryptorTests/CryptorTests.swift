@@ -381,8 +381,8 @@ class CryptorTests: XCTestCase {
 	}
 	
 	func test_Digest_MD5_Data() {
-		var qbfData: Data = CryptoUtils.data(from: self.qbfBytes)
-		let digest = Digest(using: .md5).update(data: &qbfData)?.final()
+		let qbfData: Data = CryptoUtils.data(from: self.qbfBytes)
+		let digest = Digest(using: .md5).update(data: qbfData)?.final()
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
@@ -506,10 +506,10 @@ class CryptorTests: XCTestCase {
 	func test_HMAC_SHA1_Data() {
 		
 		let key = self.hmacDefaultKeySHA1
-		var data: Data = CryptoUtils.data(from: Array(repeating: 0xcd, count: 50))
+		let data: Data = CryptoUtils.data(from: Array(repeating: 0xcd, count: 50))
 		let expected = self.hmacDefaultResultSHA1
 		
-		let hmac = HMAC(using:.sha1, key:key).update(data: &data)?.final()
+		let hmac = HMAC(using:.sha1, key:key).update(data: data)?.final()
 		
 		XCTAssertEqual(hmac!, expected, "PASS")
 	}

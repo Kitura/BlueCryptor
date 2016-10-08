@@ -62,7 +62,7 @@ extension Updatable {
 	///
 	/// - Returns: Optional `Self` or nil
 	///
-	public func update(data: inout Data) -> Self? {
+	public func update(data: Data) -> Self? {
 		
 		_ = data.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
 
