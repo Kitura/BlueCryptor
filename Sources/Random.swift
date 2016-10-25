@@ -15,6 +15,26 @@
 // 	limitations under the License.
 //
 
+//
+// Below are swiftlint disabled rules:
+// swiftlint:disable trailing_newline
+// swiftlint:disable force_cast
+// swiftlint:disable variable_name_min_length
+// swiftlint:disable function_body_length
+// swiftlint:disable variable_name
+// swiftlint:disable variable_name_max_length
+// swiftlint:disable line_length
+// swiftlint:disable trailing_whitespace
+// swiftlint:disable type_name
+// swiftlint:disable type_body_length
+// swiftlint:disable todo
+// swiftlint:disable file_length
+// swiftlint:disable leading_whitespace
+// swiftlint:disable mark
+// swiftlint:disable function_parameter_count
+// swiftlint:disable cyclomatic_complexity
+//
+
 import Foundation
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
@@ -98,7 +118,7 @@ public class Random {
 			
             fatalError("generate: byteCount must be positve and non-zero")
         }
-		var bytes : [UInt8] = Array(repeating: UInt8(0), count:byteCount)
+		var bytes: [UInt8] = Array(repeating: UInt8(0), count:byteCount)
         let status = generate(bytes: &bytes, byteCount: byteCount)
         throw status
         //return bytes

@@ -15,6 +15,26 @@
 // 	limitations under the License.
 //
 
+//
+// Below are swiftlint disabled rules:
+// swiftlint:disable trailing_newline
+// swiftlint:disable force_cast
+// swiftlint:disable variable_name_min_length
+// swiftlint:disable function_body_length
+// swiftlint:disable variable_name
+// swiftlint:disable variable_name_max_length
+// swiftlint:disable line_length
+// swiftlint:disable trailing_whitespace
+// swiftlint:disable type_name
+// swiftlint:disable type_body_length
+// swiftlint:disable todo
+// swiftlint:disable file_length
+// swiftlint:disable leading_whitespace
+// swiftlint:disable mark
+// swiftlint:disable function_parameter_count
+// swiftlint:disable cyclomatic_complexity
+//
+
 import Foundation
 
 ///
@@ -24,10 +44,10 @@ import Foundation
 ///
 /// For large files or network streams use StreamCryptor.
 ///
-public class Cryptor : StreamCryptor, Updatable {
+public class Cryptor: StreamCryptor, Updatable {
 
 	/// Internal accumulator for gathering data from the update() and final() functions.
-    var accumulator : [UInt8] = []
+    var accumulator: [UInt8] = []
 	
     ///
 	///	Retrieves the encrypted or decrypted data.

@@ -15,6 +15,26 @@
 // 	limitations under the License.
 //
 
+//
+// Below are swiftlint disabled rules:
+// swiftlint:disable trailing_newline
+// swiftlint:disable force_cast
+// swiftlint:disable variable_name_min_length
+// swiftlint:disable function_body_length
+// swiftlint:disable variable_name
+// swiftlint:disable variable_name_max_length
+// swiftlint:disable line_length
+// swiftlint:disable trailing_whitespace
+// swiftlint:disable type_name
+// swiftlint:disable type_body_length
+// swiftlint:disable todo
+// swiftlint:disable file_length
+// swiftlint:disable leading_whitespace
+// swiftlint:disable mark
+// swiftlint:disable function_parameter_count
+// swiftlint:disable cyclomatic_complexity
+//
+
 import Foundation
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
@@ -114,7 +134,7 @@ public class StreamCryptor {
 		
         case fixed(Int)
         case discrete([Int])
-        case range(Int,Int)
+        case range(Int, Int)
         
         ///
 		///	Determines if a given `keySize` is valid for this algorithm.
@@ -169,7 +189,7 @@ public class StreamCryptor {
 	///
 	/// Maps CommonCryptoOptions onto a Swift struct.
 	///
-	public struct Options : OptionSet {
+	public struct Options: OptionSet {
 		
 		public typealias RawValue = Int
 		public let rawValue: RawValue
@@ -496,7 +516,7 @@ public class StreamCryptor {
     /// The status code resulting from the last method call to this Cryptor.
     ///    Used to get additional information when optional chaining collapes.
 	///
-    public internal(set) var status : Status = .success
+    public internal(set) var status: Status = .success
 
 	#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	
@@ -585,7 +605,7 @@ public class StreamCryptor {
 			}
 		
 			// Note: This call must be AFTER the init call above...
-			EVP_CIPHER_CTX_set_padding(self.context, needPadding);
+			EVP_CIPHER_CTX_set_padding(self.context, needPadding)
 		
 			self.status = Status.success
 		
@@ -604,7 +624,7 @@ public class StreamCryptor {
     ///
 	/// - Returns: New StreamCryptor instance.
 	///
-	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: [UInt8], iv : [UInt8]) {
+	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: [UInt8], iv: [UInt8]) {
 		
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: key.count) else {
             fatalError("FATAL_ERROR: Invalid key size")
@@ -629,7 +649,7 @@ public class StreamCryptor {
     ///
 	/// - Returns: New StreamCryptor instance.
 	///
-	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: String, iv : String) {
+	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: String, iv: String) {
 		
         let keySize = key.utf8.count
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: keySize) else {

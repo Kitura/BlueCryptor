@@ -15,6 +15,26 @@
 // 	limitations under the License.
 //
 
+//
+// Below are swiftlint disabled rules:
+// swiftlint:disable trailing_newline
+// swiftlint:disable force_cast
+// swiftlint:disable variable_name_min_length
+// swiftlint:disable function_body_length
+// swiftlint:disable variable_name
+// swiftlint:disable variable_name_max_length
+// swiftlint:disable line_length
+// swiftlint:disable trailing_whitespace
+// swiftlint:disable type_name
+// swiftlint:disable type_body_length
+// swiftlint:disable todo
+// swiftlint:disable file_length
+// swiftlint:disable leading_whitespace
+// swiftlint:disable mark
+// swiftlint:disable function_parameter_count
+// swiftlint:disable cyclomatic_complexity
+//
+
 import Foundation
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
@@ -31,12 +51,12 @@ import Foundation
 ///
 /// ```
 /// let  s = "The quick brown fox jumps over the lazy dog."
-/// var md5 : Digest = Digest(using:.md5)
+/// var md5: Digest = Digest(using:.md5)
 /// md5.update(s)
 /// let digest = md5.final()
 ///```
 ///
-public class Digest : Updatable {
+public class Digest: Updatable {
 	
     ///
     /// The status of the Digest.
@@ -48,7 +68,7 @@ public class Digest : Updatable {
     ///
     /// Enumerates available Digest algorithms
     ///
-    public enum Algorithm  {
+    public enum Algorithm {
 		
         /// Message Digest 2 See: http://en.wikipedia.org/wiki/MD2_(cryptography)
         case md2
@@ -212,10 +232,10 @@ private class DigestEngineCC<CTX>: DigestEngine {
     typealias Finalizer = (Digest, Context) -> (Int32)
     
     let context = Context.allocate(capacity: 1)
-    var initializer : Initializer
-    var updater : Updater
-    var finalizer : Finalizer
-    var length : Int32
+    var initializer: Initializer
+    var updater: Updater
+    var finalizer: Finalizer
+    var length: Int32
 	
 	///
 	/// Default initializer
