@@ -552,8 +552,6 @@ public class StreamCryptor {
 		
 		#elseif os(Linux)
 		
-			ERR_load_crypto_strings()
-			
 			self.algorithm = algorithm
 			self.operation = operation
 		
@@ -668,7 +666,6 @@ public class StreamCryptor {
 		#elseif os(Linux)
 
 			EVP_CIPHER_CTX_free(self.context)
-			ERR_free_strings()
 		
 		#endif
 	}
