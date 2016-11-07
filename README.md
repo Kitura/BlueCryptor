@@ -118,7 +118,7 @@ let rounds: UInt = 2
 let derivedKeyLen = 20
 
 let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: rounds, derivedKeyLength: derivedKeyLen)
-ley keyString = CryptoUtils.hexString(from: key)
+let keyString = CryptoUtils.hexString(from: key)
 ```
 
 ### Random Byte Generation
