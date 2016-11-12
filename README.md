@@ -1,4 +1,5 @@
 ![macOS](https://img.shields.io/badge/os-macOS-green.svg?style=flat)
+![iOS](https://img.shields.io/badge/os-iOS-green.svg?style=flat)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 ![](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)
@@ -13,7 +14,7 @@ The current version has been updated for Swift 3.0 and includes new packaging. T
 
 This package is functionally complete and has all current relevant tests passing on both macOS and Linux. 
 
-**Note:** On macOS, BlueCryptor uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from OpenSSL*.
+**Note:** On macOS and iOS, BlueCryptor uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from the OpenSSL project*.
 
 ## Prerequisites
 
@@ -24,6 +25,7 @@ This package is functionally complete and has all current relevant tests passing
 ### macOS
 
 * macOS 10.11.6 (*El Capitan*) or higher
+* iOS 9.0 or higher
 * Xcode Version 8.0 (8A218a) or higher using one of the above toolchains (*Recommended*)
 
 ### Linux
