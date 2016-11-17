@@ -24,9 +24,9 @@ import PackageDescription
 	let majorVersion = 0
 	let minorVersion = 1
 #elseif os(Linux)
-	let url = "https://github.com/IBM-Swift/OpenSSL.git"
+	let url = "https://github.com/IBM-Swift/COpenSSL.git"
 	let majorVersion = 0
-	let minorVersion = 2
+	let minorVersion = 3
 #else
 	fatalError("Unsupported OS")
 #endif
