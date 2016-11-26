@@ -48,7 +48,7 @@ public class RSA {
 				switch self {
 					
 				case .none:
-					return .none
+					return []
 				case .pkcs1:
 					return .PKCS1
 				case .md2:
