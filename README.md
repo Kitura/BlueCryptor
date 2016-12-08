@@ -3,7 +3,6 @@
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 ![Apache 2](https://img.shields.io/badge/license-Apache2-blue.svg?style=flat)
 ![](https://img.shields.io/badge/Swift-3.0-orange.svg?style=flat)
-![](https://img.shields.io/badge/Snapshot-11/11-blue.svg?style=flat)
 [![Build Status - Master](https://travis-ci.org/IBM-Swift/BlueCryptor.svg?branch=master)](https://travis-ci.org/IBM-Swift/BlueCryptor)
 
 # BlueCryptor
