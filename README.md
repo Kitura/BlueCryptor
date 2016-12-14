@@ -19,13 +19,13 @@ This package is functionally complete and has all current relevant tests passing
 
 ### Swift
 * Swift Open Source `swift-3.0.1-RELEASE` toolchain (**Minimum REQUIRED for latest release**)
-* Swift Open Source `swift-3.0.2-PREVIEW-1` toolchain (**Recommended**)
+* Swift Open Source `swift-3.0.2-RELEASE` toolchain (**Recommended**)
 
 ### macOS
 
 * macOS 10.11.6 (*El Capitan*) or higher
 * iOS 9.0 or higher
-* Xcode Version 8.0 (8A218a) or higher using one of the above toolchains (*Recommended*)
+* Xcode Version 8.2 (8C38) or higher using one of the above toolchains (*Recommended*)
 
 ### Linux
 
