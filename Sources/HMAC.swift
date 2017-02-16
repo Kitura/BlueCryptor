@@ -269,6 +269,9 @@ public class HMAC: Updatable {
 	/// Cleanup
 	///
     deinit {
+        #if os(Linux)
+            HMAC_CTX_cleanup(context)
+        #endif
         context.deallocate(capacity: 1)
     }
  
