@@ -9,7 +9,7 @@
 Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://github.com/iosdevzone/IDZSwiftCommonCrypto).
 
 ## Status
-The current version has been updated for Swift 3.0 and includes new packaging. The API presented by this framework is *NOT* the same as the one presented by the original. It has been updated to conform to the Swift 3.0 API Guidelines.
+The current version has been updated for Swift 3.x and includes new packaging. The API presented by this framework is *NOT* the same as the one presented by the original. It has been updated to conform to the Swift 3.x API Guidelines.
 
 This package is functionally complete and has all current relevant tests passing on both macOS and Linux. 
 
@@ -18,14 +18,19 @@ This package is functionally complete and has all current relevant tests passing
 ## Prerequisites
 
 ### Swift
+
 * Swift Open Source `swift-3.0.1-RELEASE` toolchain (**Minimum REQUIRED for latest release**)
-* Swift Open Source `swift-3.0.2-RELEASE` toolchain (**Recommended**)
+* Swift Open Source `swift-3.1-RELEASE` toolchain (**Recommended**)
 
 ### macOS
 
 * macOS 10.11.6 (*El Capitan*) or higher
-* iOS 9.0 or higher
-* Xcode Version 8.2 (8C38) or higher using one of the above toolchains (*Recommended*)
+* Xcode Version 8.3.1 (8E1000a) or higher using one of the above toolchains (*Recommended*)
+
+### iOS
+
+* iOS 10.0 or higher
+* Xcode Version 8.3.1 (8E1000a) or higher using one of the above toolchains (*Recommended*)
 
 ### Linux
 
