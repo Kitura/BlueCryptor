@@ -144,7 +144,7 @@ public class StreamCryptor {
 		///
 		/// - Parameter keySize: The size for which the `next` size is desired.
 		///
-		///	- Returns: Will return `nil` if the passed in `keySize` is greater than the max.
+		/// - Returns: Will return `nil` if the passed in `keySize` is greater than the max.
         ///
         func paddedKeySize(keySize: Int) -> Int? {
 			
@@ -594,7 +594,7 @@ public class StreamCryptor {
     ///
 	///	Creates a new StreamCryptor
 	///
-	///	- Parameters:
+	/// - Parameters:
  	///		- operation: 	The operation to perform see Operation (Encrypt, Decrypt)
 	///		- algorithm: 	The algorithm to use see Algorithm (AES, des, tripleDes, cast, rc2, blowfish)
 	///		- key: 			A byte array containing key data
@@ -619,7 +619,7 @@ public class StreamCryptor {
     ///
 	/// Creates a new StreamCryptor
 	///
-	///	- Parameters:
+	/// - Parameters:
  	///		- operation: 	The operation to perform see Operation (Encrypt, Decrypt)
 	///		- algorithm: 	The algorithm to use see Algorithm (AES, des, tripleDes, cast, rc2, blowfish)
 	///		- key: 			A string containing key data (will be interpreted as UTF8)
@@ -675,11 +675,11 @@ public class StreamCryptor {
 	///
 	///	Add the contents of an Data buffer to the current encryption/decryption operation.
 	///
-	///	- Parameters:
+	/// - Parameters:
 	///		- dataIn: 		The input data
 	///		- byteArrayOut: Output data
 	///
-	///	- Returns: A tuple containing the number of output bytes produced and the status (see Status)
+	/// - Returns: A tuple containing the number of output bytes produced and the status (see Status)
 	///
 	public func update(dataIn: Data, byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
@@ -694,11 +694,11 @@ public class StreamCryptor {
     ///
 	///	Add the contents of an NSData buffer to the current encryption/decryption operation.
     ///
-	///	- Parameters:
+	/// - Parameters:
  	///		- dataIn: 		The input data
 	///		- byteArrayOut: Output data
 	///
-	///	- Returns: A tuple containing the number of output bytes produced and the status (see Status)
+	/// - Returns: A tuple containing the number of output bytes produced and the status (see Status)
     ///
 	public func update(dataIn: NSData, byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
@@ -712,11 +712,11 @@ public class StreamCryptor {
     ///
 	///	Add the contents of a byte array to the current encryption/decryption operation.
 	///
-	///	- Parameters:
+	/// - Parameters:
  	///		- byteArrayIn: 	The input data
 	///		- byteArrayOut: Output data
 	///
-	///	- Returns: A tuple containing the number of output bytes produced and the status (see Status)
+	/// - Returns: A tuple containing the number of output bytes produced and the status (see Status)
     ///
 	public func update(byteArrayIn: [UInt8], byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
@@ -733,7 +733,7 @@ public class StreamCryptor {
  	///		- byteArrayIn: 	The input data
 	///		- byteArrayOut:	Output data
 	///
-	///	- Returns: A tuple containing the number of output bytes produced and the status (see Status)
+	/// - Returns: A tuple containing the number of output bytes produced and the status (see Status)
     ///
 	public func update(stringIn: String, byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
@@ -746,15 +746,15 @@ public class StreamCryptor {
     ///
 	///	Retrieves all remaining encrypted or decrypted data from this cryptor.
 	///
-	///	- Note: If the underlying algorithm is an block cipher and the padding option has
+	/// - Note: If the underlying algorithm is an block cipher and the padding option has
 	/// not been specified and the cumulative input to the cryptor has not been an integral
 	///	multiple of the block length this will fail with an alignment error.
 	///
-	///	- Note: This method updates the status property
+	/// - Note: This method updates the status property
 	///
-	///	- Parameter byteArrayOut: The output bffer
+	/// - Parameter byteArrayOut: The output bffer
 	///
-	///	- Returns: a tuple containing the number of output bytes produced and the status (see Status)
+	/// - Returns: a tuple containing the number of output bytes produced and the status (see Status)
     ///
 	public func final(byteArrayOut: inout [UInt8]) -> (Int, Status) {
 		
@@ -769,14 +769,14 @@ public class StreamCryptor {
     ///
 	///	Update the buffer
 	///
-	///	- Parameters: 
+	/// - Parameters:
 	///		- bufferIn: 		Pointer to input buffer
 	///		- inByteCount: 		Number of bytes contained in input buffer
 	///		- bufferOut: 		Pointer to output buffer
 	///		- outByteCapacity: 	Capacity of the output buffer in bytes
 	///		- outByteCount: 	On successful completion, the number of bytes written to the output buffer
 	///
-	///	- Returns: Status of the update
+	/// - Returns: Status of the update
 	///
 	public func update(bufferIn: UnsafeRawPointer, byteCountIn: Int, bufferOut: UnsafeMutablePointer<UInt8>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
 		
@@ -831,18 +831,18 @@ public class StreamCryptor {
     ///
 	///	Retrieves all remaining encrypted or decrypted data from this cryptor.
 	///
-	///	- Note: If the underlying algorithm is an block cipher and the padding option has
+	/// - Note: If the underlying algorithm is an block cipher and the padding option has
 	///	not been specified and the cumulative input to the cryptor has not been an integral
 	///	multiple of the block length this will fail with an alignment error.
     ///
-	///	- Note: This method updates the status property
+	/// - Note: This method updates the status property
 	///
-	///	- Parameters:
+	/// - Parameters:
  	///		- bufferOut: 		Pointer to output buffer
 	///		- outByteCapacity: 	Capacity of the output buffer in bytes
 	///		- outByteCount: 	On successful completion, the number of bytes written to the output buffer
 	///
-	///	- Returns: Status of the update
+	/// - Returns: Status of the update
 	///
 	public func final(bufferOut: UnsafeMutablePointer<UInt8>, byteCapacityOut: Int, byteCountOut: inout Int) -> Status {
 		
@@ -897,11 +897,11 @@ public class StreamCryptor {
 	///	Determines the number of bytes that will be output by this Cryptor if inputBytes of additional
 	///	data is input.
 	///
-	///	- Parameters:
+	/// - Parameters:
  	///		- inputByteCount: 	Number of bytes that will be input.
 	///		- isFinal: 			True if buffer to be input will be the last input buffer, false otherwise.
 	///
-	///	- Returns: The final output length
+	/// - Returns: The final output length
 	///
 	public func getOutputLength(inputByteCount: Int, isFinal: Bool = false) -> Int {
 		

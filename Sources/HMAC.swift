@@ -54,13 +54,14 @@ public class HMAC: Updatable {
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 		
 			static let fromNative: [CCHmacAlgorithm: Algorithm] = [
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.sha1,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA1):.md5,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA256):.sha256,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA384):.sha384,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA512):.sha512,
-		                                                      	CCHmacAlgorithm(kCCHmacAlgSHA224):.sha224 ]
-		
+                CCHmacAlgorithm(kCCHmacAlgSHA1): .sha1,
+                CCHmacAlgorithm(kCCHmacAlgSHA1): .md5,
+                CCHmacAlgorithm(kCCHmacAlgSHA256): .sha256,
+                CCHmacAlgorithm(kCCHmacAlgSHA384): .sha384,
+                CCHmacAlgorithm(kCCHmacAlgSHA512): .sha512,
+                CCHmacAlgorithm(kCCHmacAlgSHA224): .sha224
+            ]
+
 			static func fromNativeValue(nativeAlg: CCHmacAlgorithm) -> Algorithm? {
 			
 				return fromNative[nativeAlg]

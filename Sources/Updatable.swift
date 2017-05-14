@@ -45,7 +45,7 @@ extension Updatable {
     ///
     /// Updates the current calculation with data contained in an `NSData` object.
     ///
-    /// - Parameters data: The `NSData` object
+    /// - Parameter data: The `NSData` object
     ///
 	/// - Returns: Optional `Self` or nil
 	///
@@ -74,7 +74,7 @@ extension Updatable {
     ///
     /// Updates the current calculation with data contained in a byte array.
     ///
-    /// - Parameters byteArray: The byte array
+    /// - Parameter byteArray: The byte array
     ///
 	/// - Returns: Optional `Self` or nil
 	///
@@ -88,7 +88,7 @@ extension Updatable {
     /// Updates the current calculation with data contained in a String.
     /// The corresponding data will be generated using UTF8 encoding.
     ///
-    /// - Parameters string: The string of data
+    /// - Parameter string: The string of data
     ///
 	/// - Returns: Optional `Self` or nil
 	///
