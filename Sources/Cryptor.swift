@@ -53,7 +53,7 @@ public class Cryptor: StreamCryptor, Updatable {
 	///
 	///	It is not envisaged the users of the framework will need to call this directly.
 	///
-	///	- Returns: this Cryptor object or nil if an error occurs (for optional chaining)
+	/// - Returns: this Cryptor object or nil if an error occurs (for optional chaining)
     ///
 	public func update(from buffer: UnsafeRawPointer, byteCount: Int) -> Self? {
     

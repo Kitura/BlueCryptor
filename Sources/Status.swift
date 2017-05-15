@@ -87,16 +87,18 @@ public enum Status: CCCryptorStatus, Swift.Error, CustomStringConvertible {
     ///
     /// Human readable descriptions of the values. (Not needed in Swift 2.0?)
     ///
-    static let descriptions = [ success: "Success",
-                                paramError: "ParamError",
-                                bufferTooSmall: "BufferTooSmall",
-                                memoryFailure: "MemoryFailure",
-                                alignmentError: "AlignmentError",
-                                decodeError: "DecodeError",
-                                unimplemented: "Unimplemented",
-                                overflow: "Overflow",
-                                rngFailure: "RNGFailure" ]
-    
+    static let descriptions = [
+        success: "Success",
+        paramError: "ParamError",
+        bufferTooSmall: "BufferTooSmall",
+        memoryFailure: "MemoryFailure",
+        alignmentError: "AlignmentError",
+        decodeError: "DecodeError",
+        unimplemented: "Unimplemented",
+        overflow: "Overflow",
+        rngFailure: "RNGFailure"
+    ]
+
     ///
     /// Obtain human-readable string from enum value.
     ///
@@ -110,15 +112,18 @@ public enum Status: CCCryptorStatus, Swift.Error, CustomStringConvertible {
     ///
 	public static func fromRaw(status: CCCryptorStatus) -> Status? {
 		
-        var from = [ kCCSuccess: success,
-                     kCCParamError: paramError,
-                     kCCBufferTooSmall: bufferTooSmall,
-                     kCCMemoryFailure: memoryFailure,
-                     kCCAlignmentError: alignmentError,
-                     kCCDecodeError: decodeError,
-                     kCCUnimplemented: unimplemented,
-                     kCCOverflow: overflow,
-                     kCCRNGFailure: rngFailure ]
+        var from = [
+            kCCSuccess: success,
+            kCCParamError: paramError,
+            kCCBufferTooSmall: bufferTooSmall,
+            kCCMemoryFailure: memoryFailure,
+            kCCAlignmentError: alignmentError,
+            kCCDecodeError: decodeError,
+            kCCUnimplemented: unimplemented,
+            kCCOverflow: overflow,
+            kCCRNGFailure: rngFailure
+        ]
+        
         return from[Int(status)]
     
     }

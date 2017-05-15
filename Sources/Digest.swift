@@ -80,7 +80,7 @@ public class Digest: Updatable {
     ///
     /// Create an algorithm-specific digest calculator
 	///
-    ///   - Parameter alrgorithm: the desired message digest algorithm
+    /// - Parameter alrgorithm: the desired message digest algorithm
 	///
     public init(using algorithm: Algorithm) {
 		
@@ -148,11 +148,11 @@ public class Digest: Updatable {
 	///	Low-level update routine. Updates the message digest calculation with
 	///	the contents of a byte buffer.
 	///
-	///	- Parameters:
+	/// - Parameters:
  	///		- buffer:		The buffer
 	///		- byteCount: 	Number of bytes in buffer
 	///
-	///	- Returns: This Digest object (for optional chaining)
+	/// - Returns: This Digest object (for optional chaining)
     ///
     public func update(from buffer: UnsafeRawPointer, byteCount: size_t) -> Self? {
 		
@@ -163,7 +163,7 @@ public class Digest: Updatable {
     ///
 	///	Completes the calculate of the messge digest
 	///
-	///	- Returns: The message digest
+	/// - Returns: The message digest
 	///
 	public func final() -> [UInt8] {
 		

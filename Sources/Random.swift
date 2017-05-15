@@ -33,13 +33,13 @@ public class Random {
     ///
     /// Wraps native call.
     ///
-    ///	- Note: CCRNGStatus is typealiased to CCStatus but this routine can only return kCCSuccess or kCCRNGFailure
+    /// - Note: CCRNGStatus is typealiased to CCStatus but this routine can only return kCCSuccess or kCCRNGFailure
     ///
-    ///	- Parameter bytes: A pointer to the buffer that will receive the bytes
+    /// - Parameter bytes: A pointer to the buffer that will receive the bytes
 	///
-    ///	- Returns: `.success` or `.rngFailure` as appropriate.
+    /// - Returns: `.success` or `.rngFailure` as appropriate.
     ///
-	public class func generate(bytes: UnsafeMutablePointer<UInt8>, byteCount: Int ) -> RNGStatus {
+	public class func generate(bytes: UnsafeMutablePointer<UInt8>, byteCount: Int) -> RNGStatus {
 		
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	        let statusCode = CCRandomGenerateBytes(bytes, byteCount)
@@ -61,13 +61,13 @@ public class Random {
     ///
     ///	Generates an array of random bytes.
     ///
-    ///	- Parameter bytesCount: Number of random bytes to generate
+    /// - Parameter bytesCount: Number of random bytes to generate
 	///
-    ///	- Returns: an array of random bytes
+    /// - Returns: an array of random bytes
 	///
     /// - Throws: `.success` or an `.rngFailure` on failure
 	///
-	public class func generate(byteCount: Int ) throws -> [UInt8] {
+	public class func generate(byteCount: Int) throws -> [UInt8] {
 		
         guard byteCount > 0 else {
 			throw RNGStatus.paramError
@@ -88,11 +88,11 @@ public class Random {
     ///
 	///	Use it to test that code handles this.
     ///
-    ///	- Parameter bytesCount: Number of random bytes to generate
+    /// - Parameter bytesCount: Number of random bytes to generate
 	///
-    ///	- Returns: An array of random bytes
+    /// - Returns: An array of random bytes
 	///
-	public class func generateBytesThrow(byteCount: Int ) throws -> [UInt8] {
+	public class func generateBytesThrow(byteCount: Int) throws -> [UInt8] {
 		
 		if byteCount <= 0 {
 			
