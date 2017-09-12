@@ -24,11 +24,11 @@ import PackageDescription
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 let url = "https://github.com/IBM-Swift/CommonCrypto.git"
-let version = Version(0, 1, 5)
+let version = Version(0, 1, 0)
 let dependency = Target.Dependency.byNameItem(name: "CommonCrypto")
 #elseif os(Linux)
 let url = "https://github.com/IBM-Swift/OpenSSL.git"
-let version = Version(0, 3, 7)
+let version = Version(0, 3, 0)
 let dependency = Target.Dependency.byNameItem(name: "OpenSSL")
 #else
 fatalError("Unsupported OS")
@@ -45,7 +45,7 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
-        .package(url: url, from: version),
+        .package(url: url, .upToNextMinor(from: version)),
         ],
     targets: [
         // Targets are the basic building blocks of a package. A target defines a module or a test suite.
