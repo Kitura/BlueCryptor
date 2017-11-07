@@ -646,7 +646,7 @@ public class StreamCryptor {
                   keyBuffer:CryptoUtils.zeroPad(string: key, blockSize: paddedKeySize),
                   keyByteCount:paddedKeySize,
                   ivBuffer:iv,
-                  ivLength:iv.count)
+                  ivLength:iv.utf8.count)
     }
 	
 	///
