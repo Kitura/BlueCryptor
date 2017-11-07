@@ -9,12 +9,7 @@
 # BlueCryptor
 Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://github.com/iosdevzone/IDZSwiftCommonCrypto).
 
-## Status
-The current version has been updated for Swift 3.x and includes new packaging. The API presented by this framework is *NOT* the same as the one presented by the original. It has been updated to conform to the Swift 3.x API Guidelines.
-
-This package is functionally complete and has all current relevant tests passing on both macOS and Linux. 
-
-**Note:** On macOS and iOS, BlueCryptor uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from the OpenSSL project*.
+**Note:** On macOS and iOS, _BlueCryptor_ uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from the OpenSSL project*.
 
 ## Prerequisites
 
