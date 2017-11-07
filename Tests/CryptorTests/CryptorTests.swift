@@ -25,11 +25,15 @@ import Foundation
 	import OpenSSL
 #endif
 
+import Dispatch
+
 class CryptorTests: XCTestCase {
 	
 	static var allTests: [(String, (CryptorTests) -> () throws -> Void)] {
 		
 		return [
+			("test_fatalError_keySize", test_fatalError_keySize),
+			("test_fatalError_AES_CBC_ivSize", test_fatalError_AES_CBC_ivSize),
 			("test_Cryptor_AES_ECB", test_Cryptor_AES_ECB),
 			("test_Cryptor_AES_ECB_Padded", test_Cryptor_AES_ECB_Padded),
 			("test_Cryptor_AES_ECB_2", test_Cryptor_AES_ECB_2),
@@ -102,6 +106,27 @@ class CryptorTests: XCTestCase {
 	var aesCipherText1Bytes = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
 	var aesCipherText2Bytes = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97a4b2933fde9dabeda5e862373bbccf8c")
 	
+	/// Test fatal error with invalid key size...
+	func test_fatalError_keySize() {
+		let tooLongKey = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c")
+		expectFatalError(expectedMessage: "FATAL_ERROR: Invalid key size.") {
+			_ = Cryptor(operation:.encrypt,
+			            algorithm:.aes, options:.ecbMode,
+			            key:tooLongKey, iv:Array<UInt8>())
+			
+		}
+	}
+	
+	/// Test fatal error with invalid ivSize...
+	func test_fatalError_AES_CBC_ivSize() {
+		let key =   CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
+		let iv =    CryptoUtils.byteArray(fromHex: "0000000000000000000000000000000000")
+		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
+		expectFatalError(expectedMessage: "FATAL_ERROR: Invalid IV size or IV length not passed.") {
+			let _ = Cryptor(operation:.encrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: plainText)?.final()
+		}
+	}
+
 	/// Tests AES ECB without need for padding...
 	func test_Cryptor_AES_ECB() {
 		let aesEncrypt = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
@@ -749,5 +774,35 @@ class CryptorTests: XCTestCase {
 		let cryptor = Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: [])
 		let cipherText = cryptor.update(byteArray: plainText)?.final()
 		XCTAssertEqual(expectedCipherText, cipherText!)
+	}
+}
+
+// MARK: - fatalError testing
+// See: https://marcosantadev.com/test-swift-fatalerror/
+extension XCTestCase {
+	func expectFatalError(expectedMessage: String, testcase: @escaping () -> Void) {
+		
+		let expectation = self.expectation(description: "expectingFatalError")
+		var assertionMessage: String? = nil
+		
+		FatalErrorUtil.replaceFatalError { message, _, _ in
+			assertionMessage = message
+			expectation.fulfill()
+			self.unreachable()
+		}
+		
+		DispatchQueue.global(qos: .userInitiated).async(execute: testcase)
+		
+		waitForExpectations(timeout: 2) { _ in
+			XCTAssertEqual(assertionMessage, expectedMessage)
+			
+			FatalErrorUtil.restoreFatalError()
+		}
+	}
+	
+	private func unreachable() -> Never {
+		repeat {
+			RunLoop.current.run()
+		} while (true)
 	}
 }
