@@ -610,7 +610,7 @@ public class StreamCryptor {
 	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: [UInt8], iv: [UInt8]) {
 		
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: key.count) else {
-            fatalError("FATAL_ERROR: Invalid key size")
+            fatalError("FATAL_ERROR: Invalid key size.")
         }
         
         self.init(operation:operation,
@@ -637,7 +637,7 @@ public class StreamCryptor {
 		
         let keySize = key.utf8.count
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: keySize) else {
-            fatalError("FATAL_ERROR: Invalid key size")
+            fatalError("FATAL_ERROR: Invalid key size.")
         }
         
         self.init(operation:operation,
