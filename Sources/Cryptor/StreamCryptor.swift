@@ -528,13 +528,18 @@ public class StreamCryptor {
 	/// 	- keyBuffer: 	Pointer to key buffer
 	/// 	- keyByteCount: Number of bytes in the key
 	/// 	- ivBuffer: 	Initialization vector buffer
+	///		- ivLength:		Length of the ivBuffer
 	///
 	/// - Returns: New StreamCryptor instance.
 	///
-	public init(operation: Operation, algorithm: Algorithm, options: Options, keyBuffer: [UInt8], keyByteCount: Int, ivBuffer: UnsafePointer<UInt8>) {
+	public init(operation: Operation, algorithm: Algorithm, options: Options, keyBuffer: [UInt8], keyByteCount: Int, ivBuffer: UnsafePointer<UInt8>, ivLength: Int = 0) {
 		
 		guard algorithm.isValidKeySize(keySize: keyByteCount) else {
 			fatalError("FATAL_ERROR: Invalid key size.")
+		}
+		
+		guard options.contains(.ecbMode) || ivLength == algorithm.blockSize else {
+			fatalError("FATAL_ERROR: Invalid IV size or IV length not passed.")
 		}
 		
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
@@ -613,7 +618,8 @@ public class StreamCryptor {
                   options:options,
                   keyBuffer:CryptoUtils.zeroPad(byteArray:key, blockSize: paddedKeySize),
                   keyByteCount:paddedKeySize,
-                  ivBuffer:iv)
+                  ivBuffer:iv,
+                  ivLength:iv.count)
     }
 	
     ///
@@ -639,7 +645,8 @@ public class StreamCryptor {
                   options:options,
                   keyBuffer:CryptoUtils.zeroPad(string: key, blockSize: paddedKeySize),
                   keyByteCount:paddedKeySize,
-                  ivBuffer:iv)
+                  ivBuffer:iv,
+                  ivLength:iv.count)
     }
 	
 	///
