@@ -28,7 +28,7 @@ Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://
 
 ### iOS
 
-* iOS 10.0 or higher
+* iOS 9.0 or higher
 * Xcode Version 8.3.2 (8E2002) or higher using one of the above toolchains (*Recommended*)
 * Xcode Version 9.0  (9A325) or higher using the included toolchain.
 * CommonCrypto is provided by iOS
