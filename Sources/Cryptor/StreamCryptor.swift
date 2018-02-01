@@ -401,7 +401,8 @@ public class StreamCryptor {
 						return EVP_bf_ecb()
 					}
 				}
-			
+		
+				// Error Audit: OK
 				fatalError("Unsupported options and/or algorithm.")
 			}
 			
@@ -534,10 +535,12 @@ public class StreamCryptor {
 	///
 	public init(operation: Operation, algorithm: Algorithm, options: Options, keyBuffer: [UInt8], keyByteCount: Int, ivBuffer: UnsafePointer<UInt8>, ivLength: Int = 0) {
 		
+		// Error Audit: Replace
 		guard algorithm.isValidKeySize(keySize: keyByteCount) else {
 			fatalError("FATAL_ERROR: Invalid key size.")
 		}
 		
+		// Error Audit: Replace
 		guard options.contains(.ecbMode) || ivLength == algorithm.blockSize else {
 			fatalError("FATAL_ERROR: Invalid IV size or IV length not passed.")
 		}
@@ -552,6 +555,7 @@ public class StreamCryptor {
 		
 			} else {
 		
+				// Error Audit: Replace
 				fatalError("Cryptor init returned unexpected status.")
 			}
 		
@@ -577,6 +581,7 @@ public class StreamCryptor {
 				if let status = Status.fromRaw(status: errorCode) {
 					self.status = status
 				} else {
+					// Error Audit: Replace
 					fatalError("Cryptor init returned unexpected status.")
 				}
 			}
@@ -610,7 +615,8 @@ public class StreamCryptor {
 	public convenience init(operation: Operation, algorithm: Algorithm, options: Options, key: [UInt8], iv: [UInt8]) {
 		
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: key.count) else {
-            fatalError("FATAL_ERROR: Invalid key size.")
+			// Error Audit: Replace
+			fatalError("FATAL_ERROR: Invalid key size.")
         }
         
         self.init(operation:operation,
@@ -637,7 +643,8 @@ public class StreamCryptor {
 		
         let keySize = key.utf8.count
         guard let paddedKeySize = algorithm.paddedKeySize(keySize: keySize) else {
-            fatalError("FATAL_ERROR: Invalid key size.")
+			// Error Audit: Replace
+			fatalError("FATAL_ERROR: Invalid key size.")
         }
         
         self.init(operation:operation,
@@ -666,6 +673,7 @@ public class StreamCryptor {
 			
 			} else {
 			
+				// Error Audit: Replace
 				fatalError("CCCryptorUpdate returned unexpected status.")
 			}
 			context.deallocate(capacity: 1)
@@ -795,6 +803,7 @@ public class StreamCryptor {
 				if let status = Status.fromRaw(status: rawStatus) {
         	    	self.status =  status
 				} else {
+					// Error Audit: Replace
                 	fatalError("CCCryptorUpdate returned unexpected status.")
             	}
 
@@ -820,6 +829,7 @@ public class StreamCryptor {
 					if let status = Status.fromRaw(status: errorCode) {
 						self.status = status
 					} else {
+						// Error Audit: Replace
 						fatalError("Cryptor update returned unexpected status.")
 					}
 				
@@ -861,6 +871,7 @@ public class StreamCryptor {
 				if let status = Status.fromRaw(status: rawStatus) {
         	        self.status =  status
 				} else {
+					// Error Audit: Replace
 	                fatalError("CCCryptorUpdate returned unexpected status.")
     	        }
 			
@@ -886,6 +897,7 @@ public class StreamCryptor {
 					if let status = Status.fromRaw(status: errorCode) {
 						self.status = status
 					} else {
+						// Error Audit: Replace
 						fatalError("Cryptor final returned unexpected status.")
 					}
 				

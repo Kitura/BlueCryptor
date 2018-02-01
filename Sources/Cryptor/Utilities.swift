@@ -70,6 +70,7 @@ public struct CryptoUtils {
 			return UInt8(digit.value - UnicodeScalar(unicodeScalarLiteral:"A").value + 0xa)
 			
 		default:
+			// Error Audit: OK
 			fatalError("convertHexDigit: Invalid hex digit")
 		}
 	}
@@ -93,6 +94,7 @@ public struct CryptoUtils {
 				
 			} else {
 				
+				// Error Audit: OK
 				fatalError("arrayFromHexString: String must contain even number of characters")
 			}
 		}

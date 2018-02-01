@@ -130,12 +130,14 @@ public class PBKDF {
 			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.utf8.count, salt, salt.utf8.count, prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
 			if status != Int32(kCCSuccess) {
 			
+				// Error Audit: Replace
     	        fatalError("ERROR: CCKeyDerivationPBDK failed with status \(status).")
         	}
 		#elseif os(Linux)
 			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.utf8.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
+				// Error Audit: Replace
 				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
 			}
 		#endif
@@ -161,12 +163,14 @@ public class PBKDF {
 			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.utf8.count, salt, salt.count, prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
 			if status != Int32(kCCSuccess) {
 	
+				// Error Audit: Replace
 	            fatalError("ERROR: CCKeyDerivationPBDK failed with status \(status).")
         	}
 		#elseif os(Linux)
 			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
+				// Error Audit: Replace
 				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
 			}
 		#endif
@@ -194,12 +198,14 @@ public class PBKDF {
         	let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, passwordLen, salt, saltLen, prf.nativeValue(), rounds, derivedKey, derivedKeyLen)
 			if status != Int32(kCCSuccess) {
 			
+				// Error Audit: Replace
 	            fatalError("ERROR: CCKeyDerivationPBDK failed with status \(status).")
     	    }
 		#elseif os(Linux)
 			let status = PKCS5_PBKDF2_HMAC(password, Int32(passwordLen), salt, Int32(saltLen), Int32(rounds), prf.nativeValue(), Int32(derivedKeyLen), derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
+				// Error Audit: Replace
 				fatalError("ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
 			}
 		#endif
