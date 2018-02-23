@@ -228,3 +228,61 @@ func != (lhs: Status, rhs: Status) -> Bool {
 }
 
 #endif
+
+///
+/// CryptorError
+///		Thrown in caaes where a _fatalError()_ is **NOT** appropriate.
+///
+public enum CryptorError: Swift.Error, CustomStringConvertible {
+
+	/// Success
+	case success
+	
+	/// Invalid key size
+	case invalidKeySize
+	
+	/// Invalid IV size
+	case invalidIVSizeOrLength
+	
+	/// Fail with code and string
+	case fail(Int32, String)
+	
+	/// The error code itself
+	public var errCode: Int32 {
+		
+		switch self {
+			
+		case .success:
+			return 0
+			
+		case .invalidKeySize:
+			return -1
+			
+		case .invalidIVSizeOrLength:
+			return -2
+			
+		case .fail(let errCode, _):
+			return Int32(errCode)
+		}
+	}
+	
+	/// Error Description
+	public var description: String {
+		
+		switch self {
+			
+		case .success:
+			return "Success"
+			
+		case .invalidKeySize:
+			return "Invalid key size."
+			
+		case .invalidIVSizeOrLength:
+			return "Invalid IV size or length."
+			
+		case .fail(let (_, reason)):
+			return reason
+		}
+	}
+}
+
