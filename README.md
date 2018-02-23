@@ -9,35 +9,37 @@
 # BlueCryptor
 Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://github.com/iosdevzone/IDZSwiftCommonCrypto).
 
+**IMPORTANT NOTE:** This release is **NOT** entirely source code compatible with previous releases.  There are instances where *exceptions* are thrown now instead of the framework calling *fatalError()*.  This means that there are more *recoverable* errors in the library than before.  The only time that *fatalError()* is called is to indicate either a *programming error* or a *non-recoverable system error*.
+
 **Note:** On macOS and iOS, _BlueCryptor_ uses the Apple provided *CommonCrypto* library. On Linux, it uses *libcrypto from the OpenSSL project*.
 
 ## Prerequisites
 
 ### Swift
 
-* Swift Open Source `swift-3.0.1-RELEASE` toolchain (**Minimum REQUIRED for latest release**)
-* Swift Open Source `swift-4.0.0-RELEASE` toolchain (**Recommended**)
-* Swift toolchain included in *Xcode Version 9.0 (9A325) or higher*.
+* Swift Open Source `swift-4.0.0-RELEASE` toolchain (**Minimum REQUIRED for latest release**)
+* Swift Open Source `swift-4.0.3-RELEASE` toolchain (**Recommended**)
+* Swift toolchain included in *Xcode Version 9.2 (9C40b) or higher*.
 
 ### macOS
 
-* macOS 10.11.6 (*El Capitan*) or higher
-* Xcode Version 8.3.2 (8E2002) or higher using one of the above toolchains (*Recommended*)
-* Xcode Version 9.0  (9A325) or higher using the included toolchain.
-* CommonCrypto is provided by macOS
+* macOS 10.11.6 (*El Capitan*) or higher.
+* Xcode Version 9.0  (9A325) or higher using one of the above toolchains.
+* Xcode Version 9.2 (9C40b) or higher using the included toolchain (*Recommended*).
+* CommonCrypto is provided by macOS.
 
 ### iOS
 
 * iOS 10.0 or higher
-* Xcode Version 8.3.2 (8E2002) or higher using one of the above toolchains (*Recommended*)
-* Xcode Version 9.0  (9A325) or higher using the included toolchain.
-* CommonCrypto is provided by iOS
+* Xcode Version 9.0  (9A325) or higher using one of the above toolchains.
+* Xcode Version 9.2 (9C40b) or higher using the included toolchain (*Recommended*).
+* CommonCrypto is provided by iOS.
 
 ### Linux
 
-* Ubuntu 16.04 (or 16.10 but only tested on 16.04)
-* One of the Swift Open Source toolchain listed above
-* OpenSSL is provided by the distribution
+* Ubuntu 16.04 (or 16.10 but only tested on 16.04).
+* One of the Swift Open Source toolchain listed above.
+* OpenSSL 1.0.x is provided by the distribution.  **Note:** Only the 1.0.x releases of OpenSSL are currently supported.
 
 ## Build
 
@@ -78,19 +80,27 @@ var textToCipher = plainText
 if plainText.count % Cryptor.Algorithm.aes.blockSize != 0 {
 	textToCipher = CryptoUtils.zeroPad(byteArray: plainText, blockSize: Cryptor.Algorithm.aes.blockSize)
 }
-let cipherText = Cryptor(operation: .encrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: textToCipher)?.final()
+do {
+	let cipherText = try Cryptor(operation: .encrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: textToCipher)?.final()
 		
-print(CryptoUtils.hexString(from: cipherText!))
+	print(CryptoUtils.hexString(from: cipherText!))
 		
-let decryptedText = Cryptor(operation: .decrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: cipherText!)?.final()
+	let decryptedText = try Cryptor(operation: .decrypt, algorithm: .aes, options: .none, key: key, iv: iv).update(byteArray: cipherText!)?.final()
 
-print(CryptoUtils.hexString(from: decryptedText!))
+	print(CryptoUtils.hexString(from: decryptedText!))
+} catch let error {
+	guard let err = error as? CryptorError else {
+		// Handle non-Cryptor error...
+		return
+	}
+	// Handle Cryptor error... (See Status.swift for types of errors thrown)
+}
 ```
 
 ### Digest
 
 The following example illustrates generating an `MD5` digest from both a `String` and an instance of `NSData`.
-``` swift
+```swift
 let qbfBytes : [UInt8] = [0x54,0x68,0x65,0x20,0x71,0x75,0x69,0x63,0x6b,0x20,0x62,0x72,0x6f,0x77,0x6e,0x20,0x66,0x6f,0x78,0x20,0x6a,0x75,0x6d,0x70,0x73,0x20,0x6f,0x76,0x65,0x72,0x20,0x74,0x68,0x65,0x20,0x6c,0x61,0x7a,0x79,0x20,0x64,0x6f,0x67,0x2e]
 let qbfString = "The quick brown fox jumps over the lazy dog."
 
@@ -124,9 +134,16 @@ let password = "password"
 let salt = salt
 let rounds: UInt = 2
 let derivedKeyLen = 20
-
-let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: rounds, derivedKeyLength: derivedKeyLen)
-let keyString = CryptoUtils.hexString(from: key)
+do {
+	let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: rounds, derivedKeyLength: derivedKeyLen)
+	let keyString = CryptoUtils.hexString(from: key)
+} catch let error {
+	guard let err = error as? CryptorError else {
+		// Handle non-Cryptor error...
+		return
+	}
+	// Handle Cryptor error... (See Status.swift for types of errors thrown)
+}
 ```
 
 ### Random Byte Generation
