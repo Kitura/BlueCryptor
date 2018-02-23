@@ -109,12 +109,21 @@ class CryptorTests: XCTestCase {
 	/// Test fatal error with invalid key size...
 	func test_fatalError_keySize() {
 		let tooLongKey = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c2b7e151628aed2a6abf7158809cf4f3c")
-		expectFatalError(expectedMessage: "FATAL_ERROR: Invalid key size.") {
-			_ = Cryptor(operation:.encrypt,
-			            algorithm:.aes, options:.ecbMode,
-			            key:tooLongKey, iv:Array<UInt8>())
-			
+		do {
+			_ = try Cryptor(operation:.encrypt,
+					   	    algorithm:.aes, options:.ecbMode,
+						    key:tooLongKey, iv:Array<UInt8>())
+		} catch let error as CryptorError {
+			switch error {
+			case .invalidKeySize:
+				return
+			default:
+				XCTFail("Did not receive expected exception.")
+			}
+		} catch {
+			XCTFail("Did not received expecte exception.")
 		}
+		XCTFail("Did not receive exception.")
 	}
 	
 	/// Test fatal error with invalid ivSize...
@@ -122,35 +131,61 @@ class CryptorTests: XCTestCase {
 		let key =   CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
 		let iv =    CryptoUtils.byteArray(fromHex: "0000000000000000000000000000000000")
 		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
-		expectFatalError(expectedMessage: "FATAL_ERROR: Invalid IV size or IV length not passed.") {
-			let _ = Cryptor(operation:.encrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: plainText)?.final()
+		do {
+			let _ = try Cryptor(operation:.encrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: plainText)?.final()
+		} catch let error as CryptorError {
+			switch error {
+			case .invalidIVSizeOrLength:
+				return
+			default:
+				XCTFail("Did not received expected exception.")
+			}
+		} catch {
+			XCTFail("Did not receive expected exception.")
 		}
+		XCTFail("Did not receive exception.")
 	}
 
 	/// Tests AES ECB without need for padding...
 	func test_Cryptor_AES_ECB() {
-		let aesEncrypt = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
-		                         key:aesKey1Bytes, iv:Array<UInt8>())
-		var dataOut = Array<UInt8>(repeating:UInt8(0), count:aesCipherText1Bytes.count)
-		let (c, status) = aesEncrypt.update(byteArrayIn: aesPlaintext1Bytes, byteArrayOut: &dataOut)
-		XCTAssert(status == .success)
-		XCTAssert(aesCipherText1Bytes.count == Int(c), "Counts are as expected")
-		XCTAssertEqual(dataOut, aesCipherText1Bytes, "Obtained expected cipher text")
+		do {
+			let aesEncrypt = try Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
+			                             key:aesKey1Bytes, iv:Array<UInt8>())
+			var dataOut = Array<UInt8>(repeating:UInt8(0), count:aesCipherText1Bytes.count)
+			let (c, status) = aesEncrypt.update(byteArrayIn: aesPlaintext1Bytes, byteArrayOut: &dataOut)
+			XCTAssert(status == .success)
+			XCTAssert(aesCipherText1Bytes.count == Int(c), "Counts are as expected")
+			XCTAssertEqual(dataOut, aesCipherText1Bytes, "Obtained expected cipher text")
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+		}
 	}
 	
 	/// Tests AES ECB requiring padding of text to encrypt...
 	func test_Cryptor_AES_ECB_Padded() {
-		let aesEncrypt = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
-		                         key:aesKey1Bytes, iv:Array<UInt8>())
-		var plainText: [UInt8] = aesPlaintext2Bytes
-		if aesPlaintext2Bytes.count % Cryptor.Algorithm.aes.blockSize != 0 {
-			plainText = CryptoUtils.zeroPad(byteArray: aesPlaintext2Bytes, blockSize: Cryptor.Algorithm.aes.blockSize)
+		do {
+			let aesEncrypt = try Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode,
+		                         		 key:aesKey1Bytes, iv:Array<UInt8>())
+			var plainText: [UInt8] = aesPlaintext2Bytes
+			if aesPlaintext2Bytes.count % Cryptor.Algorithm.aes.blockSize != 0 {
+				plainText = CryptoUtils.zeroPad(byteArray: aesPlaintext2Bytes, blockSize: Cryptor.Algorithm.aes.blockSize)
+			}
+			var dataOut = Array<UInt8>(repeating:UInt8(0), count:plainText.count)
+			let (c, status) = aesEncrypt.update(byteArrayIn: plainText, byteArrayOut: &dataOut)
+			XCTAssert(status == .success)
+			XCTAssert(aesCipherText2Bytes.count == Int(c), "Counts are as expected")
+			XCTAssertEqual(dataOut, aesCipherText2Bytes, "Obtained expected cipher text")
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
 		}
-		var dataOut = Array<UInt8>(repeating:UInt8(0), count:plainText.count)
-		let (c, status) = aesEncrypt.update(byteArrayIn: plainText, byteArrayOut: &dataOut)
-		XCTAssert(status == .success)
-		XCTAssert(aesCipherText2Bytes.count == Int(c), "Counts are as expected")
-		XCTAssertEqual(dataOut, aesCipherText2Bytes, "Obtained expected cipher text")
 	}
 	
 	/// Tests two blocks of ECB mode AES. Demonstrates weakness in ECB; repeated plaintext block results in repeated ciphertext block.
@@ -158,24 +193,38 @@ class CryptorTests: XCTestCase {
 		let key = aesKey1Bytes
 		let plainText = aesPlaintext1Bytes + aesPlaintext1Bytes
 		let expectedCipherText = aesCipherText1Bytes + aesCipherText1Bytes
+		do {
+			let cipherText = try Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>()).update(byteArray: plainText)?.final()
 		
-		let cipherText = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>()).update(byteArray: plainText)?.final()
-		
-		XCTAssert(expectedCipherText.count == cipherText!.count, "Counts are as expected")
-		XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
-		
+			XCTAssert(expectedCipherText.count == cipherText!.count, "Counts are as expected")
+			XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+		}
 	}
 	
 	/// Demonstrates alignment error when plaintext is not an integral number of blocks long.
 	func test_Cryptor_AES_ECB_Short() {
 		let key = CryptoUtils.byteArray(fromHex: "2b7e151628aed2a6abf7158809cf4f3c")
 		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e11739317")
-		let cryptor = Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>())
-		let cipherText = cryptor.update(byteArray: plainText)?.final()
-		XCTAssert(cipherText == nil, "Expected nil cipherText")
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-			XCTAssertEqual(cryptor.status, Status.alignmentError, "Expected AlignmentError")
-		#endif
+		do {
+			let cryptor = try Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>())
+			let cipherText = cryptor.update(byteArray: plainText)?.final()
+			XCTAssert(cipherText == nil, "Expected nil cipherText")
+			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+				XCTAssertEqual(cryptor.status, Status.alignmentError, "Expected AlignmentError")
+			#endif
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+		}
 	}
 	
 	/// Single block CBC mode. Results should be identical to ECB mode.
@@ -184,17 +233,24 @@ class CryptorTests: XCTestCase {
 		let iv =    CryptoUtils.byteArray(fromHex: "00000000000000000000000000000000")
 		let plainText = CryptoUtils.byteArray(fromHex: "6bc1bee22e409f96e93d7e117393172a")
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "3ad77bb40d7a3660a89ecaf32466ef97")
+
+		do {
+			let cipherText = try Cryptor(operation:.encrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: plainText)?.final()
 		
-		//var cipherText = Cryptor(operation:.encrypt, algorithm:.aes, options:.None, key:key, iv:Array<UInt8>()).update(plainText)?.final()
-		let cipherText = Cryptor(operation:.encrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: plainText)?.final()
+			XCTAssert(expectedCipherText.count == cipherText!.count, "Counts are as expected")
+			XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
 		
-		XCTAssert(expectedCipherText.count == cipherText!.count, "Counts are as expected")
-		XCTAssert(expectedCipherText == cipherText!, "Obtained expected cipher text")
+			print(CryptoUtils.hexString(from: cipherText!))
 		
-		print(CryptoUtils.hexString(from: cipherText!))
-		
-		let decryptedText = Cryptor(operation:.decrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: cipherText!)?.final()
-		XCTAssertEqual(decryptedText!, plainText, "Recovered plaintext.")
+			let decryptedText = try Cryptor(operation:.decrypt, algorithm:.aes, options:.none, key:key, iv:iv).update(byteArray: cipherText!)?.final()
+			XCTAssertEqual(decryptedText!, plainText, "Recovered plaintext.")
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+		}
 	}
 	
 	/// DES EBC mode test 1
@@ -347,13 +403,21 @@ class CryptorTests: XCTestCase {
 		
 		for i in 0 ..< ivs.count {
 			let iv = CryptoUtils.byteArray(fromHex: ivs[i])
-			let cipherText = Cryptor(operation:.encrypt, algorithm:.des, options:.ecbMode, key:key, iv:Array<UInt8>()).update(byteArray: CryptoUtils.byteArray(fromHex: ivs[i]))?.final()
-			print("\"\(CryptoUtils.hexString(from: cipherText!))\", // [\(i)]")
-			XCTAssertEqual(CryptoUtils.byteArray(fromHex: ects[i]), cipherText!, "Obtained expected cipher text")
-			let decryptor = Cryptor(operation:.decrypt, algorithm:.des, options:.ecbMode, key:key, iv:iv)
-			let decryptedText = decryptor.update(byteArray: cipherText!)?.final()
-			XCTAssertEqual(decryptedText!, iv, "Recovered plaintext.")
-			
+			do {
+				let cipherText = try Cryptor(operation:.encrypt, algorithm:.des, options:.ecbMode, key:key, iv:Array<UInt8>()).update(byteArray: CryptoUtils.byteArray(fromHex: ivs[i]))?.final()
+				print("\"\(CryptoUtils.hexString(from: cipherText!))\", // [\(i)]")
+				XCTAssertEqual(CryptoUtils.byteArray(fromHex: ects[i]), cipherText!, "Obtained expected cipher text")
+				let decryptor = try Cryptor(operation:.decrypt, algorithm:.des, options:.ecbMode, key:key, iv:iv)
+				let decryptedText = decryptor.update(byteArray: cipherText!)?.final()
+				XCTAssertEqual(decryptedText!, iv, "Recovered plaintext.")
+			} catch let error {
+				guard let err = error as? CryptorError else {
+					XCTFail("Unexpected exception caught...")
+					return
+				}
+				XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+			}
+
 		}
 	}
 	
@@ -607,11 +671,19 @@ class CryptorTests: XCTestCase {
 			("pass\0word", "sa\0lt", 4096, 16, "56fa6aa75548099dcc37d7f03425e0c3"),
 			]
 		for (password, salt, rounds, dkLen, expected) in tests {
-		
-			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
-			let keyString = CryptoUtils.hexString(from: key)
+
+			do {
+				let key = try PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
+				let keyString = CryptoUtils.hexString(from: key)
 			
-			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
+				XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
+			} catch let error {
+				guard let err = error as? CryptorError else {
+					XCTFail("Unexpected exception caught...")
+					return
+				}
+				XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+			}
 		}
 		
 		// Tests with Array salt
@@ -624,10 +696,19 @@ class CryptorTests: XCTestCase {
 			]
 		for (password, salt, rounds, dkLen, expected) in tests2 {
 		
-			let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
-			let keyString = CryptoUtils.hexString(from: key)
+			do {
+				let key = try PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha1, rounds: uint(rounds), derivedKeyLength: UInt(dkLen))
+				let keyString = CryptoUtils.hexString(from: key)
 			
-			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
+				XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expected), "Obtained correct key (\(keyString) == \(expected)")
+			} catch let error {
+				guard let err = error as? CryptorError else {
+					XCTFail("Unexpected exception caught...")
+					return
+				}
+				XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+			}
+
 		}
 		
 	}
@@ -638,10 +719,18 @@ class CryptorTests: XCTestCase {
 		let salt: String = "salt"
 		let rounds: uint = 1
 		let expectedKey: String = "120fb6cffcf8b32c43e7225256c4f837"
-		let key = PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha256, rounds: rounds, derivedKeyLength: UInt(Cryptor.Algorithm.aes.defaultKeySize))
-		let keyString = CryptoUtils.hexString(from: key)
-		print(keyString)
-		XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expectedKey), "Obtained correct key (\(keyString) == \(expectedKey)")
+		do {
+			let key = try PBKDF.deriveKey(fromPassword: password, salt: salt, prf: .sha256, rounds: rounds, derivedKeyLength: UInt(Cryptor.Algorithm.aes.defaultKeySize))
+			let keyString = CryptoUtils.hexString(from: key)
+			print(keyString)
+			XCTAssertEqual(key, CryptoUtils.byteArray(fromHex: expectedKey), "Obtained correct key (\(keyString) == \(expectedKey)")
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+		}
 	}
 	
 	// MARK: - Random tests
@@ -751,9 +840,17 @@ class CryptorTests: XCTestCase {
 		let key = CryptoUtils.zeroPad(string: "thekey", blockSize: blockSize)
 		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: blockSize)
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
-		let cryptor = Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: [UInt8]())
-		let cipherText = cryptor.update(byteArray: plainText)?.final()
-		XCTAssertEqual(expectedCipherText, cipherText!)
+		do {
+			let cryptor = try Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: [UInt8]())
+			let cipherText = cryptor.update(byteArray: plainText)?.final()
+			XCTAssertEqual(expectedCipherText, cipherText!)
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+		}
 	}
 	
 	// Check robustness against issue #9 for string key
@@ -761,9 +858,17 @@ class CryptorTests: XCTestCase {
 		let key = "thekey"
 		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: 8)
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
-		let cryptor = Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: "")
-		let cipherText = cryptor.update(byteArray: plainText)?.final()
-		XCTAssertEqual(expectedCipherText, cipherText!)
+		do {
+			let cryptor = try Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: "")
+			let cipherText = cryptor.update(byteArray: plainText)?.final()
+			XCTAssertEqual(expectedCipherText, cipherText!)
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
+		}
 	}
 	
 	// Check robustness against issue #9 for array key
@@ -771,38 +876,16 @@ class CryptorTests: XCTestCase {
 		let key = Array<UInt8>("thekey".utf8)
 		let plainText = CryptoUtils.zeroPad(string: "username123", blockSize: 8)
 		let expectedCipherText = CryptoUtils.byteArray(fromHex: "b742acfaa07e3d05cf2dc9aaa0258fc2")
-		let cryptor = Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: [])
-		let cipherText = cryptor.update(byteArray: plainText)?.final()
-		XCTAssertEqual(expectedCipherText, cipherText!)
-	}
-}
-
-// MARK: - fatalError testing
-// See: https://marcosantadev.com/test-swift-fatalerror/
-extension XCTestCase {
-	func expectFatalError(expectedMessage: String, testcase: @escaping () -> Void) {
-		
-		let expectation = self.expectation(description: "expectingFatalError")
-		var assertionMessage: String? = nil
-		
-		FatalErrorUtil.replaceFatalError { message, _, _ in
-			assertionMessage = message
-			expectation.fulfill()
-			self.unreachable()
+		do {
+			let cryptor = try Cryptor(operation: .encrypt, algorithm: .des, options: [.ecbMode], key: key, iv: [])
+			let cipherText = cryptor.update(byteArray: plainText)?.final()
+			XCTAssertEqual(expectedCipherText, cipherText!)
+		} catch let error {
+			guard let err = error as? CryptorError else {
+				XCTFail("Unexpected exception caught...")
+				return
+			}
+			XCTFail("CryptorError reported unexpectedly, description: \(err.description)")
 		}
-		
-		DispatchQueue.global(qos: .userInitiated).async(execute: testcase)
-		
-		waitForExpectations(timeout: 2) { _ in
-			XCTAssertEqual(assertionMessage, expectedMessage)
-			
-			FatalErrorUtil.restoreFatalError()
-		}
-	}
-	
-	private func unreachable() -> Never {
-		repeat {
-			RunLoop.current.run()
-		} while (true)
 	}
 }
