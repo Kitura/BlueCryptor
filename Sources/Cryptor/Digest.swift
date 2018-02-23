@@ -90,7 +90,6 @@ public class Digest: Updatable {
 			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
 			#elseif os(Linux)
-				// Error Audit: OK
 				fatalError("MD2 digest not supported by OpenSSL")
 			#endif
 			

@@ -44,7 +44,6 @@ public class Random {
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	        let statusCode = CCRandomGenerateBytes(bytes, byteCount)
     	    guard let status = Status(rawValue: statusCode) else {
-				// Error Audit: Replace
         	    fatalError("CCRandomGenerateBytes returned unexpected status code: \(statusCode)")
 	        }
     	    return status
@@ -97,7 +96,6 @@ public class Random {
 		
 		if byteCount <= 0 {
 			
-			// Error Audit: Replace
             fatalError("generate: byteCount must be positve and non-zero")
         }
 		var bytes: [UInt8] = Array(repeating: UInt8(0), count:byteCount)
