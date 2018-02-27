@@ -21,12 +21,12 @@ import PackageDescription
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	let url = "https://github.com/IBM-Swift/CommonCrypto.git"
-	let majorVersion = 0
-	let minorVersion = 1
+	let majorVersion = 1
+	let minorVersion = 0
 #elseif os(Linux)
 	let url = "https://github.com/IBM-Swift/OpenSSL.git"
-	let majorVersion = 0
-	let minorVersion = 3
+	let majorVersion = 1
+	let minorVersion = 0
 #else
 	fatalError("Unsupported OS")
 #endif

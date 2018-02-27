@@ -24,11 +24,11 @@ import PackageDescription
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 let url = "https://github.com/IBM-Swift/CommonCrypto.git"
-let version = Version(0, 1, 0)
+let version = Version(1, 0, 0)
 let dependency = Target.Dependency.byNameItem(name: "CommonCrypto")
 #elseif os(Linux)
 let url = "https://github.com/IBM-Swift/OpenSSL.git"
-let version = Version(0, 3, 0)
+let version = Version(1, 0, 0)
 let dependency = Target.Dependency.byNameItem(name: "OpenSSL")
 #else
 fatalError("Unsupported OS")
