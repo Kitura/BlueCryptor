@@ -497,6 +497,11 @@ public class StreamCryptor {
     ///    Used to get additional information when optional chaining collapes.
 	///
     public internal(set) var status: Status = .success
+	
+	///
+	/// Context obtained. True if we have it, false otherwise.
+	///
+	private var haveContext: Bool = false
 
 	#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	
@@ -544,7 +549,7 @@ public class StreamCryptor {
 		
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 		
-			let rawStatus = CCCryptorCreate(operation.nativeValue(), algorithm.nativeValue(), CCOptions(options.rawValue), keyBuffer, keyByteCount, ivBuffer, context)
+			let rawStatus = CCCryptorCreate(operation.nativeValue(), algorithm.nativeValue(), CCOptions(options.rawValue), keyBuffer, keyByteCount, ivBuffer, self.context)
 		
 			if let status = Status.fromRaw(status: rawStatus) {
 		
@@ -554,6 +559,8 @@ public class StreamCryptor {
 		
 				throw CryptorError.fail(rawStatus, "Cryptor init returned unexpected status.")
 			}
+			
+			self.haveContext = true
 		
 		#elseif os(Linux)
 		
@@ -581,6 +588,8 @@ public class StreamCryptor {
 					throw CryptorError.fail(Int32(errorCode), "Cryptor init returned unexpected status.")
 				}
 			}
+			
+			self.haveContext = true
 		
 			// Default to no padding...
 			var needPadding: Int32 = 0
@@ -655,12 +664,18 @@ public class StreamCryptor {
 	///
 	deinit {
 		
-		if self.context.pointee == nil {
+		// Ensure we've got a context before attempting to get rid of it...
+		if self.haveContext == false {
 			return
 		}
 		
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-		
+			
+			// Ensure we've got a context before attempting to get rid of it...
+			if self.context.pointee == nil {
+				return
+			}
+			
 			let rawStatus = CCCryptorRelease(self.context.pointee)
 			if let status = Status.fromRaw(status: rawStatus) {
 			
@@ -673,11 +688,13 @@ public class StreamCryptor {
 			
 				fatalError("CCCryptorUpdate returned unexpected status.")
 			}
-			context.deallocate(capacity: 1)
+			self.context.deallocate(capacity: 1)
+			self.haveContext = false
 		
 		#elseif os(Linux)
 
 			EVP_CIPHER_CTX_free(self.context)
+			self.haveContext = false
 		
 		#endif
 	}
@@ -796,7 +813,7 @@ public class StreamCryptor {
 			
 			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 
-	            let rawStatus = CCCryptorUpdate(context.pointee, bufferIn, byteCountIn, bufferOut, byteCapacityOut, &byteCountOut)
+	            let rawStatus = CCCryptorUpdate(self.context.pointee, bufferIn, byteCountIn, bufferOut, byteCapacityOut, &byteCountOut)
 				if let status = Status.fromRaw(status: rawStatus) {
         	    	self.status =  status
 				} else {
@@ -862,7 +879,7 @@ public class StreamCryptor {
 			
 			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 			
-	            let rawStatus = CCCryptorFinal(context.pointee, bufferOut, byteCapacityOut, &byteCountOut)
+	            let rawStatus = CCCryptorFinal(self.context.pointee, bufferOut, byteCapacityOut, &byteCountOut)
 				if let status = Status.fromRaw(status: rawStatus) {
         	        self.status =  status
 				} else {
@@ -919,7 +936,7 @@ public class StreamCryptor {
 		
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 
-	        return CCCryptorGetOutputLength(context.pointee, inputByteCount, isFinal)
+	        return CCCryptorGetOutputLength(self.context.pointee, inputByteCount, isFinal)
 
 		#elseif os(Linux)
 			
