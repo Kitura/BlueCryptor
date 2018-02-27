@@ -655,9 +655,13 @@ public class StreamCryptor {
 	///
 	deinit {
 		
+		if self.context.pointee == nil {
+			return
+		}
+		
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 		
-			let rawStatus = CCCryptorRelease(context.pointee)
+			let rawStatus = CCCryptorRelease(self.context.pointee)
 			if let status = Status.fromRaw(status: rawStatus) {
 			
 				if status != .success {
