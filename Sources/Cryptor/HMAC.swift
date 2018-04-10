@@ -273,7 +273,12 @@ public class HMAC: Updatable {
         #if os(Linux)
             HMAC_CTX_cleanup(context)
         #endif
-        context.deallocate()
+        
+        #if swift(>=4.1)
+            context.deallocate()
+        #else
+            context.deallocate(capacity: 1)
+        #endif
     }
  
 	// MARK: Public Methods
