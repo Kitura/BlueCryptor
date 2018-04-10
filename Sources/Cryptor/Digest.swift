@@ -240,7 +240,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
 	///
 	deinit {
 		
-        context.deallocate(capacity: 1)
+        context.deallocate()
     }
     
 	///
