@@ -688,8 +688,13 @@ public class StreamCryptor {
 			
 				fatalError("CCCryptorUpdate returned unexpected status.")
 			}
-			self.context.deallocate(capacity: 1)
-			self.haveContext = false
+            #if swift(>=4.1)
+	    self.context.deallocate()
+            #else
+            self.context.deallocate(capacity: 1)
+            #endif
+	    self.haveContext = false
+            
 		
 		#elseif os(Linux)
 
