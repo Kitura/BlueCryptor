@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "Cryptor::Cryptor"
-               BuildableName = "Cryptor.framework"
+               BlueprintIdentifier = "______Target_Cryptor"
+               BuildableName = "libCryptor.dylib"
                BlueprintName = "Cryptor"
                ReferencedContainer = "container:Cryptor.xcodeproj">
             </BuildableReference>
@@ -45,8 +45,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "Cryptor::Cryptor"
-            BuildableName = "Cryptor.framework"
+            BlueprintIdentifier = "______Target_Cryptor"
+            BuildableName = "libCryptor.dylib"
             BlueprintName = "Cryptor"
             ReferencedContainer = "container:Cryptor.xcodeproj">
          </BuildableReference>

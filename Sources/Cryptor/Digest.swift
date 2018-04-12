@@ -239,11 +239,8 @@ private class DigestEngineCC<CTX>: DigestEngine {
 	/// Cleanup
 	///
 	deinit {
-        #if swift(>=4.1)
-            context.deallocate()
-        #else
-            context.deallocate(capacity: 1)
-        #endif
+		
+        context.deallocate(capacity: 1)
     }
     
 	///
