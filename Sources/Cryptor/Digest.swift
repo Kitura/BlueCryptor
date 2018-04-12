@@ -240,9 +240,13 @@ private class DigestEngineCC<CTX>: DigestEngine {
 	///
 	deinit {
 		
-        context.deallocate(capacity: 1)
-    }
-    
+		#if swift(>=4.1)
+			context.deallocate()
+		#else
+			context.deallocate(capacity: 1)
+		#endif
+	}
+	
 	///
 	/// Update method
 	///
