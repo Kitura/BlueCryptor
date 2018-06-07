@@ -25,9 +25,14 @@ import PackageDescription
 var dependencies: [Package.Dependency] = []
 var targetDependencies: [Target.Dependency] = []
 
-#if os(Linux)
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+dependencies.append(Package.Dependency.package(url: "https://github.com/IBM-Swift/CommonCrypto.git", from: "1.0.0"))
+targetDependencies.append(Target.Dependency.byName(name: "CommonCrypto"))
+#elseif os(Linux)
 dependencies.append(Package.Dependency.package(url: "https://github.com/IBM-Swift/OpenSSL.git", from: "1.0.0"))
 targetDependencies.append(Target.Dependency.byName(name: "OpenSSL"))
+#else
+fatalError("Unsupported OS")
 #endif
 
 let package = Package(
