@@ -246,15 +246,16 @@
 				TargetAttributes = {
 					8C95902A1CC80A2300A2C2B4 = {
 						CreatedOnToolsVersion = 7.3;
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 					};
 					8C97EE0E1EBF75DD000E795B = {
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = PETKK2G752;
+						LastSwiftMigration = 1000;
 						ProvisioningStyle = Automatic;
 					};
 					"______Target_Cryptor" = {
-						LastSwiftMigration = 0900;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -306,7 +307,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\nCC_PATH=\"$SRCROOT/CommonCrypto\"\necho \"$CC_PATH\"\n\nHEADER_FILE1=$SDKROOT/usr/include/CommonCrypto/CommonCrypto.h\nif [ ! -e $HEADER_FILE1 ] ; then\necho \"ERROR: The CommonCrypto.h header file could not be found.\"\nexit 1\nfi\n\nHEADER_FILE2=$SDKROOT/usr/include/CommonCrypto/CommonRandom.h\nif [ ! -e $HEADER_FILE2 ] ; then\necho \"ERROR: The CommonRandom.h header file could not be found.\"\nexit 1\nfi\n\nif [ -e \"$CC_PATH\" ] ; then\necho \"$CC_PATH exists...\"\nelse\nmkdir -p \"$CC_PATH\"\nfi\n\n# Write the module.map file\ncat <<_EOF_ > \"$CC_PATH/module.map\"\nmodule CommonCrypto [system] {\n    header \"$HEADER_FILE1\"\n    header \"$HEADER_FILE2\"\n    export *\n}\n\nmodule OpenSSL [system] {\n    header \"/usr/local/opt/openssl/include/openssl/conf.h\"\n    header \"/usr/local/opt/openssl/include/openssl/evp.h\"\n    header \"/usr/local/opt/openssl/include/openssl/err.h\"\n    header \"/usr/local/opt/openssl/include/openssl/bio.h\"\n    header \"/usr/local/opt/openssl/include/openssl/ssl.h\"\n    header \"/usr/local/opt/openssl/include/openssl/md4.h\"\n    header \"/usr/local/opt/openssl/include/openssl/md5.h\"\n    header \"/usr/local/opt/openssl/include/openssl/sha.h\"\n    header \"/usr/local/opt/openssl/include/openssl/hmac.h\"\n    header \"/usr/local/opt/openssl/include/openssl/rand.h\"\n    link \"ssl\"\n    link \"crypto\"\n}\n_EOF_\necho \"Created CommonCrypto Module Map.  CommonCrypto Framework now available.\"";
+			shellScript = "#!/bin/bash\nCC_PATH=\"$SRCROOT/CommonCrypto\"\necho \"$CC_PATH\"\n\nCCMODMAP=$SDKROOT/usr/include/CommonCrypto/module.modulemap\nif [ -e \"$CCMODMAP\" ] ; then\nif [ -e \"$CC_PATH\" ] ; then\nrm -rf \"$CC_PATH\"\nfi\necho \"Modulemap already exists. Skipping generation...\"\nexit 0\nfi\n\nHEADER_FILE1=$SDKROOT/usr/include/CommonCrypto/CommonCrypto.h\nif [ ! -e $HEADER_FILE1 ] ; then\necho \"ERROR: The CommonCrypto.h header file could not be found.\"\nexit 1\nfi\n\nHEADER_FILE2=$SDKROOT/usr/include/CommonCrypto/CommonRandom.h\nif [ ! -e $HEADER_FILE2 ] ; then\necho \"ERROR: The CommonRandom.h header file could not be found.\"\nexit 1\nfi\n\nif [ -e \"$CC_PATH\" ] ; then\necho \"$CC_PATH exists...\"\nelse\nmkdir -p \"$CC_PATH\"\nfi\n\n# Write the module.map file\ncat <<_EOF_ > \"$CC_PATH/module.map\"\nmodule CommonCrypto [system] {\nheader \"$HEADER_FILE1\"\nheader \"$HEADER_FILE2\"\nexport *\n}\n\nmodule OpenSSL [system] {\nheader \"/usr/local/opt/openssl/include/openssl/conf.h\"\nheader \"/usr/local/opt/openssl/include/openssl/evp.h\"\nheader \"/usr/local/opt/openssl/include/openssl/err.h\"\nheader \"/usr/local/opt/openssl/include/openssl/bio.h\"\nheader \"/usr/local/opt/openssl/include/openssl/ssl.h\"\nheader \"/usr/local/opt/openssl/include/openssl/md4.h\"\nheader \"/usr/local/opt/openssl/include/openssl/md5.h\"\nheader \"/usr/local/opt/openssl/include/openssl/sha.h\"\nheader \"/usr/local/opt/openssl/include/openssl/hmac.h\"\nheader \"/usr/local/opt/openssl/include/openssl/rand.h\"\nlink \"ssl\"\nlink \"crypto\"\n}\n_EOF_\necho \"Created CommonCrypto Module Map.  CommonCrypto Framework now available.\"\n";
 		};
 		8C97EE171EBF76BC000E795B /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -319,7 +320,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#!/bin/bash\nCC_PATH=\"$SRCROOT/CommonCrypto\"\necho \"$CC_PATH\"\n\nHEADER_FILE1=$SDKROOT/usr/include/CommonCrypto/CommonCrypto.h\nif [ ! -e $HEADER_FILE1 ] ; then\necho \"ERROR: The CommonCrypto.h header file could not be found.\"\nexit 1\nfi\n\nHEADER_FILE2=$SDKROOT/usr/include/CommonCrypto/CommonRandom.h\nif [ ! -e $HEADER_FILE2 ] ; then\necho \"ERROR: The CommonRandom.h header file could not be found.\"\nexit 1\nfi\n\nif [ -e \"$CC_PATH\" ] ; then\necho \"$CC_PATH exists...\"\nelse\nmkdir -p \"$CC_PATH\"\nfi\n\n# Write the module.map file\ncat <<_EOF_ > \"$CC_PATH/module.map\"\nmodule CommonCrypto [system] {\n    header \"$HEADER_FILE1\"\n    header \"$HEADER_FILE2\"\n    export *\n}\n_EOF_\necho \"Created CommonCrypto Module Map.  CommonCrypto Framework now available.\"";
+			shellScript = "#!/bin/bash\nCC_PATH=\"$SRCROOT/CommonCrypto\"\necho \"$CC_PATH\"\n\nCCMODMAP=$SDKROOT/usr/include/CommonCrypto/module.modulemap\nif [ -e \"$CCMODMAP\" ] ; then\nif [ -e \"$CC_PATH\" ] ; then\nrm -rf \"$CC_PATH\"\nfi\necho \"Modulemap already exists. Skipping generation...\"\nexit 0\nfi\n\nHEADER_FILE1=$SDKROOT/usr/include/CommonCrypto/CommonCrypto.h\nif [ ! -e $HEADER_FILE1 ] ; then\necho \"ERROR: The CommonCrypto.h header file could not be found.\"\nexit 1\nfi\n\nHEADER_FILE2=$SDKROOT/usr/include/CommonCrypto/CommonRandom.h\nif [ ! -e $HEADER_FILE2 ] ; then\necho \"ERROR: The CommonRandom.h header file could not be found.\"\nexit 1\nfi\n\nif [ -e \"$CC_PATH\" ] ; then\necho \"$CC_PATH exists...\"\nelse\nmkdir -p \"$CC_PATH\"\nfi\n\n# Write the module.map file\ncat <<_EOF_ > \"$CC_PATH/module.map\"\nmodule CommonCrypto [system] {\nheader \"$HEADER_FILE1\"\nheader \"$HEADER_FILE2\"\nexport *\n}\n\nmodule OpenSSL [system] {\nheader \"/usr/local/opt/openssl/include/openssl/conf.h\"\nheader \"/usr/local/opt/openssl/include/openssl/evp.h\"\nheader \"/usr/local/opt/openssl/include/openssl/err.h\"\nheader \"/usr/local/opt/openssl/include/openssl/bio.h\"\nheader \"/usr/local/opt/openssl/include/openssl/ssl.h\"\nheader \"/usr/local/opt/openssl/include/openssl/md4.h\"\nheader \"/usr/local/opt/openssl/include/openssl/md5.h\"\nheader \"/usr/local/opt/openssl/include/openssl/sha.h\"\nheader \"/usr/local/opt/openssl/include/openssl/hmac.h\"\nheader \"/usr/local/opt/openssl/include/openssl/rand.h\"\nlink \"ssl\"\nlink \"crypto\"\n}\n_EOF_\necho \"Created CommonCrypto Module Map.  CommonCrypto Framework now available.\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -580,6 +581,7 @@
 		_ReleaseConf_Cryptor /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_INSTALL_NAME_BASE = "$(CONFIGURATION_BUILD_DIR)";
@@ -604,6 +606,7 @@
 		"___DebugConf_Cryptor" /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
 				DYLIB_INSTALL_NAME_BASE = "$(CONFIGURATION_BUILD_DIR)";
