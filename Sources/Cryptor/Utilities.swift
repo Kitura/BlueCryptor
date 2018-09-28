@@ -27,6 +27,16 @@ func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = 
 	FatalErrorUtil.fatalErrorClosure(message(), file, line)
 }
 
+// Convert an UnsafeMutablePointer<Int8>? to a String, providing a
+// default value of empty string if the pointer is nil.
+func errToString(_ ptr: UnsafeMutablePointer<Int8>?) -> String {
+    if let ptr = ptr {
+        return String(cString: ptr)
+    } else {
+        return ""
+    }
+}
+
 ///
 /// Allows redirection of `fatalError` for Unit Testing or for
 /// library users that want to handle such errors in another way.
