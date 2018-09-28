@@ -207,10 +207,10 @@ public enum Status: Swift.Error, CustomStringConvertible {
 			return "Invalid parameters passed"
 			
 		case .fail(let errorCode):
-			return "ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
+			return "ERROR: code: \(errorCode), reason: \(errToString(ERR_error_string(UInt(errorCode), nil)))"
 
 		case .rngFailure(let errorCode):
-			return "Random Byte Generator ERROR: code: \(errorCode), reason: \(ERR_error_string(UInt(errorCode), nil))"
+			return "Random Byte Generator ERROR: code: \(errorCode), reason: \(errToString(ERR_error_string(UInt(errorCode), nil)))"
 		}
 	}
 }

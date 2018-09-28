@@ -86,7 +86,7 @@ public class PBKDF {
 			}
 		#endif
     }
-	
+
     ///
     /// Determines the (approximate) number of iterations of the key derivation algorithm that need
     /// to be run to achieve a particular delay (or calculation time).
@@ -137,7 +137,7 @@ public class PBKDF {
 			if status != 1 {
 				let error = ERR_get_error()
 
-				throw CryptorError.fail(Int32(error), "ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
+				throw CryptorError.fail(Int32(error), "ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(errToString(ERR_error_string(error, nil)))")
 			}
 		#endif
         return derivedKey
@@ -169,7 +169,7 @@ public class PBKDF {
 			if status != 1 {
 				let error = ERR_get_error()
 
-				throw CryptorError.fail(Int32(error), "ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
+				throw CryptorError.fail(Int32(error), "ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(errToString(ERR_error_string(error, nil)))")
 			}
 		#endif
         return derivedKey
@@ -203,7 +203,7 @@ public class PBKDF {
 			if status != 1 {
 				let error = ERR_get_error()
 
-				throw CryptorError.fail(Int32(error), "ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(ERR_error_string(error, nil))")
+				throw CryptorError.fail(Int32(error), "ERROR: PKCS5_PBKDF2_HMAC failed, reason: \(errToString(ERR_error_string(error, nil)))")
 			}
 		#endif
 	}
