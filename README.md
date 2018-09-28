@@ -71,6 +71,37 @@ To run the supplied unit tests for **Cryptor** from the command line:
 
 ## Getting started
 
+### Including in your project
+
+#### Swift Package Manager
+
+To include BlueCryptor into a Swift Package Manager package, add it to the `dependencies` attribute defined in your `Package.swift` file. You can select the version using the `majorVersion` and `minor` parameters. For example:
+```
+	dependencies: [
+		.Package(url: "https://github.com/IBM-Swift/BlueCryptor.git", majorVersion: <majorVersion>, minor: <minor>)
+	]
+```
+
+#### Carthage
+To include BlueCryptor in a project using Carthage, add a line to your `Cartfile` with the GitHub organization and project names and version. For example:
+```
+	github "IBM-Swift/BlueCryptor" ~> <majorVersion>.<minor>
+```
+
+#### CocoaPods
+To include BlueCryptor in a project using CocoaPods, you just add `BlueCryptor` to your `Podfile`, for example:
+```
+    platform :ios, '10.0'
+
+    target 'MyApp' do
+        use_frameworks!
+        pod 'BlueCryptor'
+    end
+```
+
+### Before starting
+
+The first thing you need to do is import the Cryptor framework.  This is done by the following:
 ```swift
 import Cryptor
 ```
