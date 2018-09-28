@@ -17,11 +17,11 @@
 
 import Foundation
 
-///
-/// Replaces Swift's native `fatalError` function to allow redirection
-/// For more details about how this all works see:
-///   https://marcosantadev.com/test-swift-fatalerror/
-///
+//
+//	Replaces Swift's native `fatalError` function to allow redirection
+//	For more details about how this all works see:
+//	  https://marcosantadev.com/test-swift-fatalerror/
+//
 func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = #file, line: UInt = #line) -> Never {
 	
 	FatalErrorUtil.fatalErrorClosure(message(), file, line)
@@ -29,6 +29,11 @@ func fatalError(_ message: @autoclosure () -> String = "", file: StaticString = 
 
 // Convert an UnsafeMutablePointer<Int8>? to a String, providing a
 // default value of empty string if the pointer is nil.
+//
+//	- Parameter ptr: Pointer to string to be converted.
+//
+//	- Returns: Converted string.
+//
 func errToString(_ ptr: UnsafeMutablePointer<Int8>?) -> String {
     if let ptr = ptr {
         return String(cString: ptr)
