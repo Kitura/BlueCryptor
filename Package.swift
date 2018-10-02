@@ -22,26 +22,12 @@
 
 import PackageDescription
 
+var dependencies: [Package.Dependency] = []
 var targetDependencies: [Target.Dependency] = []
 
 #if os(Linux)
-targetDependencies.append(.target(name: "OpenSSL"))
-#endif
-
-var targets: [Target] = [
-    .target(
-        name: "Cryptor",
-        dependencies: targetDependencies,
-        exclude: ["Cryptor.xcodeproj", "README.md", "Sources/Info.plist"]),
-    .testTarget(
-        name: "CryptorTests",
-        dependencies: ["Cryptor"]),
-]
-
-#if os(Linux)
-targets.append(
-    .systemLibrary(name: "OpenSSL")
-)
+dependencies.append(.package(url: "https://github.com/IBM-Swift/OpenSSL.git", from: "2.0.0"))
+targetDependencies.append(.byName(name: "OpenSSL"))
 #endif
 
 let package = Package(
@@ -52,6 +38,14 @@ let package = Package(
             name: "Cryptor",
             targets: ["Cryptor"]),
         ],
-    dependencies: [],
-    targets: targets
+    dependencies: dependencies,
+    targets: [
+        .target(
+            name: "Cryptor",
+            dependencies: targetDependencies,
+            exclude: ["Cryptor.xcodeproj", "README.md", "Sources/Info.plist"]),
+        .testTarget(
+            name: "CryptorTests",
+            dependencies: ["Cryptor"]),
+    ]
 )
