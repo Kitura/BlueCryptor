@@ -26,8 +26,8 @@ var dependencies: [Package.Dependency] = []
 var targetDependencies: [Target.Dependency] = []
 
 #if os(Linux)
-dependencies.append(.package(url: "https://github.com/IBM-Swift/OpenSSL.git", from: "2.0.0"))
-targetDependencies.append(.byName(name: "OpenSSL"))
+	dependencies.append(.package(url: "https://github.com/IBM-Swift/OpenSSL.git", from: "2.1.0"))
+	targetDependencies.append(.byName(name: "OpenSSL"))
 #endif
 
 let package = Package(
