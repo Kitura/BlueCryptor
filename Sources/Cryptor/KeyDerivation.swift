@@ -67,23 +67,47 @@ public class PBKDF {
 		
 		#elseif os(Linux)
 		
-			///  Return the OS native value
-			func nativeValue() -> UnsafePointer<EVP_MD> {
+			#if swift(>=4.2)
+		
+					///  Return the OS native value
+				func nativeValue() -> OpaquePointer? {
 			
-				switch self {
+					switch self {
 					
-				case .sha1:
-					return EVP_sha1()
-				case .sha224:
-					return EVP_sha224()
-				case .sha256:
-					return EVP_sha256()
-				case .sha384:
-					return EVP_sha384()
-				case .sha512:
-					return EVP_sha512()
+					case .sha1:
+						return .init(EVP_sha1())
+					case .sha224:
+						return .init(EVP_sha224())
+					case .sha256:
+						return .init(EVP_sha256())
+					case .sha384:
+						return .init(EVP_sha384())
+					case .sha512:
+						return .init(EVP_sha512())
+					}
 				}
-			}
+	
+			#else
+		
+				///  Return the OS native value
+				func nativeValue() -> UnsafePointer<EVP_MD> {
+			
+					switch self {
+					
+					case .sha1:
+						return EVP_sha1()
+					case .sha224:
+						return EVP_sha224()
+					case .sha256:
+						return EVP_sha256()
+					case .sha384:
+						return EVP_sha384()
+					case .sha512:
+						return EVP_sha512()
+					}
+				}
+	
+			#endif
 		#endif
     }
 
@@ -133,7 +157,7 @@ public class PBKDF {
     	        throw CryptorError.fail(status, "ERROR: CCKeyDerivationPBDK failed with status \(status).")
         	}
 		#elseif os(Linux)
-			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.utf8.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
+		let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.utf8.count), Int32(rounds), .make(optional: prf.nativeValue()), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
 
@@ -165,7 +189,7 @@ public class PBKDF {
 	            throw CryptorError.fail(status, "ERROR: CCKeyDerivationPBDK failed with status \(status).")
         	}
 		#elseif os(Linux)
-			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.count), Int32(rounds), prf.nativeValue(), Int32(derivedKey.count), &derivedKey)
+			let status = PKCS5_PBKDF2_HMAC(password, Int32(password.utf8.count), salt, Int32(salt.count), Int32(rounds), .make(optional: prf.nativeValue()), Int32(derivedKey.count), &derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
 
@@ -199,7 +223,7 @@ public class PBKDF {
 	            throw CryptorError.fail(status, "ERROR: CCKeyDerivationPBDK failed with status \(status).")
     	    }
 		#elseif os(Linux)
-			let status = PKCS5_PBKDF2_HMAC(password, Int32(passwordLen), salt, Int32(saltLen), Int32(rounds), prf.nativeValue(), Int32(derivedKeyLen), derivedKey)
+			let status = PKCS5_PBKDF2_HMAC(password, Int32(passwordLen), salt, Int32(saltLen), Int32(rounds), .make(optional: prf.nativeValue()), Int32(derivedKeyLen), derivedKey)
 			if status != 1 {
 				let error = ERR_get_error()
 
