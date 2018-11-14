@@ -88,24 +88,49 @@ public class HMAC: Updatable {
 		
 		#elseif os(Linux)
 		
-			func nativeValue() -> UnsafePointer<EVP_MD> {
+			#if swift(>=4.2)
 		
-				switch self {
+				func nativeValue() -> OpaquePointer? {
 		
-				case .sha1:
-					return EVP_sha1()
-				case .md5:
-					return EVP_md5()
-				case .sha224:
-					return EVP_sha224()
-				case .sha256:
-					return EVP_sha256()
-				case .sha384:
-					return EVP_sha384()
-				case .sha512:
-					return EVP_sha512()
+					switch self {
+		
+					case .sha1:
+						return .init(EVP_sha1())
+					case .md5:
+						return .init(EVP_md5())
+					case .sha224:
+						return .init(EVP_sha224())
+					case .sha256:
+						return .init(EVP_sha256())
+					case .sha384:
+						return .init(EVP_sha384())
+					case .sha512:
+						return .init(EVP_sha512())
+					}
 				}
-			}
+		
+			#else
+		
+				func nativeValue() -> UnsafePointer<EVP_MD> {
+		
+					switch self {
+		
+					case .sha1:
+						return EVP_sha1()
+					case .md5:
+						return EVP_md5()
+					case .sha224:
+						return EVP_sha224()
+					case .sha256:
+						return EVP_sha256()
+					case .sha384:
+						return EVP_sha384()
+					case .sha512:
+						return EVP_sha512()
+					}
+				}
+		
+			#endif
 		
 		#endif
 		
@@ -162,15 +187,26 @@ public class HMAC: Updatable {
 	
 	#elseif os(Linux)
 	
-		typealias Context = UnsafeMutablePointer<HMAC_CTX>
+		#if swift(>=4.2)
 	
+			typealias Context = OpaquePointer?
+	
+		#else
+	
+			typealias Context = UnsafeMutablePointer<HMAC_CTX>
+	
+		#endif
+
 	#endif
     
     /// Status of the calculation
     public internal(set) var status: Status = .success
 	
-	
-    private let context = Context.allocate(capacity: 1)
+	#if swift(>=4.2) && os(Linux)
+		private let context = HMAC_CTX_new_wrapper()
+	#else
+		private let context = Context.allocate(capacity: 1)
+	#endif
     private var algorithm: Algorithm
     
 	// MARK: Lifecycle Methods
@@ -189,7 +225,11 @@ public class HMAC: Updatable {
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 	        CCHmacInit(context, algorithm.nativeValue(), keyBuffer, size_t(keyByteCount))
 		#elseif os(Linux)
-			HMAC_Init(context, keyBuffer, Int32(keyByteCount), algorithm.nativeValue())
+			#if swift(>=4.2)
+				HMAC_Init_wrapper(context, keyBuffer, Int32(keyByteCount), .make(optional: algorithm.nativeValue()))
+			#else
+				HMAC_Init(context, keyBuffer, Int32(keyByteCount), .make(optional: algorithm.nativeValue()))
+			#endif
 		#endif
     }
     
@@ -209,7 +249,11 @@ public class HMAC: Updatable {
 			}
 		#elseif os(Linux)
 			_ = key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
-				HMAC_Init(context, buffer, Int32(key.count), algorithm.nativeValue())
+			#if swift(>=4.2)
+				HMAC_Init_wrapper(context, buffer, Int32(key.count), .make(optional: algorithm.nativeValue()))
+			#else
+				HMAC_Init(context, buffer, Int32(key.count), .make(optional: algorithm.nativeValue()))
+			#endif
 			}
 		#endif
 	}
@@ -227,7 +271,11 @@ public class HMAC: Updatable {
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
         	CCHmacInit(context, algorithm.nativeValue(), key.bytes, size_t(key.length))
 		#elseif os(Linux)
-			HMAC_Init(context, key.bytes, Int32(key.length), algorithm.nativeValue())
+			#if swift(>=4.2)
+				HMAC_Init_wrapper(context, key.bytes, Int32(key.length), .make(optional: algorithm.nativeValue()))
+			#else
+				HMAC_Init(context, key.bytes, Int32(key.length), .make(optional: algorithm.nativeValue()))
+			#endif
 		#endif
     }
     
@@ -244,7 +292,11 @@ public class HMAC: Updatable {
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
         	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.count))
 		#elseif os(Linux)
-			HMAC_Init(context, key, Int32(key.count), algorithm.nativeValue())
+			#if swift(>=4.2)
+				HMAC_Init_wrapper(context, key, Int32(key.count), .make(optional: algorithm.nativeValue()))
+			#else
+				HMAC_Init(context, key, Int32(key.count), .make(optional: algorithm.nativeValue()))
+			#endif
 		#endif
     }
     
@@ -262,7 +314,11 @@ public class HMAC: Updatable {
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
         	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: String.Encoding.utf8)))
 		#elseif os(Linux)
-			HMAC_Init(context, key, Int32(key.utf8.count), algorithm.nativeValue())
+			#if swift(>=4.2)
+				HMAC_Init_wrapper(context, key, Int32(key.utf8.count), .make(optional: algorithm.nativeValue()))
+			#else
+				HMAC_Init(context, key, Int32(key.utf8.count), .make(optional: algorithm.nativeValue()))
+			#endif
 		#endif
     }
 	
@@ -270,13 +326,17 @@ public class HMAC: Updatable {
 	/// Cleanup
 	///
     deinit {
-        #if os(Linux)
-            HMAC_CTX_cleanup(context)
-        #endif
-		#if swift(>=4.1)
-			context.deallocate()
-		#else
-			context.deallocate(capacity: 1)
+        #if os(Linux) && swift(>=4.2)
+			HMAC_CTX_free_wrapper(.make(optional: context))
+        #else
+			#if os(Linux)
+				HMAC_CTX_cleanup(context)
+			#endif
+			#if swift(>=4.1)
+				context.deallocate()
+			#else
+				context.deallocate(capacity: 1)
+			#endif
 		#endif
     }
  

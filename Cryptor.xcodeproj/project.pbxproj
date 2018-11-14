@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8C7111EE2195B09A003CF4B3 /* SSLPointerTricks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7111ED2195B09A003CF4B3 /* SSLPointerTricks.swift */; };
+		8C7111EF2195B09A003CF4B3 /* SSLPointerTricks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C7111ED2195B09A003CF4B3 /* SSLPointerTricks.swift */; };
 		8C9590301CC80A2300A2C2B4 /* libCryptor.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = "_____Product_Cryptor" /* libCryptor.dylib */; };
 		8C97EE131EBF75DD000E795B /* Cryptor-iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = 8C97EE111EBF75DD000E795B /* Cryptor-iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8C97EE181EBF76F0000E795B /* Crypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = __PBXFileRef_Sources/Crypto.swift /* Crypto.swift */; };
@@ -43,6 +45,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8C7111ED2195B09A003CF4B3 /* SSLPointerTricks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SSLPointerTricks.swift; path = Sources/Cryptor/SSLPointerTricks.swift; sourceTree = "<group>"; };
 		8C9590241CC807D400A2C2B4 /* CryptorTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CryptorTests.swift; path = Tests/CryptorTests/CryptorTests.swift; sourceTree = "<group>"; };
 		8C95902B1CC80A2300A2C2B4 /* CryptorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CryptorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C97EE0F1EBF75DD000E795B /* Cryptor.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Cryptor.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -159,6 +162,7 @@
 				__PBXFileRef_Sources/HMAC.swift /* HMAC.swift */,
 				__PBXFileRef_Sources/KeyDerivation.swift /* KeyDerivation.swift */,
 				__PBXFileRef_Sources/Random.swift /* Random.swift */,
+				8C7111ED2195B09A003CF4B3 /* SSLPointerTricks.swift */,
 				__PBXFileRef_Sources/Status.swift /* Status.swift */,
 				__PBXFileRef_Sources/StreamCryptor.swift /* StreamCryptor.swift */,
 				__PBXFileRef_Sources/Updateable.swift /* Updatable.swift */,
@@ -339,6 +343,7 @@
 			files = (
 				8C97EE181EBF76F0000E795B /* Crypto.swift in Sources */,
 				8C97EE191EBF76F0000E795B /* Cryptor.swift in Sources */,
+				8C7111EF2195B09A003CF4B3 /* SSLPointerTricks.swift in Sources */,
 				8C97EE1A1EBF76F0000E795B /* Digest.swift in Sources */,
 				8C97EE1B1EBF76F0000E795B /* HMAC.swift in Sources */,
 				8C97EE1C1EBF76F0000E795B /* KeyDerivation.swift in Sources */,
@@ -356,6 +361,7 @@
 			files = (
 				__src_cc_ref_Sources/Crypto.swift /* Crypto.swift in Sources */,
 				__src_cc_ref_Sources/Cryptor.swift /* Cryptor.swift in Sources */,
+				8C7111EE2195B09A003CF4B3 /* SSLPointerTricks.swift in Sources */,
 				__src_cc_ref_Sources/Digest.swift /* Digest.swift in Sources */,
 				__src_cc_ref_Sources/HMAC.swift /* HMAC.swift in Sources */,
 				__src_cc_ref_Sources/KeyDerivation.swift /* KeyDerivation.swift in Sources */,
