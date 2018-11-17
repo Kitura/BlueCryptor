@@ -47,7 +47,7 @@ Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://
 
 * Ubuntu 16.04 (or 16.10 but only tested on 16.04) and 18.04.
 * One of the Swift Open Source toolchain listed above.
-* OpenSSL 1.0.x is provided by the distribution.  **Note:** 1.0.x, 1.1.x and later releases of OpenSSL are supported.
+* OpenSSL is provided by the distribution.  **Note:** 1.0.x, 1.1.x and later releases of OpenSSL are supported.
 * The appropriate **libssl-dev** package is required to be installed when building.
 
 ## Build
