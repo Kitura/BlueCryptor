@@ -29,45 +29,45 @@ public protocol CryptoDigest {
 ///
 /// Extension to the CryptoDigest to return the digest appropriate to the selected algorithm.
 ///
-public extension CryptoDigest {
+extension CryptoDigest {
 	
     /// An MD2 digest of this object
-    var md2: Self {
+    public var md2: Self {
 		return self.digest(using: .md2)
 	}
 	
     /// An MD4 digest of this object
-    var md4: Self {
+    public var md4: Self {
 		return self.digest(using: .md4)
 	}
 	
     /// An MD5 digest of this object
-    var md5: Self {
+    public var md5: Self {
 		return self.digest(using: .md5)
  	}
 	
     /// An SHA1 digest of this object
-    var sha1: Self {
+    public var sha1: Self {
 		return self.digest(using: .sha1)
 	}
 	
     /// An SHA224 digest of this object
-    var sha224: Self {
+    public var sha224: Self {
 		return self.digest(using: .sha224)
 	}
 	
     /// An SHA256 digest of this object
-    var sha256: Self {
+    public var sha256: Self {
 		return self.digest(using: .sha256)
 	}
 	
     /// An SHA384 digest of this object
-    var sha384: Self {
+    public var sha384: Self {
 		return self.digest(using: .sha384)
 	}
 	
     /// An SHA512 digest of this object
-    var sha512: Self {
+    public var sha512: Self {
 		return self.digest(using: .sha512)
 	}
 }
