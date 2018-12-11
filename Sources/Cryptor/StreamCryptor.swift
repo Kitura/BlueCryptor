@@ -339,144 +339,72 @@ public class StreamCryptor {
 			
 		#elseif os(Linux)
 		
-			#if swift(>=4.2)
-		
-				/// Native, OpenSSL function for algorithm.
-				func nativeValue(options: Options) -> OpaquePointer? {
-				
-					if options == .pkcs7Padding || options == .none {
-				
-						switch self {
-						
-						case .aes, .aes128:
-							return .init(EVP_aes_128_cbc())
+			/// Native, OpenSSL function for algorithm.
+			func nativeValue(options: Options) -> OpaquePointer? {
 			
-						case .aes192:
-							return .init(EVP_aes_192_cbc())
+				if options == .pkcs7Padding || options == .none {
 			
-						case .aes256:
-							return .init(EVP_aes_256_cbc())
-						
-						case .des:
-							return .init(EVP_des_cbc())
-						
-						case .tripleDes:
-							return .init(EVP_des_ede3_cbc())
-						
-						case .cast:
-							return .init(EVP_cast5_cbc())
-						
-						case .rc2:
-							return .init(EVP_rc2_cbc())
-						
-						case .blowfish:
-							return .init(EVP_bf_cbc())
-						}
-					}
-				
-					if options == .ecbMode {
+					switch self {
 					
-						switch self {
-						
-						case .aes, .aes128:
-							return .init(EVP_aes_128_ecb())
-			
-						case .aes192:
-							return .init(EVP_aes_192_ecb())
-			
-						case .aes256:
-							return .init(EVP_aes_256_ecb())
-						
-						case .des:
-							return .init(EVP_des_ecb())
-						
-						case .tripleDes:
-							return .init(EVP_des_ede3_ecb())
-						
-						case .cast:
-							return .init(EVP_cast5_ecb())
-						
-						case .rc2:
-							return .init(EVP_rc2_ecb())
-						
-						case .blowfish:
-							return .init(EVP_bf_ecb())
-						}
-					}
+					case .aes, .aes128:
+						return .init(EVP_aes_128_cbc())
 		
-					fatalError("Unsupported options and/or algorithm.")
+					case .aes192:
+						return .init(EVP_aes_192_cbc())
+		
+					case .aes256:
+						return .init(EVP_aes_256_cbc())
+					
+					case .des:
+						return .init(EVP_des_cbc())
+					
+					case .tripleDes:
+						return .init(EVP_des_ede3_cbc())
+					
+					case .cast:
+						return .init(EVP_cast5_cbc())
+					
+					case .rc2:
+						return .init(EVP_rc2_cbc())
+					
+					case .blowfish:
+						return .init(EVP_bf_cbc())
+					}
 				}
-		
-		#else
-		
-				/// Native, OpenSSL function for algorithm.
-				func nativeValue(options: Options) -> UnsafePointer<EVP_CIPHER> {
-		
-					if options == .pkcs7Padding || options == .none {
-		
-						switch self {
-		
-						case .aes, .aes128:
-							return EVP_aes_128_cbc()
-		
-						case .aes192:
-							return EVP_aes_192_cbc()
-		
-						case .aes256:
-							return EVP_aes_256_cbc()
-		
-						case .des:
-							return EVP_des_cbc()
-		
-						case .tripleDes:
-							return EVP_des_ede3_cbc()
-		
-						case .cast:
-							return EVP_cast5_cbc()
-		
-						case .rc2:
-							return EVP_rc2_cbc()
-		
-						case .blowfish:
-							return EVP_bf_cbc()
-						}
-					}
-		
-					if options == .ecbMode {
-		
-						switch self {
-		
-						case .aes, .aes128:
-							return EVP_aes_128_ecb()
-		
-						case .aes192:
-							return EVP_aes_192_ecb()
-		
-						case .aes256:
-							return EVP_aes_256_ecb()
-		
-						case .des:
-							return EVP_des_ecb()
-		
-						case .tripleDes:
-							return EVP_des_ede3_ecb()
-		
-						case .cast:
-							return EVP_cast5_ecb()
-		
-						case .rc2:
-							return EVP_rc2_ecb()
-		
-						case .blowfish:
-							return EVP_bf_ecb()
-						}
-					}
-		
-					fatalError("Unsupported options and/or algorithm.")
-				}
-
-			#endif
 			
+				if options == .ecbMode {
+				
+					switch self {
+					
+					case .aes, .aes128:
+						return .init(EVP_aes_128_ecb())
+		
+					case .aes192:
+						return .init(EVP_aes_192_ecb())
+		
+					case .aes256:
+						return .init(EVP_aes_256_ecb())
+					
+					case .des:
+						return .init(EVP_des_ecb())
+					
+					case .tripleDes:
+						return .init(EVP_des_ede3_ecb())
+					
+					case .cast:
+						return .init(EVP_cast5_ecb())
+					
+					case .rc2:
+						return .init(EVP_rc2_ecb())
+					
+					case .blowfish:
+						return .init(EVP_bf_ecb())
+					}
+				}
+	
+				fatalError("Unsupported options and/or algorithm.")
+			}
+		
 		#endif
 		
 		///
@@ -582,19 +510,9 @@ public class StreamCryptor {
 	
 	#elseif os(Linux)
 	
-		#if swift(>=4.2)
+		/// OpenSSL Cipher Context
+		private let context: OpaquePointer? = .init(EVP_CIPHER_CTX_new())
 	
-			/// OpenSSL Cipher Context
-			private let context: OpaquePointer? = .init(EVP_CIPHER_CTX_new())
-	
-		#else
-	
-			/// OpenSSL Cipher Context
-			private let context: UnsafeMutablePointer<EVP_CIPHER_CTX> = EVP_CIPHER_CTX_new()
-	
-		#endif
-	
-
 		/// Operation
 		private var operation: Operation = .encrypt
 	

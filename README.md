@@ -52,8 +52,6 @@ Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://
 
 ## Build
 
-**Note:** If buiding using **OpenSSL 1.1.x**, the **4.2** release of Swift is **required**.
-
 To build **Cryptor** from the command line:
 
 ```
