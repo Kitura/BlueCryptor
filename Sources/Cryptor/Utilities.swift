@@ -71,7 +71,7 @@ public struct CryptoUtils {
 	///
 	/// - Returns: The hexadecimal value of the digit
 	///
-	static func convert(hexDigit digit: UnicodeScalar) -> UInt8 {
+	static func convert(hexDigit digit: UnicodeScalar) -> UInt8? {
 		
 		switch digit {
 			
@@ -85,7 +85,7 @@ public struct CryptoUtils {
 			return UInt8(digit.value - UnicodeScalar(unicodeScalarLiteral:"A").value + 0xa)
 			
 		default:
-			fatalError("convertHexDigit: Invalid hex digit")
+			return nil 
 		}
 	}
 	
@@ -94,7 +94,7 @@ public struct CryptoUtils {
 	///
 	/// - Parameter string: The hex string (must contain an even number of digits)
 	///
-	/// - Returns: A byte array
+	/// - Returns: A byte array or [] if the input is not valid hexadecimal
 	///
 	public static func byteArray(fromHex string: String) -> [UInt8] {
 		
@@ -102,13 +102,13 @@ public struct CryptoUtils {
 		var byteArray: [UInt8] = []
 		while let msn = iterator.next() {
 			
-			if let lsn = iterator.next() {
-				
-				byteArray += [ (convert(hexDigit: msn) << 4 | convert(hexDigit: lsn)) ]
-				
+			if let lsn = iterator.next(),
+				let hexMSN = convert(hexDigit: msn) ,
+				let hexLSN = convert(hexDigit: lsn)
+			{
+				byteArray += [ (hexMSN << 4 | hexLSN) ]
 			} else {
-				
-				fatalError("arrayFromHexString: String must contain even number of characters")
+				return []
 			}
 		}
 		return byteArray
