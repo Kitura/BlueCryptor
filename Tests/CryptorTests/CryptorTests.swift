@@ -71,6 +71,7 @@ class CryptorTests: XCTestCase {
 			("testHexStringFromArray", testHexStringFromArray),
 			("testHexNSStringFromArray", testHexNSStringFromArray),
 			("testHexListFromArray", testHexListFromArray),
+			("testInvalidByteArray", testInvalidByteArray),
 			("testZeroPadString", testZeroPadString),
 			("testGitHubIssue9", testGitHubIssue9),
 			("testGitHubIssue9StringCanary", testGitHubIssue9StringCanary),
@@ -825,6 +826,14 @@ class CryptorTests: XCTestCase {
 		let list = CryptoUtils.hexList(from: v)
 		XCTAssertEqual(list, "0xde, 0xad, 0xfa, 0xce, ")
 		
+	}
+	
+	func testInvalidByteArray() {
+		
+		let InvalidCharacter = CryptoUtils.byteArray(fromHex: "ZZ")
+		XCTAssertEqual(InvalidCharacter, [])
+		let invalidLength = CryptoUtils.byteArray(fromHex: "deadfac")
+		XCTAssertEqual(invalidLength, [])
 	}
 	
 	func testZeroPadString() {
