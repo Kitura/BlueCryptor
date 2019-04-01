@@ -108,6 +108,7 @@ public struct CryptoUtils {
 			{
 				byteArray += [ (hexMSN << 4 | hexLSN) ]
 			} else {
+				// In the next major release this function should throw instead of returning an empty array.
 				return []
 			}
 		}

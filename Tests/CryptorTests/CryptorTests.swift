@@ -827,6 +827,14 @@ class CryptorTests: XCTestCase {
 		
 	}
 	
+	func testInvalidByteArray() {
+		
+		let InvalidCharacter = CryptoUtils.byteArray(fromHex: "ZZ")
+		XCTAssertEqual(InvalidCharacter, [])
+		let invalidLength = CryptoUtils.byteArray(fromHex: "deadfac")
+		XCTAssertEqual(invalidLength, [])
+	}
+	
 	func testZeroPadString() {
 		var key1tmp = [UInt8]("thekey".utf8)
 		key1tmp += [0, 0]
