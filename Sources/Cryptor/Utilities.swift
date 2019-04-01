@@ -104,11 +104,13 @@ public struct CryptoUtils {
 			
 			if let lsn = iterator.next(),
 				let hexMSN = convert(hexDigit: msn) ,
-				let hexLSN = convert(hexDigit: lsn)
-			{
+				let hexLSN = convert(hexDigit: lsn)	{
+				
 				byteArray += [ (hexMSN << 4 | hexLSN) ]
+				
 			} else {
-				// In the next major release this function should throw instead of returning an empty array.
+				
+				// @TODO: In the next major release this function should throw instead of returning an empty array.
 				return []
 			}
 		}
