@@ -71,6 +71,7 @@ class CryptorTests: XCTestCase {
 			("testHexStringFromArray", testHexStringFromArray),
 			("testHexNSStringFromArray", testHexNSStringFromArray),
 			("testHexListFromArray", testHexListFromArray),
+			("testInvalidByteArray", testInvalidByteArray),
 			("testZeroPadString", testZeroPadString),
 			("testGitHubIssue9", testGitHubIssue9),
 			("testGitHubIssue9StringCanary", testGitHubIssue9StringCanary),
