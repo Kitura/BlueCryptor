@@ -206,14 +206,26 @@ public class HMAC: Updatable {
 	public init(using algorithm: Algorithm, key: Data) {
 		
 		self.algorithm = algorithm
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-			key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
-				CCHmacInit(context, algorithm.nativeValue(), buffer, size_t(key.count))
-			}
-		#elseif os(Linux)
-			_ = key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
-			HMAC_Init_wrapper(context, buffer, Int32(key.count), .make(optional: algorithm.nativeValue()))
-			}
+		#if swift(>=5.0)
+			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+				key.withUnsafeBytes() {
+					CCHmacInit(context, algorithm.nativeValue(), $0.baseAddress, size_t(key.count))
+				}
+				#elseif os(Linux)
+				_ = key.withUnsafeBytes() {
+					HMAC_Init_wrapper(context, $0.baseAddress, Int32(key.count), .make(optional: algorithm.nativeValue()))
+				}
+			#endif
+		#else
+			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+				key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
+					CCHmacInit(context, algorithm.nativeValue(), buffer, size_t(key.count))
+				}
+			#elseif os(Linux)
+				_ = key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
+					HMAC_Init_wrapper(context, buffer, Int32(key.count), .make(optional: algorithm.nativeValue()))
+				}
+			#endif
 		#endif
 	}
 	

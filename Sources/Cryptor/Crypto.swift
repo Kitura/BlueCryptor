@@ -87,12 +87,21 @@ extension Data: CryptoDigest {
 		
 		// This force unwrap may look scary but for CommonCrypto this cannot fail.
 	    // The API allows for optionals to support the OpenSSL implementation which can.
-		return self.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) -> Data in
+		#if swift(>=5.0)
+			return self.withUnsafeBytes() {
+				
+				let result = (Digest(using: algorithm).update(from: $0.baseAddress!, byteCount: self.count)?.final())!
+				let data = type(of: self).init(bytes: result, count: result.count)
+				return data
+			}
+		#else
+			return self.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) -> Data in
 			
-			let result = (Digest(using: algorithm).update(from: buffer, byteCount: self.count)?.final())!
-    	    let data = type(of: self).init(bytes: result, count: result.count)
-			return data
-		}
+				let result = (Digest(using: algorithm).update(from: buffer, byteCount: self.count)?.final())!
+    		    let data = type(of: self).init(bytes: result, count: result.count)
+				return data
+			}
+		#endif
     }
 }
 	

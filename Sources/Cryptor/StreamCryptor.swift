@@ -720,9 +720,15 @@ public class StreamCryptor {
 		
 		let dataOutAvailable = byteArrayOut.count
 		var dataOutMoved = 0
-		dataIn.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
-			_ = update(bufferIn: buffer, byteCountIn: dataIn.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
-		}
+		#if swift(>=5.0)
+			dataIn.withUnsafeBytes() { 
+				_ = update(bufferIn: $0.baseAddress!, byteCountIn: dataIn.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+			}
+		#else
+			dataIn.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
+				_ = update(bufferIn: buffer, byteCountIn: dataIn.count, bufferOut: &byteArrayOut, byteCapacityOut: dataOutAvailable, byteCountOut: &dataOutMoved)
+			}
+		#endif
 		return (dataOutMoved, self.status)
 	}
 	
