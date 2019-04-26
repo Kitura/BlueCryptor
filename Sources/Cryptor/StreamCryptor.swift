@@ -906,10 +906,10 @@ public class StreamCryptor {
 				switch self.operation {
 				
 				case .encrypt:
-					rawStatus = EVP_EncryptFinal(.make(optional: self.context), bufferOut, &outLength)
+					rawStatus = EVP_EncryptFinal_ex(.make(optional: self.context), bufferOut, &outLength)
 				
 				case .decrypt:
-					rawStatus = EVP_DecryptFinal(.make(optional: self.context), bufferOut, &outLength)
+					rawStatus = EVP_DecryptFinal_ex(.make(optional: self.context), bufferOut, &outLength)
 				}
 			
 				byteCountOut = Int(outLength)
