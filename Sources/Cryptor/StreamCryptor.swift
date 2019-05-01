@@ -575,7 +575,7 @@ public class StreamCryptor {
 				rawStatus = EVP_EncryptInit_ex(.make(optional: self.context), .make(optional: algorithm.nativeValue(options: options)), nil, keyBuffer, ivBuffer)
 		
 			case .decrypt:
-				rawStatus = EVP_DecryptInit(.make(optional: self.context), .make(optional: algorithm.nativeValue(options: options)), keyBuffer, ivBuffer)
+				rawStatus = EVP_DecryptInit_ex(.make(optional: self.context), .make(optional: algorithm.nativeValue(options: options)), nil, keyBuffer, ivBuffer)
 			}
 		
 			if rawStatus == 0 {
