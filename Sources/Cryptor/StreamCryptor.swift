@@ -575,7 +575,7 @@ public class StreamCryptor {
 				rawStatus = EVP_EncryptInit_ex(.make(optional: self.context), .make(optional: algorithm.nativeValue(options: options)), nil, keyBuffer, ivBuffer)
 		
 			case .decrypt:
-				rawStatus = EVP_DecryptInit(.make(optional: self.context), .make(optional: algorithm.nativeValue(options: options)), keyBuffer, ivBuffer)
+				rawStatus = EVP_DecryptInit_ex(.make(optional: self.context), .make(optional: algorithm.nativeValue(options: options)), nil, keyBuffer, ivBuffer)
 			}
 		
 			if rawStatus == 0 {
@@ -906,10 +906,10 @@ public class StreamCryptor {
 				switch self.operation {
 				
 				case .encrypt:
-					rawStatus = EVP_EncryptFinal(.make(optional: self.context), bufferOut, &outLength)
+					rawStatus = EVP_EncryptFinal_ex(.make(optional: self.context), bufferOut, &outLength)
 				
 				case .decrypt:
-					rawStatus = EVP_DecryptFinal(.make(optional: self.context), bufferOut, &outLength)
+					rawStatus = EVP_DecryptFinal_ex(.make(optional: self.context), bufferOut, &outLength)
 				}
 			
 				byteCountOut = Int(outLength)
