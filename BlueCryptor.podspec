@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name        = "BlueCryptor"
-s.version     = "1.0.27"
+s.version     = "1.0.28"
 s.summary     = "Swift cross-platform crypto library using CommonCrypto/libcrypto via Package Manager."
 s.homepage    = "https://github.com/IBM-Swift/BlueCryptor"
 s.license     = { :type => "Apache License, Version 2.0" }
