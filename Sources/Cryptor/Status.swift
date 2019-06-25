@@ -112,7 +112,7 @@ public enum Status: CCCryptorStatus, Swift.Error, CustomStringConvertible {
     ///
 	public static func fromRaw(status: CCCryptorStatus) -> Status? {
 		
-        var from = [
+        let from = [
             kCCSuccess: success,
             kCCParamError: paramError,
             kCCBufferTooSmall: bufferTooSmall,
