@@ -211,8 +211,6 @@ public class StreamCryptor {
     ///
     public enum Algorithm {
 		
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-		
 			/// Advanced Encryption Standard
 			/// - Note: aes and aes128 are equivalent.
 			case aes, aes128, aes192, aes256
@@ -231,29 +229,6 @@ public class StreamCryptor {
 			
 			/// blowfish
 			case blowfish
-
-		#elseif os(Linux)
-		
-			/// Advanced Encryption Standard
-			/// - Note: aes and aes128 are equivalent.
-			case aes, aes128, aes192, aes256
-			
-			/// Data Encryption Standard
-			case des
-			
-			/// Triple des
-			case tripleDes
-			
-			/// cast
-			case cast
-			
-			/// rc2
-			case rc2
-			
-			/// blowfish
-			case blowfish
-			
-		#endif
 
         /// Blocksize, in bytes, of algorithm.
 		public var blockSize: Int {
