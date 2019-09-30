@@ -280,7 +280,7 @@ public enum CryptorError: Swift.Error, CustomStringConvertible {
 		case .invalidIVSizeOrLength:
 			return "Invalid IV size or length."
 			
-		case .fail(let (_, reason)):
+		case .fail(_, let reason):
 			return reason
 		}
 	}
