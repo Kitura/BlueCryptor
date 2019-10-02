@@ -211,24 +211,24 @@ public class StreamCryptor {
     ///
     public enum Algorithm {
 		
-			/// Advanced Encryption Standard
-			/// - Note: aes and aes128 are equivalent.
-			case aes, aes128, aes192, aes256
-			
-			/// Data Encryption Standard
-			case des
-			
-			/// Triple des
-			case tripleDes
-			
-			/// cast
-			case cast
-			
-			/// rc2
-			case rc2
-			
-			/// blowfish
-			case blowfish
+		/// Advanced Encryption Standard
+		/// - Note: aes and aes128 are equivalent.
+		case aes, aes128, aes192, aes256
+		
+		/// Data Encryption Standard
+		case des
+		
+		/// Triple des
+		case tripleDes
+		
+		/// cast
+		case cast
+		
+		/// rc2
+		case rc2
+		
+		/// blowfish
+		case blowfish
 
         /// Blocksize, in bytes, of algorithm.
 		public var blockSize: Int {
