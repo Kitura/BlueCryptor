@@ -5,7 +5,7 @@
 //  Package.swift
 //  Cryptor
 //
-//  Copyright © 2016 IBM. All rights reserved.
+//  Copyright © 2016-2020 IBM and the authors of the Kitura project. All rights reserved.
 //
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -26,10 +26,10 @@ var dependencies: [Package.Dependency] = []
 var targetDependencies: [Target.Dependency] = []
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-dependencies.append(Package.Dependency.package(url: "https://github.com/IBM-Swift/CommonCrypto.git", from: "1.0.0"))
+dependencies.append(Package.Dependency.package(url: "https://github.com/Kitura/CommonCrypto.git", from: "1.0.0"))
 targetDependencies.append(Target.Dependency.byName(name: "CommonCrypto"))
 #elseif os(Linux)
-dependencies.append(Package.Dependency.package(url: "https://github.com/IBM-Swift/OpenSSL.git", from: "1.0.0"))
+dependencies.append(Package.Dependency.package(url: "https://github.com/Kitura/OpenSSL.git", from: "1.0.0"))
 targetDependencies.append(Target.Dependency.byName(name: "OpenSSL"))
 #else
 fatalError("Unsupported OS")
