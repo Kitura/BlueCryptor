@@ -43,7 +43,7 @@ let package = Package(
         .target(
             name: "Cryptor",
             dependencies: targetDependencies,
-            exclude: ["Cryptor.xcodeproj", "README.md", "Sources/Info.plist"]),
+            exclude: ["Info.plist"]),
         .testTarget(
             name: "CryptorTests",
             dependencies: ["Cryptor"]),
