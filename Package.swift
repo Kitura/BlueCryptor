@@ -5,7 +5,7 @@
 //  Package.swift
 //  Cryptor
 //
-//  Copyright © 2016 IBM. All rights reserved.
+//  Copyright © 2016-2020 IBM and the authors of the Kitura project. All rights reserved.
 //
 //     Licensed under the Apache License, Version 2.0 (the "License");
 //     you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ var dependencies: [Package.Dependency] = []
 var targetDependencies: [Target.Dependency] = []
 
 #if os(Linux)
-	dependencies.append(.package(url: "https://github.com/IBM-Swift/OpenSSL.git", from: "2.2.0"))
+	dependencies.append(.package(url: "https://github.com/Kitura/OpenSSL.git", from: "2.2.200"))
 	targetDependencies.append(.byName(name: "OpenSSL"))
 #endif
 
@@ -43,7 +43,7 @@ let package = Package(
         .target(
             name: "Cryptor",
             dependencies: targetDependencies,
-            exclude: ["Cryptor.xcodeproj", "README.md", "Sources/Info.plist"]),
+            exclude: ["Info.plist"]),
         .testTarget(
             name: "CryptorTests",
             dependencies: ["Cryptor"]),
