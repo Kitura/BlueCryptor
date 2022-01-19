@@ -185,7 +185,7 @@ public class StreamCryptor {
 		}
 		
 		/// No options
-		public static let none = Options(rawValue: 0)
+		public static let none = Options([])
 		
 		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
 		

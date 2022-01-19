@@ -65,7 +65,7 @@ extension Updatable {
 	public func update(data: Data) -> Self? {
 		
 		#if swift(>=5.0)
-			_ = data.withUnsafeBytes() {
+			data.withUnsafeBytes() {
 				
 				_ = update(from: $0.baseAddress!, byteCount: size_t(data.count))
 			}
