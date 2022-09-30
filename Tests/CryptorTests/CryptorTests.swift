@@ -40,13 +40,6 @@ class CryptorTests: XCTestCase {
 			("test_Cryptor_AES_ECB_Short", test_Cryptor_AES_ECB_Short),
 			("test_Cryptor_AES_CBC_1", test_Cryptor_AES_CBC_1),
 			("test_Cryptor_DES_EBC_1", test_Cryptor_DES_EBC_1),
-			("testMD2", testMD2),
-			("testMD5_1", testMD5_1),
-			("test_Digest_MD5_NSData", test_Digest_MD5_Data),
-			("test_Digest_MD5_NSData", test_Digest_MD5_NSData),
-			("test_Digest_MD5_Composition_String", test_Digest_MD5_Composition_String),
-			("test_Digest_MD5_Composition_String_2", test_Digest_MD5_Composition_String_2),
-			("test_Digest_MD5_Composition_Bytes", test_Digest_MD5_Composition_Bytes),
 			("test_Crypto_API", test_Crypto_API),
 			("test_Digest_SHA1_String", test_Digest_SHA1_String),
 			("test_Digest_SHA224_String", test_Digest_SHA224_String),
@@ -434,70 +427,6 @@ class CryptorTests: XCTestCase {
 	                        0xdf, 0x22, 0xcb, 0xd0]
 	
 	// MARK: - Digest tests
-	
-	// MARK: MD2 (RFC1319)
-	let md2inputs = ["", "a", "abc", "message digest", "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "12345678901234567890123456789012345678901234567890123456789012345678901234567890"]
-	let md2outputs = ["8350e5a3e24c153df2275c9f80692773", "32ec01ec4a6dac72c0ab96fb34c0b5d1",
-	                  "da853b0d3f88d99b30283a69e6ded6bb", "ab4f496bfb2a530b219ff33031fe06b0", "4e8ddff3650292ab5a4108c3aa47940b", "da33def2a42df13975352846c30338cd", "d5976f79d83d3a0dc9806c3c66f3efd8"]
-	
-	func testMD2() {
-		if usingOpenSSL {
-			return
-		}
-		for i in 0..<md2inputs.count {
-			let input = md2inputs[i]
-			let expectedOutput = CryptoUtils.byteArray(fromHex: md2outputs[i])
-			let d: Digest = Digest(using:.md2)
-			_ = d.update(string: input)
-			let output = d.final()
-			XCTAssertEqual(output, expectedOutput)
-		}
-	}
-	
-	// MARK: MD5
-	func testMD5_1() {
-		let md5: Digest = Digest(using:.md5)
-		_ = md5.update(string: qbfString)
-		let digest = md5.final()
-		
-		XCTAssertEqual(digest, qbfMD5, "PASS")
-	}
-	
-	func test_Digest_MD5_NSData() {
-		let qbfData: NSData = CryptoUtils.data(from: self.qbfBytes)
-		let digest = Digest(using: .md5).update(data: qbfData)?.final()
-		
-		XCTAssertEqual(digest!, qbfMD5, "PASS")
-	}
-	
-	func test_Digest_MD5_Data() {
-		let qbfData: Data = CryptoUtils.data(from: self.qbfBytes)
-		let digest = Digest(using: .md5).update(data: qbfData)?.final()
-		
-		XCTAssertEqual(digest!, qbfMD5, "PASS")
-	}
-	
-	/// Test MD5 with string input and optional chaining.
-	func test_Digest_MD5_Composition_String() {
-		let digest = Digest(using: .md5).update(string: qbfString)?.final()
-		XCTAssertEqual(digest!, qbfMD5, "PASS")
-	}
-	
-	/// Test MD5 with optional chaining, string input and 2 updates
-	func test_Digest_MD5_Composition_String_2() {
-		let s1 = "The quick brown fox"
-		let s2 = " jumps over the lazy dog."
-		let digest = Digest(using: .md5).update(string: s1)?.update(string: s2)?.final()
-		
-		XCTAssertEqual(digest!, qbfMD5, "PASS")
-	}
-	
-	/// Test MD5 with optional chaining and byte array input
-	func test_Digest_MD5_Composition_Bytes() {
-		let digest = Digest(using: .md5).update(byteArray: qbfBytes)?.final()
-		
-		XCTAssertEqual(digest!, qbfMD5, "PASS")
-	}
 	
 	/// See: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA_All.pdf
 	let shaShortBlock = "abc"

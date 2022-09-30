@@ -31,21 +31,6 @@ public protocol CryptoDigest {
 ///
 extension CryptoDigest {
 	
-    /// An MD2 digest of this object
-    public var md2: Self {
-		return self.digest(using: .md2)
-	}
-	
-    /// An MD4 digest of this object
-    public var md4: Self {
-		return self.digest(using: .md4)
-	}
-	
-    /// An MD5 digest of this object
-    public var md5: Self {
-		return self.digest(using: .md5)
- 	}
-	
     /// An SHA1 digest of this object
     public var sha1: Self {
 		return self.digest(using: .sha1)
