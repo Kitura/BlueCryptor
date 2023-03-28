@@ -50,15 +50,6 @@ public class Digest: Updatable {
     ///
     public enum Algorithm {
 		
-        /// Message Digest 2 See: http://en.wikipedia.org/wiki/MD2_(cryptography)
-        case md2
-		
-        /// Message Digest 4
-        case md4
-		
-        /// Message Digest 5
-        case md5
-		
         /// Secure Hash Algorithm 1
         case sha1
 		
@@ -85,27 +76,6 @@ public class Digest: Updatable {
     public init(using algorithm: Algorithm) {
 		
         switch algorithm {
-			
-        case .md2:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
-			#elseif os(Linux)
-				fatalError("MD2 digest not supported by OpenSSL")
-			#endif
-			
-        case .md4:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            	engine = DigestEngineCC<CC_MD4_CTX>(initializer:CC_MD4_Init, updater:CC_MD4_Update, finalizer:CC_MD4_Final, length:CC_MD4_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<MD4_CTX>(initializer:MD4_Init, updater:MD4_Update, finalizer:MD4_Final, length:MD4_DIGEST_LENGTH)
-			#endif
-			
-        case .md5:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-				engine = DigestEngineCC<CC_MD5_CTX>(initializer:CC_MD5_Init, updater:CC_MD5_Update, finalizer:CC_MD5_Final, length:CC_MD5_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<MD5_CTX>(initializer:MD5_Init, updater:MD5_Update, finalizer:MD5_Final, length:MD5_DIGEST_LENGTH)
-			#endif
 			
         case .sha1:
 			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
