@@ -17,7 +17,7 @@
 
 import Foundation
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 	import CommonCrypto
 #elseif os(Linux)
 	import OpenSSL
@@ -46,7 +46,7 @@ public class PBKDF {
         /// Secure Hash Algorithm 2 512-bit
         case sha512
 		
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 			///  Return the OS native value
 			func nativeValue() -> CCPseudoRandomAlgorithm {
 			
@@ -103,7 +103,7 @@ public class PBKDF {
     ///
 	public class func calibrate(passwordLength: Int, saltLength: Int, algorithm: PseudoRandomAlgorithm, derivedKeyLength: Int, msec: UInt32) -> UInt {
 		
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 	        return UInt(CCCalibratePBKDF(CCPBKDFAlgorithm(kCCPBKDF2), passwordLength, saltLength, algorithm.nativeValue(), derivedKeyLength, msec))
 		#elseif os(Linux)
 			// Value as per RFC 2898.
@@ -127,7 +127,7 @@ public class PBKDF {
 	public class func deriveKey(fromPassword password: String, salt: String, prf: PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) throws -> [UInt8] {
 		
 		var derivedKey = Array<UInt8>(repeating: 0, count:Int(derivedKeyLength))
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS) || os(visionOS)
 			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.utf8.count, salt, salt.utf8.count, prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
 			if status != Int32(kCCSuccess) {
 			
@@ -159,7 +159,7 @@ public class PBKDF {
 	public class func deriveKey(fromPassword password: String, salt: [UInt8], prf: PseudoRandomAlgorithm, rounds: uint, derivedKeyLength: UInt) throws -> [UInt8] {
 		
 		var derivedKey = Array<UInt8>(repeating: 0, count:Int(derivedKeyLength))
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
 			let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, password.utf8.count, salt, salt.count, prf.nativeValue(), rounds, &derivedKey, derivedKey.count)
 			if status != Int32(kCCSuccess) {
 	
@@ -193,7 +193,7 @@ public class PBKDF {
     ///
 	public class func deriveKey(fromPassword password: UnsafePointer<Int8>, passwordLen: Int, salt: UnsafePointer<UInt8>, saltLen: Int, prf: PseudoRandomAlgorithm, rounds: uint, derivedKey: UnsafeMutablePointer<UInt8>, derivedKeyLen: Int) throws {
 		
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
         	let status: Int32 = CCKeyDerivationPBKDF(CCPBKDFAlgorithm(kCCPBKDF2), password, passwordLen, salt, saltLen, prf.nativeValue(), rounds, derivedKey, derivedKeyLen)
 			if status != Int32(kCCSuccess) {
 			
