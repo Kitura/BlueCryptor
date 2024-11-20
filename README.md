@@ -1,18 +1,8 @@
-<p align="center">
-    <a href="https://www.kitura.io/packages.html#all">
-    <img src="https://img.shields.io/badge/docs-kitura.io-1FBCE4.svg" alt="APIDoc">
-    </a>
-    <a href="https://travis-ci.org/Kitura/BlueCryptor">
-    <img src="https://travis-ci.org/Kitura/BlueCryptor.svg?branch=master" alt="Build Status - Master">
-    </a>
-    <img src="https://img.shields.io/badge/os-macOS-green.svg?style=flat" alt="macOS">
-    <img src="https://img.shields.io/badge/os-iOS-green.svg?style=flat" alt="iOS">
-    <img src="https://img.shields.io/badge/os-linux-green.svg?style=flat" alt="Linux">
-    <img src="https://img.shields.io/badge/license-Apache2-blue.svg?style=flat" alt="Apache 2">
-    <a href="http://swift-at-ibm-slack.mybluemix.net/">
-    <img src="http://swift-at-ibm-slack.mybluemix.net/badge.svg" alt="Slack Status">
-    </a>
-<p>
+[![APIDoc](https://img.shields.io/badge/docs-kitura.io-1FBCE4.svg)](https://www.kitura.io/packages.html#all)
+[![SwiftPackageIndex](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FKitura%2FBlueCryptor%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/Kitura/BlueCryptor)
+[![TravisCI](https://travis-ci.org/Kitura/BlueCryptor.svg?branch=master)](https://travis-ci.org/Kitura/BlueCryptor)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FKitura%2FBlueCryptor%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/Kitura/BlueCryptor)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 # BlueCryptor
 Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://github.com/iosdevzone/IDZSwiftCommonCrypto).
