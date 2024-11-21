@@ -17,119 +17,13 @@
 
 import Foundation
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	import CommonCrypto
-#elseif os(Linux)
-	import OpenSSL
+#if os(Linux)
+    import OpenSSL
+#else
+    import CommonCrypto
 #endif
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-///
-/// Links the native CommonCryptoStatus enumeration to Swift versions.
-///
-public enum Status: CCCryptorStatus, Swift.Error, CustomStringConvertible {
-
-    /// Successful
-    case success
-	
-    /// Parameter Error
-    case paramError
-	
-    /// Buffer too Small
-    case bufferTooSmall
-	
-    /// Memory Failure
-    case memoryFailure
-	
-    /// Alignment Error
-    case alignmentError
-	
-    /// Decode Error
-    case decodeError
-	
-    /// Unimplemented
-    case unimplemented
-	
-    /// Overflow
-    case overflow
-	
-    /// Random Number Generator Err
-    case rngFailure
-    
-    ///
-    /// Converts this value to a native `CCCryptorStatus` value.
-    ///
-	public func toRaw() -> CCCryptorStatus {
-		
-        switch self {
-			
-        case .success:
-			return CCCryptorStatus(kCCSuccess)
-        case .paramError:
-			return CCCryptorStatus(kCCParamError)
-        case .bufferTooSmall:
-   			return CCCryptorStatus(kCCBufferTooSmall)
-        case .memoryFailure:
-			return CCCryptorStatus(kCCMemoryFailure)
-        case .alignmentError:
-   			return CCCryptorStatus(kCCAlignmentError)
-        case .decodeError:
-			return CCCryptorStatus(kCCDecodeError)
-        case .unimplemented:
-			return CCCryptorStatus(kCCUnimplemented)
-        case .overflow:
-			return CCCryptorStatus(kCCOverflow)
-        case .rngFailure:
-			return CCCryptorStatus(kCCRNGFailure)
-        }
-    }
-    
-    ///
-    /// Human readable descriptions of the values. (Not needed in Swift 2.0?)
-    ///
-    static let descriptions = [
-        success: "Success",
-        paramError: "ParamError",
-        bufferTooSmall: "BufferTooSmall",
-        memoryFailure: "MemoryFailure",
-        alignmentError: "AlignmentError",
-        decodeError: "DecodeError",
-        unimplemented: "Unimplemented",
-        overflow: "Overflow",
-        rngFailure: "RNGFailure"
-    ]
-
-    ///
-    /// Obtain human-readable string from enum value.
-    ///
-	public var description: String {
-		
-        return (Status.descriptions[self] != nil) ? Status.descriptions[self]! : ""
-    }
-
-	///
-    /// Create enum value from raw `CCCryptorStatus` value.
-    ///
-	public static func fromRaw(status: CCCryptorStatus) -> Status? {
-		
-        let from = [
-            kCCSuccess: success,
-            kCCParamError: paramError,
-            kCCBufferTooSmall: bufferTooSmall,
-            kCCMemoryFailure: memoryFailure,
-            kCCAlignmentError: alignmentError,
-            kCCDecodeError: decodeError,
-            kCCUnimplemented: unimplemented,
-            kCCOverflow: overflow,
-            kCCRNGFailure: rngFailure
-        ]
-        
-        return from[Int(status)]
-    
-    }
-}
-	
-#elseif os(Linux)
+#if os(Linux)
 	
 ///
 /// Error status
@@ -225,6 +119,112 @@ func == (lhs: Status, rhs: Status) -> Bool {
 func != (lhs: Status, rhs: Status) -> Bool {
 	
 	return lhs.code != rhs.code
+}
+
+#else
+///
+/// Links the native CommonCryptoStatus enumeration to Swift versions.
+///
+public enum Status: CCCryptorStatus, Swift.Error, CustomStringConvertible {
+    
+    /// Successful
+    case success
+    
+    /// Parameter Error
+    case paramError
+    
+    /// Buffer too Small
+    case bufferTooSmall
+    
+    /// Memory Failure
+    case memoryFailure
+    
+    /// Alignment Error
+    case alignmentError
+    
+    /// Decode Error
+    case decodeError
+    
+    /// Unimplemented
+    case unimplemented
+    
+    /// Overflow
+    case overflow
+    
+    /// Random Number Generator Err
+    case rngFailure
+    
+    ///
+    /// Converts this value to a native `CCCryptorStatus` value.
+    ///
+    public func toRaw() -> CCCryptorStatus {
+        
+        switch self {
+            
+        case .success:
+            return CCCryptorStatus(kCCSuccess)
+        case .paramError:
+            return CCCryptorStatus(kCCParamError)
+        case .bufferTooSmall:
+            return CCCryptorStatus(kCCBufferTooSmall)
+        case .memoryFailure:
+            return CCCryptorStatus(kCCMemoryFailure)
+        case .alignmentError:
+            return CCCryptorStatus(kCCAlignmentError)
+        case .decodeError:
+            return CCCryptorStatus(kCCDecodeError)
+        case .unimplemented:
+            return CCCryptorStatus(kCCUnimplemented)
+        case .overflow:
+            return CCCryptorStatus(kCCOverflow)
+        case .rngFailure:
+            return CCCryptorStatus(kCCRNGFailure)
+        }
+    }
+    
+    ///
+    /// Human readable descriptions of the values. (Not needed in Swift 2.0?)
+    ///
+    static let descriptions = [
+        success: "Success",
+        paramError: "ParamError",
+        bufferTooSmall: "BufferTooSmall",
+        memoryFailure: "MemoryFailure",
+        alignmentError: "AlignmentError",
+        decodeError: "DecodeError",
+        unimplemented: "Unimplemented",
+        overflow: "Overflow",
+        rngFailure: "RNGFailure"
+    ]
+    
+    ///
+    /// Obtain human-readable string from enum value.
+    ///
+    public var description: String {
+        
+        return (Status.descriptions[self] != nil) ? Status.descriptions[self]! : ""
+    }
+    
+    ///
+    /// Create enum value from raw `CCCryptorStatus` value.
+    ///
+    public static func fromRaw(status: CCCryptorStatus) -> Status? {
+        
+        let from = [
+            kCCSuccess: success,
+            kCCParamError: paramError,
+            kCCBufferTooSmall: bufferTooSmall,
+            kCCMemoryFailure: memoryFailure,
+            kCCAlignmentError: alignmentError,
+            kCCDecodeError: decodeError,
+            kCCUnimplemented: unimplemented,
+            kCCOverflow: overflow,
+            kCCRNGFailure: rngFailure
+        ]
+        
+        return from[Int(status)]
+        
+    }
 }
 
 #endif
