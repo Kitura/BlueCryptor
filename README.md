@@ -21,16 +21,16 @@ Swift cross-platform crypto library derived from [IDZSwiftCommonCrypto](https://
 
 ### macOS
 
-* macOS 10.14.6 (*Mojave*) or higher.
+* macOS 11.5 (*Big Sur*) or higher.
 * Xcode Version 11.0 or higher using one of the above toolchains.
-* Xcode Version 12.5 or higher using the included toolchain (*Recommended*).
+* Xcode Version 13.4 or higher using the included toolchain (*Recommended*).
 * CommonCrypto is provided by macOS.
 
 ### iOS
 
-* iOS 10.0 or higher
+* iOS 14.5 or higher
 * Xcode Version 11.0 or higher using one of the above toolchains.
-* Xcode Version 12.5 or higher using the included toolchain (*Recommended*).
+* Xcode Version 13.4 or higher using the included toolchain (*Recommended*).
 * CommonCrypto is provided by iOS.
 
 ### Linux
@@ -81,7 +81,7 @@ To include BlueCryptor in a project using Carthage, add a line to your `Cartfile
 #### CocoaPods
 To include BlueCryptor in a project using CocoaPods, you just add `BlueCryptor` to your `Podfile`, for example:
 ```
-    platform :ios, '10.0'
+    platform :ios, '14.5'
 
     target 'MyApp' do
         use_frameworks!
@@ -129,19 +129,19 @@ do {
 
 ### Digest
 
-The following example illustrates generating an `MD5` digest from both a `String` and an instance of `NSData`.
+The following example illustrates generating an `SHA1` digest from both a `String` and an instance of `NSData`.
 ```swift
 let qbfBytes : [UInt8] = [0x54,0x68,0x65,0x20,0x71,0x75,0x69,0x63,0x6b,0x20,0x62,0x72,0x6f,0x77,0x6e,0x20,0x66,0x6f,0x78,0x20,0x6a,0x75,0x6d,0x70,0x73,0x20,0x6f,0x76,0x65,0x72,0x20,0x74,0x68,0x65,0x20,0x6c,0x61,0x7a,0x79,0x20,0x64,0x6f,0x67,0x2e]
 let qbfString = "The quick brown fox jumps over the lazy dog."
 
 // String...
-let md5 = Digest(using: .md5)
-md5.update(string: qfbString)
-let digest = md5.final()
+let sha1 = Digest(using: .sha1)
+sha1.update(string: qfbString)
+let digest = sha1.final()
 
 // NSData using optional chaining...
 let qbfData = CryptoUtils.data(from: qbfBytes)
-let digest = Digest(using: .md5).update(data: qbfData)?.final()
+let digest = Digest(using: .sha1).update(data: qbfData)?.final()
 ```
 
 ### HMAC
@@ -210,9 +210,6 @@ Also provided are an API to pad a byte array (`[UInt8]`) such that it is an inte
 - ```func zeroPad(string: String, blockSize: Int) -> [UInt8]```
 
 ## Restrictions
-
-The following algorithm is not available on Linux since it is not supported by *OpenSSL*.
-- Digest: MD2
 
 In all cases, use of unsupported APIs or algorithms will result in a Swift `fatalError()`, terminating the program and should be treated as a programming error.
 
