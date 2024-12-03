@@ -31,12 +31,14 @@ public protocol CryptoDigest {
 ///
 extension CryptoDigest {
 	
-    #if !os(iOS)
+    #if !os(iOS) && !os(Linux)
     /// An MD2 digest of this object
     public var md2: Self {
         return self.digest(using: .md2)
     }
-	
+    #endif
+    
+    #if !os(iOS)
     /// An MD4 digest of this object
     public var md4: Self {
 		return self.digest(using: .md4)
