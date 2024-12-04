@@ -17,10 +17,10 @@
 
 import Foundation
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	import CommonCrypto
-#elseif os(Linux)
-	import OpenSSL
+#if os(Linux)
+    import OpenSSL
+#else
+    import CommonCrypto
 #endif
 
 public typealias RNGStatus = Status
@@ -41,13 +41,7 @@ public class Random {
     ///
 	public class func generate(bytes: UnsafeMutablePointer<UInt8>, byteCount: Int) -> RNGStatus {
 		
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	        let statusCode = CCRandomGenerateBytes(bytes, byteCount)
-    	    guard let status = Status(rawValue: statusCode) else {
-        	    fatalError("CCRandomGenerateBytes returned unexpected status code: \(statusCode)")
-	        }
-    	    return status
-		#elseif os(Linux)
+		#if os(Linux)
 			let statusCode = RAND_bytes(bytes, Int32(byteCount))
 			if statusCode != 1 {
 				
@@ -55,6 +49,12 @@ public class Random {
 				return Status.rngFailure(errCode)
 			}
 			return Status.success
+        #else
+            let statusCode = CCRandomGenerateBytes(bytes, byteCount)
+            guard let status = Status(rawValue: statusCode) else {
+                fatalError("CCRandomGenerateBytes returned unexpected status code: \(statusCode)")
+            }
+            return status
 		#endif
     }
 	
