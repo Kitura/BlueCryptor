@@ -53,8 +53,7 @@ public class Digest: Updatable {
     ///
     public enum Algorithm {
 		
-        #if os(Linux)
-        #else
+        #if !os(Linux)
         /// Message Digest 2 See: http://en.wikipedia.org/wiki/MD2_(cryptography)
         @available(iOS, introduced: 2.0, obsoleted: 13.0, message: "This function is cryptographically insecure and should not be used in security contexts. Clients should migrate to SHA256 (or stronger).")
         case md2
@@ -103,10 +102,9 @@ public class Digest: Updatable {
 		
         switch algorithm {
 			
+        #if !os(Linux)
         case .md2:
-			#if os(Linux)
-				fatalError("MD2 digest not supported by OpenSSL")
-            #elseif os(iOS)
+            #if os(iOS)
                 if #available(iOS 13, *) {
                     fatalError("MD2 digest is cryptographically insecure")
                 } else {
@@ -114,8 +112,9 @@ public class Digest: Updatable {
                 }
             #else
                 self.engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
-			#endif
-			
+            #endif
+        #endif
+
         case .md4:
             #if os(Linux)
                 self.engine = DigestEngineCC<MD4_CTX>(initializer:MD4_Init, updater:MD4_Update, finalizer:MD4_Final, length:MD4_DIGEST_LENGTH)
