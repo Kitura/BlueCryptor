@@ -64,17 +64,9 @@ extension Updatable {
 	///
 	public func update(data: Data) -> Self? {
 		
-		#if swift(>=5.0)
-			data.withUnsafeBytes() {
-				
-				_ = update(from: $0.baseAddress!, byteCount: size_t(data.count))
-			}
-		#else
-			_ = data.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
-
-				_ = update(from: buffer, byteCount: size_t(data.count))
-			}
-		#endif
+        data.withUnsafeBytes() {
+            _ = update(from: $0.baseAddress!, byteCount: size_t(data.count))
+        }
 		return self.status == .success ? self : nil
 	}
 	

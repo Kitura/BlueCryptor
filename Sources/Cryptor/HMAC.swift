@@ -17,10 +17,10 @@
 
 import Foundation
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if os(Linux)
+    import OpenSSL
+#else
 	import CommonCrypto
-#elseif os(Linux)
-	import OpenSSL
 #endif
 
 ///
@@ -51,7 +51,28 @@ public class HMAC: Updatable {
         /// Secure Hash Algorithm 2 512-bit
 		case sha512
         
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(Linux)
+        
+            func nativeValue() -> OpaquePointer? {
+                
+                switch self {
+                    
+                case .sha1:
+                    return .init(EVP_sha1())
+                case .md5:
+                    return .init(EVP_md5())
+                case .sha224:
+                    return .init(EVP_sha224())
+                case .sha256:
+                    return .init(EVP_sha256())
+                case .sha384:
+                    return .init(EVP_sha384())
+                case .sha512:
+                    return .init(EVP_sha512())
+                }
+            }
+        
+        #else
 		
 			static let fromNative: [CCHmacAlgorithm: Algorithm] = [
                 CCHmacAlgorithm(kCCHmacAlgSHA1): .sha1,
@@ -86,27 +107,6 @@ public class HMAC: Updatable {
 				}
 			}
 		
-		#elseif os(Linux)
-		
-			func nativeValue() -> OpaquePointer? {
-	
-				switch self {
-	
-				case .sha1:
-					return .init(EVP_sha1())
-				case .md5:
-					return .init(EVP_md5())
-				case .sha224:
-					return .init(EVP_sha224())
-				case .sha256:
-					return .init(EVP_sha256())
-				case .sha384:
-					return .init(EVP_sha384())
-				case .sha512:
-					return .init(EVP_sha512())
-				}
-			}
-		
 		#endif
 		
         ///
@@ -114,7 +114,25 @@ public class HMAC: Updatable {
         ///
         public func digestLength() -> Int {
 			
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+            #if os(Linux)
+            
+                switch self {
+                    
+                case .sha1:
+                    return Int(SHA_DIGEST_LENGTH)
+                case .md5:
+                    return Int(MD5_DIGEST_LENGTH)
+                case .sha224:
+                    return Int(SHA224_DIGEST_LENGTH)
+                case .sha256:
+                    return Int(SHA256_DIGEST_LENGTH)
+                case .sha384:
+                    return Int(SHA384_DIGEST_LENGTH)
+                case .sha512:
+                    return Int(SHA512_DIGEST_LENGTH)
+                }
+            
+            #else
 				
 				switch self {
 					
@@ -132,37 +150,19 @@ public class HMAC: Updatable {
 					return Int(CC_SHA512_DIGEST_LENGTH)
 				}
 				
-			#elseif os(Linux)
-				
-				switch self {
-					
-				case .sha1:
-					return Int(SHA_DIGEST_LENGTH)
-				case .md5:
-					return Int(MD5_DIGEST_LENGTH)
-				case .sha224:
-					return Int(SHA224_DIGEST_LENGTH)
-				case .sha256:
-					return Int(SHA256_DIGEST_LENGTH)
-				case .sha384:
-					return Int(SHA384_DIGEST_LENGTH)
-				case .sha512:
-					return Int(SHA512_DIGEST_LENGTH)
-				}
-			
 			#endif
 			
         }
     }
 	
 	/// Context
-	#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	
+    #if os(Linux)
+    
+        typealias Context = OpaquePointer?
+    
+    #else
+    
     	typealias Context = UnsafeMutablePointer<CCHmacContext>
-	
-	#elseif os(Linux)
-	
-		typealias Context = OpaquePointer?
 	
 	#endif
     
@@ -189,10 +189,10 @@ public class HMAC: Updatable {
 	init(using algorithm: Algorithm, keyBuffer: UnsafeRawPointer, keyByteCount: Int) {
 		
         self.algorithm = algorithm
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(Linux)
+            HMAC_Init_wrapper(context, keyBuffer, Int32(keyByteCount), .make(optional: algorithm.nativeValue()))
+        #else
 	        CCHmacInit(context, algorithm.nativeValue(), keyBuffer, size_t(keyByteCount))
-		#elseif os(Linux)
-			HMAC_Init_wrapper(context, keyBuffer, Int32(keyByteCount), .make(optional: algorithm.nativeValue()))
 		#endif
     }
     
@@ -203,31 +203,19 @@ public class HMAC: Updatable {
 	///		- algorithm: 	Selects the algorithm
 	/// 	- key: 			Specifies the key as Data
 	///
-	public init(using algorithm: Algorithm, key: Data) {
-		
-		self.algorithm = algorithm
-		#if swift(>=5.0)
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-				key.withUnsafeBytes() {
-					CCHmacInit(context, algorithm.nativeValue(), $0.baseAddress, size_t(key.count))
-				}
-				#elseif os(Linux)
-				_ = key.withUnsafeBytes() {
-					HMAC_Init_wrapper(context, $0.baseAddress, Int32(key.count), .make(optional: algorithm.nativeValue()))
-				}
-			#endif
-		#else
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-				key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
-					CCHmacInit(context, algorithm.nativeValue(), buffer, size_t(key.count))
-				}
-			#elseif os(Linux)
-				_ = key.withUnsafeBytes() { (buffer: UnsafePointer<UInt8>) in
-					HMAC_Init_wrapper(context, buffer, Int32(key.count), .make(optional: algorithm.nativeValue()))
-				}
-			#endif
-		#endif
-	}
+    public init(using algorithm: Algorithm, key: Data) {
+        
+        self.algorithm = algorithm
+        #if os(Linux)
+            _ = key.withUnsafeBytes() {
+                HMAC_Init_wrapper(context, $0.baseAddress, Int32(key.count), .make(optional: algorithm.nativeValue()))
+            }
+        #else
+            key.withUnsafeBytes() {
+                CCHmacInit(context, algorithm.nativeValue(), $0.baseAddress, size_t(key.count))
+            }
+        #endif
+    }
 	
     ///
     /// Creates a new HMAC instance with the specified algorithm and key.
@@ -239,10 +227,10 @@ public class HMAC: Updatable {
 	public init(using algorithm: Algorithm, key: NSData) {
 		
         self.algorithm = algorithm
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(Linux)
+            HMAC_Init_wrapper(context, key.bytes, Int32(key.length), .make(optional: algorithm.nativeValue()))
+        #else
         	CCHmacInit(context, algorithm.nativeValue(), key.bytes, size_t(key.length))
-		#elseif os(Linux)
-			HMAC_Init_wrapper(context, key.bytes, Int32(key.length), .make(optional: algorithm.nativeValue()))
 		#endif
     }
     
@@ -256,10 +244,10 @@ public class HMAC: Updatable {
 	public init(using algorithm: Algorithm, key: [UInt8]) {
 		
         self.algorithm = algorithm
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(Linux)
+            HMAC_Init_wrapper(context, key, Int32(key.count), .make(optional: algorithm.nativeValue()))
+        #else
         	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.count))
-		#elseif os(Linux)
-			HMAC_Init_wrapper(context, key, Int32(key.count), .make(optional: algorithm.nativeValue()))
 		#endif
     }
     
@@ -274,10 +262,10 @@ public class HMAC: Updatable {
 	public init(using algorithm: Algorithm, key: String) {
 		
         self.algorithm = algorithm
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(Linux)
+            HMAC_Init_wrapper(context, key, Int32(key.utf8.count), .make(optional: algorithm.nativeValue()))
+        #else
         	CCHmacInit(context, algorithm.nativeValue(), key, size_t(key.lengthOfBytes(using: String.Encoding.utf8)))
-		#elseif os(Linux)
-			HMAC_Init_wrapper(context, key, Int32(key.utf8.count), .make(optional: algorithm.nativeValue()))
 		#endif
     }
 	
@@ -288,11 +276,7 @@ public class HMAC: Updatable {
         #if os(Linux)
 			HMAC_CTX_free_wrapper(.make(optional: context))
         #else
-			#if swift(>=4.1)
-				context.deallocate()
-			#else
-				context.deallocate(capacity: 1)
-			#endif
+            context.deallocate()
 		#endif
     }
  
@@ -307,10 +291,10 @@ public class HMAC: Updatable {
     ///
 	public func update(from buffer: UnsafeRawPointer, byteCount: size_t) -> Self? {
 		
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(Linux)
+            HMAC_Update(context, buffer.assumingMemoryBound(to: UInt8.self), byteCount)
+        #else
 	        CCHmacUpdate(context, buffer, byteCount)
-		#elseif os(Linux)
-			HMAC_Update(context, buffer.assumingMemoryBound(to: UInt8.self), byteCount)
 		#endif
         return self
     }
@@ -323,11 +307,11 @@ public class HMAC: Updatable {
 	public func final() -> [UInt8] {
 		
 		var hmac = Array<UInt8>(repeating: 0, count:algorithm.digestLength())
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+        #if os(Linux)
+            var length: UInt32 = 0
+            HMAC_Final(context, &hmac, &length)
+        #else
         	CCHmacFinal(context, &hmac)
-		#elseif os(Linux)
-			var length: UInt32 = 0
-			HMAC_Final(context, &hmac, &length)
 		#endif
         return hmac
     }

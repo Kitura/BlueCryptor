@@ -211,8 +211,10 @@ Also provided are an API to pad a byte array (`[UInt8]`) such that it is an inte
 
 ## Restrictions
 
-The following algorithm is not available on Linux since it is not supported by *OpenSSL*.
-- Digest: MD2
+The following algorithms are only available on Linux since Apple considers them cryptographically broken
+- Digest: MD4
+- Digest: MD5
+    - MD5 is available as an insecure algorithm
 
 In all cases, use of unsupported APIs or algorithms will result in a Swift `fatalError()`, terminating the program and should be treated as a programming error.
 

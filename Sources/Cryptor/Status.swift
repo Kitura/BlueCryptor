@@ -17,13 +17,111 @@
 
 import Foundation
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	import CommonCrypto
-#elseif os(Linux)
-	import OpenSSL
+#if os(Linux)
+    import OpenSSL
+#else
+    import CommonCrypto
 #endif
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+#if os(Linux)
+
+///
+/// Error status
+///
+public enum Status: Swift.Error, CustomStringConvertible {
+    
+    /// Success
+    case success
+    
+    /// Unimplemented with reason
+    case unimplemented(String)
+    
+    /// Not supported with reason
+    case notSupported(String)
+    
+    /// Parameter Error
+    case paramError
+    
+    /// Failure with error code
+    case fail(UInt)
+    
+    /// Random Byte Generator Failure with error code
+    case rngFailure(UInt)
+    
+    /// The error code itself
+    public var code: Int {
+        
+        switch self {
+            
+        case .success:
+            return 0
+            
+        case .notSupported:
+            return -1
+            
+        case .unimplemented:
+            return -2
+            
+        case .paramError:
+            return -3
+            
+        case .fail(let code):
+            return Int(code)
+            
+        case .rngFailure(let code):
+            return Int(code)
+        }
+    }
+    
+    ///
+    /// Create enum value from raw `SSL error code` value.
+    ///
+    public static func fromRaw(status: UInt) -> Status? {
+        
+        return Status.fail(status)
+    }
+    
+    ///
+    /// Obtain human-readable string for the error code.
+    ///
+    public var description: String {
+        
+        switch self {
+            
+        case .success:
+            return "No error"
+            
+        case .notSupported(let reason):
+            return "Not supported: \(reason)"
+            
+        case .unimplemented(let reason):
+            return "Not implemented: \(reason)"
+            
+        case .paramError:
+            return "Invalid parameters passed"
+            
+        case .fail(let errorCode):
+            return "ERROR: code: \(errorCode), reason: \(errToString(ERR_error_string(UInt(errorCode), nil)))"
+            
+        case .rngFailure(let errorCode):
+            return "Random Byte Generator ERROR: code: \(errorCode), reason: \(errToString(ERR_error_string(UInt(errorCode), nil)))"
+        }
+    }
+}
+
+//    MARK: Operators
+
+func == (lhs: Status, rhs: Status) -> Bool {
+    
+    return lhs.code == rhs.code
+}
+
+func != (lhs: Status, rhs: Status) -> Bool {
+    
+    return lhs.code != rhs.code
+}
+
+#else
 ///
 /// Links the native CommonCryptoStatus enumeration to Swift versions.
 ///
@@ -129,104 +227,6 @@ public enum Status: CCCryptorStatus, Swift.Error, CustomStringConvertible {
     }
 }
 	
-#elseif os(Linux)
-	
-///
-/// Error status
-///
-public enum Status: Swift.Error, CustomStringConvertible {
-	
-	/// Success
-	case success
-	
-	/// Unimplemented with reason
-	case unimplemented(String)
-	
-	/// Not supported with reason
-	case notSupported(String)
-	
-	/// Parameter Error
-	case paramError
-	
-	/// Failure with error code
- 	case fail(UInt)
-	
-	/// Random Byte Generator Failure with error code
-	case rngFailure(UInt)
-	
-	/// The error code itself
-	public var code: Int {
-		
-		switch self {
-			
-		case .success:
-			return 0
-			
-		case .notSupported:
-			return -1
-			
-		case .unimplemented:
-			return -2
-			
-		case .paramError:
-			return -3
-			
-		case .fail(let code):
-			return Int(code)
-			
-		case .rngFailure(let code):
-			return Int(code)
-		}
-	}
-	
-	///
-	/// Create enum value from raw `SSL error code` value.
-	///
-	public static func fromRaw(status: UInt) -> Status? {
-		
-		return Status.fail(status)
-	}
-	
-	///
-	/// Obtain human-readable string for the error code.
-	///
-	public var description: String {
-		
-		switch self {
-			
-		case .success:
-			return "No error"
-			
-		case .notSupported(let reason):
-			return "Not supported: \(reason)"
-			
-		case .unimplemented(let reason):
-			return "Not implemented: \(reason)"
-			
-		case .paramError:
-			return "Invalid parameters passed"
-			
-		case .fail(let errorCode):
-			return "ERROR: code: \(errorCode), reason: \(errToString(ERR_error_string(UInt(errorCode), nil)))"
-
-		case .rngFailure(let errorCode):
-			return "Random Byte Generator ERROR: code: \(errorCode), reason: \(errToString(ERR_error_string(UInt(errorCode), nil)))"
-		}
-	}
-}
-
-//	MARK: Operators
-
-func == (lhs: Status, rhs: Status) -> Bool {
-	
-	return lhs.code == rhs.code
-}
-
-func != (lhs: Status, rhs: Status) -> Bool {
-	
-	return lhs.code != rhs.code
-}
-
 #endif
 
 ///

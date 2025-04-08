@@ -17,11 +17,14 @@
 
 import Foundation
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	import CommonCrypto
-#elseif os(Linux)
-	import OpenSSL
-	typealias CC_LONG = size_t
+#if os(Linux)
+    import OpenSSL
+    typealias CC_LONG = size_t
+#else
+    import CommonCrypto
+    #if canImport(CryptoKit)
+        import CryptoKit
+    #endif
 #endif
 
 ///
@@ -50,18 +53,26 @@ public class Digest: Updatable {
     ///
     public enum Algorithm {
 		
-        /// Message Digest 2 See: http://en.wikipedia.org/wiki/MD2_(cryptography)
-        case md2
-		
-        /// Message Digest 4
-        case md4
-		
+        // Only available on Linux as Apple platforms consider them cryptographically insecure
+        #if os(Linux)
+            /// Message Digest 4
+            case md4
+            
+            /// Message Digest 5
+            case md5
+        #endif
+        
         /// Message Digest 5
-        case md5
-		
+        /// - NOTE: Do NOT use for cryptography, considered insecure
+        case md5_insecure
+        
         /// Secure Hash Algorithm 1
         case sha1
-		
+        
+        /// Secure Hash Algorithm 1
+        /// - NOTE: Do NOT use for cryptography, considered insecure
+        case sha1_insecure
+        
         /// Secure Hash Algorithm 2 224-bit
         case sha224
 		
@@ -85,61 +96,61 @@ public class Digest: Updatable {
     public init(using algorithm: Algorithm) {
 		
         switch algorithm {
+        
+        #if os(Linux)
+            case .md4:
+                self.engine = DigestEngineCC<MD4_CTX>(initializer:MD4_Init, updater:MD4_Update, finalizer:MD4_Final, length:MD4_DIGEST_LENGTH)
+                
+            case .md5, .md5_insecure:
+                self.engine = DigestEngineCC<MD5_CTX>(initializer:MD5_Init, updater:MD5_Update, finalizer:MD5_Final, length:MD5_DIGEST_LENGTH)
+                        
+        #else
 			
-        case .md2:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	            engine = DigestEngineCC<CC_MD2_CTX>(initializer:CC_MD2_Init, updater:CC_MD2_Update, finalizer:CC_MD2_Final, length:CC_MD2_DIGEST_LENGTH)
-			#elseif os(Linux)
-				fatalError("MD2 digest not supported by OpenSSL")
-			#endif
-			
-        case .md4:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            	engine = DigestEngineCC<CC_MD4_CTX>(initializer:CC_MD4_Init, updater:CC_MD4_Update, finalizer:CC_MD4_Final, length:CC_MD4_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<MD4_CTX>(initializer:MD4_Init, updater:MD4_Update, finalizer:MD4_Final, length:MD4_DIGEST_LENGTH)
-			#endif
-			
-        case .md5:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-				engine = DigestEngineCC<CC_MD5_CTX>(initializer:CC_MD5_Init, updater:CC_MD5_Update, finalizer:CC_MD5_Final, length:CC_MD5_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<MD5_CTX>(initializer:MD5_Init, updater:MD5_Update, finalizer:MD5_Final, length:MD5_DIGEST_LENGTH)
-			#endif
-			
+            case .md5_insecure:
+                self.engine = DigestEngineMD5Insecure()
+
+        #endif
+            
         case .sha1:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	            engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<SHA_CTX>(initializer:SHA1_Init, updater:SHA1_Update, finalizer:SHA1_Final, length:SHA_DIGEST_LENGTH)
-			#endif
-			
+            #if os(Linux)
+                self.engine = DigestEngineCC<SHA_CTX>(initializer:SHA1_Init, updater:SHA1_Update, finalizer:SHA1_Final, length:SHA_DIGEST_LENGTH)
+            #else
+                engine = DigestEngineCC<CC_SHA1_CTX>(initializer:CC_SHA1_Init, updater:CC_SHA1_Update, finalizer:CC_SHA1_Final, length:CC_SHA1_DIGEST_LENGTH)
+            #endif
+            
+        case .sha1_insecure:
+            #if os(Linux)
+                self.engine = DigestEngineCC<SHA_CTX>(initializer:SHA1_Init, updater:SHA1_Update, finalizer:SHA1_Final, length:SHA_DIGEST_LENGTH)
+            #else
+                self.engine = DigestEngineSHA1Insecure()
+            #endif
+            
         case .sha224:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-            	engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA224_Init, updater:CC_SHA224_Update, finalizer:CC_SHA224_Final, length:CC_SHA224_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<SHA256_CTX>(initializer:SHA224_Init, updater:SHA224_Update, finalizer:SHA224_Final, length:SHA224_DIGEST_LENGTH)
+            #if os(Linux)
+                self.engine = DigestEngineCC<SHA256_CTX>(initializer:SHA224_Init, updater:SHA224_Update, finalizer:SHA224_Final, length:SHA224_DIGEST_LENGTH)
+            #else
+                self.engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA224_Init, updater:CC_SHA224_Update, finalizer:CC_SHA224_Final, length:CC_SHA224_DIGEST_LENGTH)
 			#endif
 			
         case .sha256:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	            engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA256_Init, updater:CC_SHA256_Update, finalizer:CC_SHA256_Final, length:CC_SHA256_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<SHA256_CTX>(initializer: SHA256_Init, updater:SHA256_Update, finalizer:SHA256_Final, length:SHA256_DIGEST_LENGTH)
+            #if os(Linux)
+                self.engine = DigestEngineCC<SHA256_CTX>(initializer: SHA256_Init, updater:SHA256_Update, finalizer:SHA256_Final, length:SHA256_DIGEST_LENGTH)
+            #else
+                self.engine = DigestEngineCC<CC_SHA256_CTX>(initializer:CC_SHA256_Init, updater:CC_SHA256_Update, finalizer:CC_SHA256_Final, length:CC_SHA256_DIGEST_LENGTH)
 			#endif
 			
         case .sha384:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA384_Init, updater:CC_SHA384_Update, finalizer:CC_SHA384_Final, length:CC_SHA384_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<SHA512_CTX>(initializer:SHA384_Init, updater:SHA384_Update, finalizer:SHA384_Final, length:SHA384_DIGEST_LENGTH)
+            #if os(Linux)
+                self.engine = DigestEngineCC<SHA512_CTX>(initializer:SHA384_Init, updater:SHA384_Update, finalizer:SHA384_Final, length:SHA384_DIGEST_LENGTH)
+            #else
+                self.engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA384_Init, updater:CC_SHA384_Update, finalizer:CC_SHA384_Final, length:CC_SHA384_DIGEST_LENGTH)
 			#endif
 			
         case .sha512:
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	            engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA512_Init, updater:CC_SHA512_Update, finalizer:CC_SHA512_Final, length:CC_SHA512_DIGEST_LENGTH)
-			#elseif os(Linux)
-				engine = DigestEngineCC<SHA512_CTX>(initializer:SHA512_Init, updater:SHA512_Update, finalizer:SHA512_Final, length:SHA512_DIGEST_LENGTH)
+            #if os(Linux)
+                self.engine = DigestEngineCC<SHA512_CTX>(initializer:SHA512_Init, updater:SHA512_Update, finalizer:SHA512_Final, length:SHA512_DIGEST_LENGTH)
+            #else
+                self.engine = DigestEngineCC<CC_SHA512_CTX>(initializer:CC_SHA512_Init, updater:CC_SHA512_Update, finalizer:CC_SHA512_Final, length:CC_SHA512_DIGEST_LENGTH)
 			#endif
         }
     }
@@ -239,12 +250,7 @@ private class DigestEngineCC<CTX>: DigestEngine {
 	/// Cleanup
 	///
 	deinit {
-		
-		#if swift(>=4.1)
-			context.deallocate()
-		#else
-			context.deallocate(capacity: 1)
-		#endif
+		context.deallocate()
 	}
 	
 	///
@@ -274,6 +280,62 @@ private class DigestEngineCC<CTX>: DigestEngine {
 }
 
 
+#if !os(Linux)
 
+/**
+ Wraps the Insecure.MD5 engine as a DigestEngine
+ */
+private class DigestEngineMD5Insecure: DigestEngine {
+    var engine = Insecure.MD5()
+    
+    func update(buffer: UnsafeRawPointer, byteCount: CC_LONG) {
+        guard byteCount<=Int.max else {
+            fatalError("Cannot support byte count of size: \(byteCount)")
+        }
+        let count = Int(byteCount)
+        let bufferPointer = UnsafeRawBufferPointer(start: buffer, count: count)
+        engine.update(bufferPointer: bufferPointer)
+    }
+    
+    func final() -> [UInt8] {
+        let digest: Insecure.MD5Digest = self.engine.finalize()
+        let digestLength = Int(Insecure.MD5Digest.byteCount)
+        var buffer = Array<UInt8>(repeating: 0, count:digestLength)
+        digest.withUnsafeBytes { (rawBuffer: UnsafeRawBufferPointer) in
+            for (index, val) in rawBuffer.enumerated() {
+                buffer[index] = val
+            }
+        }
+        return buffer
+    }
+}
 
+/**
+ Wraps the Insecure.SHA1 engine as a DigestEngine
+ */
+private class DigestEngineSHA1Insecure: DigestEngine {
+    var engine = Insecure.SHA1()
+    
+    func update(buffer: UnsafeRawPointer, byteCount: CC_LONG) {
+        guard byteCount<=Int.max else {
+            fatalError("Cannot support byte count of size: \(byteCount)")
+        }
+        let count = Int(byteCount)
+        let bufferPointer = UnsafeRawBufferPointer(start: buffer, count: count)
+        engine.update(bufferPointer: bufferPointer)
+    }
+    
+    func final() -> [UInt8] {
+        let digest: Insecure.SHA1Digest = self.engine.finalize()
+        let digestLength = Int(Insecure.SHA1Digest.byteCount)
+        var buffer = Array<UInt8>(repeating: 0, count:digestLength)
+        digest.withUnsafeBytes { (rawBuffer: UnsafeRawBufferPointer) in
+            for (index, val) in rawBuffer.enumerated() {
+                buffer[index] = val
+            }
+        }
+        return buffer
+    }
+}
 
+#endif

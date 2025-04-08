@@ -19,10 +19,10 @@ import XCTest
 import Foundation
 @testable import Cryptor
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	import CommonCrypto
-#elseif os(Linux)
-	import OpenSSL
+#if os(Linux)
+    import OpenSSL
+#else
+    import CommonCrypto
 #endif
 
 import Dispatch
@@ -31,7 +31,7 @@ class CryptorTests: XCTestCase {
 	
 	static var allTests: [(String, (CryptorTests) -> () throws -> Void)] {
 		
-		return [
+		var tests = [
 			("test_fatalError_keySize", test_fatalError_keySize),
 			("test_fatalError_AES_CBC_ivSize", test_fatalError_AES_CBC_ivSize),
 			("test_Cryptor_AES_ECB", test_Cryptor_AES_ECB),
@@ -40,13 +40,12 @@ class CryptorTests: XCTestCase {
 			("test_Cryptor_AES_ECB_Short", test_Cryptor_AES_ECB_Short),
 			("test_Cryptor_AES_CBC_1", test_Cryptor_AES_CBC_1),
 			("test_Cryptor_DES_EBC_1", test_Cryptor_DES_EBC_1),
-			("testMD2", testMD2),
-			("testMD5_1", testMD5_1),
-			("test_Digest_MD5_NSData", test_Digest_MD5_Data),
-			("test_Digest_MD5_NSData", test_Digest_MD5_NSData),
-			("test_Digest_MD5_Composition_String", test_Digest_MD5_Composition_String),
-			("test_Digest_MD5_Composition_String_2", test_Digest_MD5_Composition_String_2),
-			("test_Digest_MD5_Composition_Bytes", test_Digest_MD5_Composition_Bytes),
+            ("testMD5_insecure_1", testMD5_insecure_1),
+            ("test_Digest_MD5_insecure_NSData", test_Digest_MD5_insecure_Data),
+            ("test_Digest_MD5_insecure_NSData", test_Digest_MD5_insecure_NSData),
+            ("test_Digest_MD5_insecure_Composition_String", test_Digest_MD5_insecure_Composition_String),
+            ("test_Digest_MD5_insecure_Composition_String_2", test_Digest_MD5_insecure_Composition_String_2),
+            ("test_Digest_MD5_insecure_Composition_Bytes", test_Digest_MD5_insecure_Composition_Bytes),
 			("test_Crypto_API", test_Crypto_API),
 			("test_Digest_SHA1_String", test_Digest_SHA1_String),
 			("test_Digest_SHA224_String", test_Digest_SHA224_String),
@@ -77,6 +76,18 @@ class CryptorTests: XCTestCase {
 			("testGitHubIssue9StringCanary", testGitHubIssue9StringCanary),
 			("testGitHubIssue9ArrayCanary", testGitHubIssue9ArrayCanary)
 		]
+        
+        #if os(Linux)
+            tests.append(contentsOf: [("testMD5_1", testMD5_1),
+                                      ("test_Digest_MD5_NSData", test_Digest_MD5_Data),
+                                      ("test_Digest_MD5_NSData", test_Digest_MD5_NSData),
+                                      ("test_Digest_MD5_Composition_String", test_Digest_MD5_Composition_String),
+                                      ("test_Digest_MD5_Composition_String_2", test_Digest_MD5_Composition_String_2),
+                                      ("test_Digest_MD5_Composition_Bytes", test_Digest_MD5_Composition_Bytes)
+                                     ])
+        #endif
+        
+        return tests
 	}
 	
 	#if os(Linux)
@@ -216,7 +227,7 @@ class CryptorTests: XCTestCase {
 			let cryptor = try Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>())
 			let cipherText = cryptor.update(byteArray: plainText)?.final()
 			XCTAssert(cipherText == nil, "Expected nil cipherText")
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+			#if !os(Linux)
 				XCTAssertEqual(cryptor.status, Status.alignmentError, "Expected AlignmentError")
 			#endif
 		} catch let error {
@@ -435,25 +446,8 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: - Digest tests
 	
-	// MARK: MD2 (RFC1319)
-	let md2inputs = ["", "a", "abc", "message digest", "abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", "12345678901234567890123456789012345678901234567890123456789012345678901234567890"]
-	let md2outputs = ["8350e5a3e24c153df2275c9f80692773", "32ec01ec4a6dac72c0ab96fb34c0b5d1",
-	                  "da853b0d3f88d99b30283a69e6ded6bb", "ab4f496bfb2a530b219ff33031fe06b0", "4e8ddff3650292ab5a4108c3aa47940b", "da33def2a42df13975352846c30338cd", "d5976f79d83d3a0dc9806c3c66f3efd8"]
-	
-	func testMD2() {
-		if usingOpenSSL {
-			return
-		}
-		for i in 0..<md2inputs.count {
-			let input = md2inputs[i]
-			let expectedOutput = CryptoUtils.byteArray(fromHex: md2outputs[i])
-			let d: Digest = Digest(using:.md2)
-			_ = d.update(string: input)
-			let output = d.final()
-			XCTAssertEqual(output, expectedOutput)
-		}
-	}
-	
+    #if os(Linux)
+    
 	// MARK: MD5
 	func testMD5_1() {
 		let md5: Digest = Digest(using:.md5)
@@ -498,9 +492,57 @@ class CryptorTests: XCTestCase {
 		
 		XCTAssertEqual(digest!, qbfMD5, "PASS")
 	}
-	
+    
+    #endif
+    
+    // MARK: MD5_Insecure
+    func testMD5_insecure_1() {
+        let md5: Digest = Digest(using:.md5_insecure)
+        _ = md5.update(string: qbfString)
+        let digest = md5.final()
+        
+        XCTAssertEqual(digest, qbfMD5, "PASS")
+    }
+    
+    func test_Digest_MD5_insecure_NSData() {
+        let qbfData: NSData = CryptoUtils.data(from: self.qbfBytes)
+        let digest = Digest(using: .md5_insecure).update(data: qbfData)?.final()
+        
+        XCTAssertEqual(digest!, qbfMD5, "PASS")
+    }
+    
+    func test_Digest_MD5_insecure_Data() {
+        let qbfData: Data = CryptoUtils.data(from: self.qbfBytes)
+        let digest = Digest(using: .md5_insecure).update(data: qbfData)?.final()
+        
+        XCTAssertEqual(digest!, qbfMD5, "PASS")
+    }
+    
+    /// Test MD5_insecure with string input and optional chaining.
+    func test_Digest_MD5_insecure_Composition_String() {
+        let digest = Digest(using: .md5_insecure).update(string: qbfString)?.final()
+        XCTAssertEqual(digest!, qbfMD5, "PASS")
+    }
+    
+    /// Test MD5_insecure with optional chaining, string input and 2 updates
+    func test_Digest_MD5_insecure_Composition_String_2() {
+        let s1 = "The quick brown fox"
+        let s2 = " jumps over the lazy dog."
+        let digest = Digest(using: .md5_insecure).update(string: s1)?.update(string: s2)?.final()
+        
+        XCTAssertEqual(digest!, qbfMD5, "PASS")
+    }
+    
+    /// Test MD5 with optional chaining and byte array input
+    func test_Digest_MD5_insecure_Composition_Bytes() {
+        let digest = Digest(using: .md5_insecure).update(byteArray: qbfBytes)?.final()
+        
+        XCTAssertEqual(digest!, qbfMD5, "PASS")
+    }
+
 	/// See: http://csrc.nist.gov/groups/ST/toolkit/documents/Examples/SHA_All.pdf
 	let shaShortBlock = "abc"
+    let md5ShortBlockOutput = "900150983cd24fb0d6963f7d28e17f72"
 	let sha1ShortBlockOutput = "a9993e364706816aba3e25717850c26c9cd0d89d"
 	let sha224BlockOutput = "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7"
 	let sha256BlockOutput = "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
@@ -509,24 +551,37 @@ class CryptorTests: XCTestCase {
 	
 	func test_Crypto_API() {
 		
-		XCTAssertEqual(shaShortBlock.sha224, sha224BlockOutput)
+        XCTAssertEqual(shaShortBlock.md5_insecure, md5ShortBlockOutput)
+        XCTAssertEqual(shaShortBlock.sha1, sha1ShortBlockOutput)
+        XCTAssertEqual(shaShortBlock.sha1_insecure, sha1ShortBlockOutput)
+        XCTAssertEqual(shaShortBlock.sha224, sha224BlockOutput)
 		XCTAssertEqual(shaShortBlock.sha256, sha256BlockOutput)
 		XCTAssertEqual(shaShortBlock.sha384, sha384BlockOutput)
 		XCTAssertEqual(shaShortBlock.sha512, sha512BlockOutput)
 		let theData: Data = shaShortBlock.data(using:String.Encoding.utf8)!
-		XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput))
+        XCTAssertEqual(theData.md5_insecure, CryptoUtils.data(fromHex: md5ShortBlockOutput))
+        XCTAssertEqual(theData.sha1, CryptoUtils.data(fromHex: sha1ShortBlockOutput))
+        XCTAssertEqual(theData.sha1_insecure, CryptoUtils.data(fromHex: sha1ShortBlockOutput))
+        XCTAssertEqual(theData.sha224, CryptoUtils.data(fromHex: sha224BlockOutput))
 		XCTAssertEqual(theData.sha256, CryptoUtils.data(fromHex: sha256BlockOutput))
 		XCTAssertEqual(theData.sha384, CryptoUtils.data(fromHex: sha384BlockOutput))
 		XCTAssertEqual(theData.sha512, CryptoUtils.data(fromHex: sha512BlockOutput))
 	}
-	
-	func test_Digest_SHA1_String() {
-		let digest = Digest(using: .sha1).update(string: shaShortBlock)?.final()
-		print(CryptoUtils.hexString(from: digest!))
-		XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha1ShortBlockOutput)
-		
-	}
-	
+    
+    func test_Digest_SHA1_String() {
+        let digest = Digest(using: .sha1).update(string: shaShortBlock)?.final()
+        print(CryptoUtils.hexString(from: digest!))
+        XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha1ShortBlockOutput)
+        
+    }
+    
+    func test_Digest_SHA1_insecure_String() {
+        let digest = Digest(using: .sha1_insecure).update(string: shaShortBlock)?.final()
+        print(CryptoUtils.hexString(from: digest!))
+        XCTAssertEqual(CryptoUtils.hexString(from: digest!), sha1ShortBlockOutput)
+        
+    }
+
 	func test_Digest_SHA224_String() {
 		let digest = Digest(using: .sha224).update(string: shaShortBlock)?.final()
 		print(CryptoUtils.hexString(from: digest!))
@@ -761,7 +816,7 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: - Status
 	func test_Status() {
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+		#if !os(Linux)
 			
 			// These are only for CommonCrypto...
 			XCTAssertEqual(Status.success.toRaw(), CCCryptorStatus(kCCSuccess))
