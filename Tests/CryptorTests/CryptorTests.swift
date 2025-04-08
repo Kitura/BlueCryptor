@@ -19,10 +19,10 @@ import XCTest
 import Foundation
 @testable import Cryptor
 
-#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
-	import CommonCrypto
-#elseif os(Linux)
-	import OpenSSL
+#if os(Linux)
+    import OpenSSL
+#else
+    import CommonCrypto
 #endif
 
 import Dispatch
@@ -216,7 +216,7 @@ class CryptorTests: XCTestCase {
 			let cryptor = try Cryptor(operation:.encrypt, algorithm:.aes, options:.ecbMode, key:key, iv:Array<UInt8>())
 			let cipherText = cryptor.update(byteArray: plainText)?.final()
 			XCTAssert(cipherText == nil, "Expected nil cipherText")
-			#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+			#if !os(Linux)
 				XCTAssertEqual(cryptor.status, Status.alignmentError, "Expected AlignmentError")
 			#endif
 		} catch let error {
@@ -761,7 +761,7 @@ class CryptorTests: XCTestCase {
 	
 	// MARK: - Status
 	func test_Status() {
-		#if os(macOS) || os(iOS) || os(tvOS) || os(watchOS)
+		#if !os(Linux)
 			
 			// These are only for CommonCrypto...
 			XCTAssertEqual(Status.success.toRaw(), CCCryptorStatus(kCCSuccess))
